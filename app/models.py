@@ -88,21 +88,21 @@ class Vet(models.Model):
         return self.name
 
     @classmethod
-    def save_vets(cls, vet_data):
+    def save_vet(cls, vet_data):
         errors = validate_vet(vet_data)
 
         if len(errors.keys()) > 0:
             return False, errors
 
         Vet.objects.create(
-            name=client_data.get("name"),
-            phone=client_data.get("phone"),
-            email=client_data.get("email"),
+            name=vet_data.get("name"),
+            phone=vet_data.get("phone"),
+            email=vet_data.get("email"),
         )
 
         return True, None
 
-    def update_vets(self, vet_data):
+    def update_vet(self, vet_data):
         self.name = vet_data.get("name", "") or self.name
         self.email = vet_data.get("email", "") or self.email
         self.phone = vet_data.get("phone", "") or self.phone
