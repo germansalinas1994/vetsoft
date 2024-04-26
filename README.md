@@ -24,3 +24,4 @@ Aplicación web para veterinarias utilizada en la cursada 2024 de Ingeniería y 
 
 Integrantes
 -Germán Salinas
+-Francisco Móntiron
