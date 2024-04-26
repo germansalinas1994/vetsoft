@@ -29,17 +29,21 @@
                     <td>{{vet.phone}}</td>
 
                     <td>
-                        <a class="btn btn-outline-primary"
-                           href="{% url 'vets_edit' id=vet.id %}"
-                        >Editar</a>
-                        <form method="POST"
-                            action="{% url 'vets_delete' %}"
-                            aria-label="Formulario de eliminación de veterinario">
-                            {% csrf_token %}
+                        <div class="btn-group">
+                            <a class="btn btn-outline-primary me-2"                            
+                            href="{% url 'vets_edit' id=vet.id %}"
+                            >Editar</a>
+                            <form method="POST"
+                                action="{% url 'vets_delete' %}"
+                                aria-label="Formulario de eliminación de veterinario">
+                                {% csrf_token %}
+    
+                                <input type="hidden" name="vet_id" value="{{ vet.id }}" />
+                                <button class="btn btn-outline-danger">Eliminar</button>
+                            </form>
+                        </div>
 
-                            <input type="hidden" name="vet_id" value="{{ vet.id }}" />
-                            <button class="btn btn-outline-danger">Eliminar</button>
-                        </form>
+                      
                     </td>
             </tr>
             {% empty %}
