@@ -4,11 +4,11 @@ Aplicación web para veterinarias utilizada en la cursada 2024 de Ingeniería y 
 
 ## Dependencias
 
-- python 3
-- Django
-- sqlite
-- playwright
-- ruff
+-   python 3
+-   Django
+-   sqlite
+-   playwright
+-   ruff
 
 ## Instalar dependencias
 
@@ -22,6 +22,7 @@ Aplicación web para veterinarias utilizada en la cursada 2024 de Ingeniería y 
 
 `python manage.py runserver`
 
-Integrantes
+Integrantes:
 -Germán Salinas
--Francisco Móntiron
+-Francisco Montirón
+-Valentina Díaz
