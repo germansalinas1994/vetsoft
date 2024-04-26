@@ -33,7 +33,7 @@
                            {% comment %} href="{% url 'vets_edit' id=vet.id %}" {% endcomment %}
                         >Editar</a>
                         <form method="POST"
-                            {% comment %} action="{% url 'vets_delete' %}" {% endcomment %}
+                            action="{% url 'vets_delete' %}"
                             aria-label="Formulario de eliminación de veterinario">
                             {% csrf_token %}
 

@@ -76,3 +76,11 @@ def vets_form(request, id=None):
         vet = get_object_or_404(Vet, pk=id)
 
     return render(request, "vets/form.html", {"vet": vet})
+
+def vets_delete(request):
+    vet_id = request.POST.get("vet_id")
+    vet = get_object_or_404(Vet, pk=int(vet_id))
+    vet.delete()
+
+    return redirect(reverse("vets_repo"))
+
