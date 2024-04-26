@@ -43,3 +43,8 @@ def clients_delete(request):
     client.delete()
 
     return redirect(reverse("clients_repo"))
+
+
+def vets_repository(request):
+
+    return render(request, "vets/repository.html")
