@@ -84,3 +84,6 @@ def vets_delete(request):
 
     return redirect(reverse("vets_repo"))
 
+def providers_repository(request):
+    
+    return render(request, "providers/repository.html")

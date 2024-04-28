@@ -13,5 +13,7 @@ urlpatterns = [
     path("vets/eliminar/", view=views.vets_delete, name="vets_delete"),
     path("vets/editar/<int:id>/", view=views.vets_form, name="vets_edit"),
 
+    path("providers/", view=views.providers_repository, name="providers_repo"),
+
 
 ]
