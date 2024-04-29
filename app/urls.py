@@ -15,6 +15,6 @@ urlpatterns = [
 
     path("providers/", view=views.providers_repository, name="providers_repo"),
     path("providers/nuevo/", view=views.providers_form, name="providers_form"),
-
+    path("providers/eliminar/", view=views.providers_delete, name="providers_delete"),
 
 ]

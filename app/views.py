@@ -113,3 +113,11 @@ def providers_form(request, id=None):
 
     return render(request, "providers/form.html", {"provider": provider})
 
+def providers_delete(request):
+    provider_id = request.POST.get("provider_id")
+    provider = get_object_or_404(Provider, pk=int(provider_id))
+    provider.delete()
+
+    return redirect(reverse("providers_repo"))
+
+

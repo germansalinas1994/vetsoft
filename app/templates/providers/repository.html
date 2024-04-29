@@ -29,6 +29,7 @@
                         <form
                             method="POST"
                             aria-label="Formulario de eliminación de proveedor"
+                            action="{% url 'providers_delete' %}"
                         >
                             {% csrf_token %}
 
