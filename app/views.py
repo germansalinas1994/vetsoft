@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect, reverse, get_object_or_404
 from .models import Client
 from .models import Vet
+from .models import Product
 
 
 def home(request):
@@ -85,5 +86,5 @@ def vets_delete(request):
     return redirect(reverse("vets_repo"))
 
 def products_repository(request):
-
-    return render(request, "products/repository.html")
+    products = Product.objects.all()
+    return render(request, "products/repository.html", {"products": products})
