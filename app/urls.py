@@ -18,4 +18,5 @@ urlpatterns = [
 
     #Productos
     path("products/", view=views.products_repository, name="products_repo"),
+    path("products/nuevo", view=views.products_form, name="products_form"),
 ]

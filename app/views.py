@@ -88,3 +88,28 @@ def vets_delete(request):
 def products_repository(request):
     products = Product.objects.all()
     return render(request, "products/repository.html", {"products": products})
+
+def products_form(request, id=None):
+    if request.method == "POST":
+        product_id = request.POST.get("id", "")
+        errors = {}
+        saved = True
+
+        if product_id == "":
+            saved, errors = Product.save_product(request.POST)
+        else:
+            product = get_object_or_404(Product, pk=product_id)
+            product.update_product(request.POST)
+
+        if saved:
+            return redirect(reverse("products_repo"))
+
+        return render(
+            request, "products/form.html", {"errors": errors, "product": request.POST}
+        )
+
+    product = None
+    if id is not None:
+        product = get_object_or_404(Product, pk=id)
+
+    return render(request, "products/form.html", {"product": product})
