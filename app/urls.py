@@ -14,6 +14,7 @@ urlpatterns = [
     path("vets/editar/<int:id>/", view=views.vets_form, name="vets_edit"),
 
     path("providers/", view=views.providers_repository, name="providers_repo"),
+    path("providers/nuevo/", view=views.providers_form, name="providers_form"),
 
 
 ]
