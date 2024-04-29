@@ -25,7 +25,13 @@
                 <td>{{provider.email}}</td>
                 <td>
                     <div class="btn-group">
-                        <a class="btn btn-outline-primary me-2">Editar</a>
+                        <a
+                            class="btn btn-outline-primary me-2"
+                            href="{% url 'providers_edit' id=provider.id %}"
+                        >
+                            Editar</a
+                        >
+
                         <form
                             method="POST"
                             aria-label="Formulario de eliminación de proveedor"
