@@ -91,6 +91,31 @@ def medicines_repository(request):
     medicines = Medicine.objects.all()
     return render(request, "medicines/repository.html", {"medicines": medicines})
 
+  
+def medicines_form(request, id=None):
+    if request.method == "POST":
+        medicine_id = request.POST.get("id", "")
+        errors = {}
+        saved = True
+
+        if medicine_id == "":
+            saved, errors = Medicine.save_medicine(request.POST)
+        else:
+            medicine = get_object_or_404(Medicine, pk=medicine_id)
+            medicine.update_medicine(request.POST)
+
+        if saved:
+            return redirect(reverse("medicines_repo"))
+
+        return render(
+            request, "medicines/form.html", {"errors": errors, "medicine": request.POST}
+        )
+
+    medicine = None
+    if id is not None:
+        medicine = get_object_or_404(Medicine, pk=id)
+
+    return render(request, "medicines/form.html", {"medicine": medicine})
 
 
 
