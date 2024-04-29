@@ -1,4 +1,5 @@
 from django.db import models
+from datetime import datetime
 
 
 def validate_client(data):
@@ -106,5 +107,67 @@ class Vet(models.Model):
         self.name = vet_data.get("name", "") or self.name
         self.email = vet_data.get("email", "") or self.email
         self.phone = vet_data.get("phone", "") or self.phone
-        
+
         self.save()
+
+
+#Pet model
+def validate_pet(data):
+    errors = {}
+
+    name = data.get("name", "")
+    breed = data.get("breed", "")
+    birthday = data.get("birthday", "")
+
+    if name == "":
+        errors["name"] = "Por favor ingrese un nombre"
+
+    if breed == "":
+        errors["breed"] = "Por favor ingrese una raza"
+
+    if birthday == "":
+        errors["birthday"] = "Por favor ingrese una fecha de nacimiento formato: dd/mm/yyyy."
+    else:
+        try:
+            datetime.strptime(birthday, "%d/%m/%Y")
+        except ValueError:
+            errors["birthday"] = "Por favor ingrese una fecha de nacimiento válida, formato: dd/mm/yyyy."
+
+    return errors
+
+
+
+class Pet(models.Model):
+    name = models.CharField(max_length=100)
+    breed = models.CharField(max_length=100)
+    birthday = models.DateField()
+
+    def __str__(self):
+        return self.name
+
+    @classmethod
+    def save_pet(cls, pet_data):
+        errors = validate_pet(pet_data)
+
+        if len(errors.keys()) > 0:
+            return False, errors
+
+        # Aseguro que sea una fecha antes de guardar para evitar errores.
+        birthday = datetime.strptime(pet_data.get("birthday"), "%d/%m/%Y").date()
+
+        Pet.objects.create(
+            name=pet_data.get("name"),
+            breed=pet_data.get("breed"),
+            birthday=birthday,
+        )
+
+        return True, None
+
+    def update_pet(self, pet_data):
+        self.name = pet_data.get("name", "") or self.name
+        self.breed = pet_data.get("breed", "") or self.breed
+        self.birthday = datetime.strptime(pet_data.get("birthday"), "%d/%m/%Y").date() if pet_data.get("birthday") else self.birthday
+
+        self.save()
+
+
