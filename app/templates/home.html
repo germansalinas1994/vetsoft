@@ -3,9 +3,10 @@
 {% block main %}
 <div class="container">
     <div class="row">
-        <div class="col-3" style="margin-right: 2;">
-            <a href="{% url 'clients_repo' %}" class="text-decoration-none" data-testid="home-Clientes">
-                <div class="card" style="min-height: 20vh">
+        <!-- Usa 'mb-3' para el margen bottom, 'h-100' para igualar alturas -->
+        <div class="col-md-4 mb-3 d-flex align-items-stretch">
+            <a href="{% url 'clients_repo' %}" class="text-decoration-none">
+                <div class="card h-100">
                     <div class="card-body d-flex align-items-center">
                         <h2 class="card-title d-flex justify-content-between w-100">
                             <div>
@@ -18,9 +19,10 @@
                 </div>
             </a>
         </div>
-        <div class="col-3">
-            <a href="{% url 'vets_repo' %}" class="text-decoration-none" data-testid="home-Vest">
-                <div class="card" style="min-height: 20vh">
+
+        <div class="col-md-4 mb-3 d-flex align-items-stretch">
+            <a href="{% url 'vets_repo' %}" class="text-decoration-none">
+                <div class="card h-100">
                     <div class="card-body d-flex align-items-center">
                         <h2 class="card-title d-flex justify-content-between w-100">
                             <div>
@@ -33,14 +35,15 @@
                 </div>
             </a>
         </div>
-        <div class="col-3" style="margin-right: 2;">
-            <a href="{% url 'pets_repo' %}" class="text-decoration-none" data-testid="home-Pets">
-                <div class="card" style="min-height: 20vh">
+
+        <div class="col-md-4 mb-3 d-flex align-items-stretch">
+            <a href="{% url 'pets_repo' %}" class="text-decoration-none">
+                <div class="card h-100">
                     <div class="card-body d-flex align-items-center">
                         <h2 class="card-title d-flex justify-content-between w-100">
                             <div>
                                 <i class="bi bi-heart-fill"></i>
-                                    Mascotas
+                                Mascotas
                             </div>
                             <i class="bi bi-arrow-right"></i>
                         </h2>
@@ -48,8 +51,6 @@
                 </div>
             </a>
         </div>
-
-
     </div>
 </div>
 {% endblock %}
