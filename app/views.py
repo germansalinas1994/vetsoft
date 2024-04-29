@@ -118,6 +118,13 @@ def medicines_form(request, id=None):
     return render(request, "medicines/form.html", {"medicine": medicine})
 
 
+def medicines_delete(request):
+    medicine_id = request.POST.get("medicine_id")
+    medicine = get_object_or_404(Medicine, pk=int(medicine_id))
+    medicine.delete()
+
+    return redirect(reverse("medicines_repo"))
+
 
 
 

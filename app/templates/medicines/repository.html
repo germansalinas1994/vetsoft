@@ -32,6 +32,7 @@
                            href="{% url 'medicines_edit' id=medicine.id %}"
                         >Editar</a>
                         <form method="POST"
+                            action="{% url 'medicines_delete' %}"
                             aria-label="Formulario de eliminación de medicina">
                             {% csrf_token %}
 

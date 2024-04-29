@@ -15,7 +15,7 @@ urlpatterns = [
 
     path("medicines/", view=views.medicines_repository, name="medicines_repo"),
     path("medicines/nuevo/", view=views.medicines_form, name="medicines_form"),
-
+    path("medicines/eliminar/", view=views.medicines_delete, name="medicines_delete"),
     path("medicines/editar/<int:id>/", view=views.medicines_form, name="medicines_edit"),
 
 
