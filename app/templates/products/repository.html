@@ -31,7 +31,7 @@
                            href="{% url 'products_edit' id=product.id %}"
                         >Editar</a>
                         <form method="POST"
-                            {% comment %} action="{% url 'products_delete' %}" {% endcomment %}
+                            action="{% url 'products_delete' %}"
                             aria-label="Formulario de eliminación de productos">
                             {% csrf_token %}
 
