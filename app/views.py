@@ -117,7 +117,7 @@ def products_form(request, id=None):
 
 def products_delete(request):
     product_id = request.POST.get("product_id")
-    product = get_object_or_404(Vet, pk=int(product_id))
+    product = get_object_or_404(Product, pk=int(product_id))
     product.delete()
 
     return redirect(reverse("products_repo"))

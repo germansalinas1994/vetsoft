@@ -20,24 +20,27 @@
             </tr>
         </thead>
         <tbody>
-            {% for products in products %}
+            {% for product in products %}
             <tr>
                     <td>{{product.name}}</td>
                     <td>{{product.type}}</td>
                     <td>{{product.price}}</td>
 
                     <td>
-                        <a class="btn btn-outline-primary"
-                           href="{% url 'products_edit' id=product.id %}"
-                        >Editar</a>
-                        <form method="POST"
-                            action="{% url 'products_delete' %}"
-                            aria-label="Formulario de eliminación de productos">
-                            {% csrf_token %}
+                        <div class="btn-group"></div>
+                            <a class="btn btn-outline-primary me-2"
+                            href="{% url 'products_edit' id=product.id %}"
+                            >Editar</a>
+                            <form method="POST"
+                                action="{% url 'products_delete' %}"
+                                aria-label="Formulario de eliminación de productos">
+                                {% csrf_token %}
 
-                            <input type="hidden" name="product_id" value="{{ product.id }}" />
-                            <button class="btn btn-outline-danger">Eliminar</button>
-                        </form>
+                                <input type="hidden" name="product_id" value="{{ product.id }}" />
+                                <button class="btn btn-outline-danger">Eliminar</button>
+                            </form>
+
+                         </div>
                     </td>
             </tr>
             {% empty %}
@@ -45,9 +48,10 @@
                     <td colspan="5" class="text-center">
                         No existen productos
                     </td>
+                    
                 </tr>
-            {% endfor %}
-        </tbody>
+            {% endfor %} 
+        </tbody>  
     </table>
 </div>
 {% endblock %}
