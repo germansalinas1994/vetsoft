@@ -26,3 +26,5 @@ Integrantes:
 -Germán Salinas
 -Francisco Montirón
 -Valentina Díaz
+-Bruno Lopez Velazco
+-Bravo Diego Federico
