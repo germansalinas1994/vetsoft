@@ -155,29 +155,24 @@ class Provider(models.Model):
         self.save()
 
 #Pet model
-def validate_pet(data):
+def validate_pet(pet_data):
     errors = {}
-
-    name = data.get("name", "")
-    breed = data.get("breed", "")
-    birthday = data.get("birthday", "")
-
-    if name == "":
-        errors["name"] = "Por favor ingrese un nombre"
-
-    if breed == "":
-        errors["breed"] = "Por favor ingrese una raza"
-
-    if birthday == "":
-        errors["birthday"] = "Por favor ingrese una fecha de nacimiento formato: dd/mm/yyyy."
-    else:
-        try:
-            datetime.strptime(birthday, "%d/%m/%Y")
-        except ValueError:
-            errors["birthday"] = "Por favor ingrese una fecha de nacimiento válida, formato: dd/mm/yyyy."
+    if not pet_data.get("name"):
+        errors["name"] = "El nombre es requerido."
+    if not pet_data.get("breed"):
+        errors["breed"] = "La raza es requerida."
+    if not pet_data.get("birthday"):
+        errors["birthday"] = "La fecha de nacimiento es requerida."
+    if not parse_date(pet_data.get("birthday")):
+        errors["birthday"] = "Formato de fecha incorrecto. Debe ser DD/MM/YYYY."
 
     return errors
 
+def parse_date(date_str):
+    try:
+        return datetime.strptime(date_str, "%d/%m/%Y").date()
+    except ValueError:
+        return None  # Retorna None si hay un error en la conversión, con none se puede validar si la fecha es correcta o no
 
 class Pet(models.Model):
     name = models.CharField(max_length=100)
@@ -190,27 +185,29 @@ class Pet(models.Model):
     @classmethod
     def save_pet(cls, pet_data):
         errors = validate_pet(pet_data)
-
-        if len(errors.keys()) > 0:
+        if errors:
             return False, errors
-
-        # Aseguro que sea una fecha antes de guardar para evitar errores.
-        birthday = datetime.strptime(pet_data.get("birthday"), "%d/%m/%Y").date()
 
         Pet.objects.create(
             name=pet_data.get("name"),
             breed=pet_data.get("breed"),
-            birthday=birthday,
+            birthday=parse_date(pet_data.get("birthday")),
         )
 
         return True, None
 
     def update_pet(self, pet_data):
-        self.name = pet_data.get("name", "") or self.name
-        self.breed = pet_data.get("breed", "") or self.breed
-        self.birthday = datetime.strptime(pet_data.get("birthday"), "%d/%m/%Y").date() if pet_data.get("birthday") else self.birthday
+        errors = validate_pet(pet_data)
+        if errors:
+            return False, errors
+
+        self.name = pet_data.get("name", self.name)
+        self.breed = pet_data.get("breed", self.breed)
+        self.birthday = parse_date(pet_data.get("birthday")) or self.birthday
 
         self.save()
+        return True, None
+
 
 
 class Medicine(models.Model):
