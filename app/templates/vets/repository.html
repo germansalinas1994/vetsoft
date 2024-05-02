@@ -1,6 +1,4 @@
-{% extends 'base.html' %}
-
-{% block main %}
+{% extends 'base.html' %} {% block main %}
 <div class="container">
     <h1 class="mb-4">Veterinarios</h1>
 
@@ -24,34 +22,41 @@
         <tbody>
             {% for vet in vets %}
             <tr>
-                    <td>{{vet.name}}</td>
-                    <td>{{vet.email}}</td>
-                    <td>{{vet.phone}}</td>
+                <td>{{vet.name}}</td>
+                <td>{{vet.email}}</td>
+                <td>{{vet.phone}}</td>
 
-                    <td>
-                        <div class="btn-group">
-                            <a class="btn btn-outline-primary me-2"                            
+                <td>
+                    <div class="btn-group">
+                        <a
+                            class="btn btn-outline-primary me-2"
                             href="{% url 'vets_edit' id=vet.id %}"
-                            >Editar</a>
-                            <form method="POST"
-                                action="{% url 'vets_delete' %}"
-                                aria-label="Formulario de eliminación de veterinario">
-                                {% csrf_token %}
-    
-                                <input type="hidden" name="vet_id" value="{{ vet.id }}" />
-                                <button class="btn btn-outline-danger">Eliminar</button>
-                            </form>
-                        </div>
+                        >
+                            Editar
+                        </a>
+                        <form
+                            method="POST"
+                            action="{% url 'vets_delete' %}"
+                            aria-label="Formulario de eliminación de veterinario"
+                        >
+                            {% csrf_token %}
 
-                      
-                    </td>
+                            <input
+                                type="hidden"
+                                name="vet_id"
+                                value="{{ vet.id }}"
+                            />
+                            <button class="btn btn-outline-danger">
+                                Eliminar
+                            </button>
+                        </form>
+                    </div>
+                </td>
             </tr>
             {% empty %}
-                <tr>
-                    <td colspan="5" class="text-center">
-                        No existen veterinarios
-                    </td>
-                </tr>
+            <tr>
+                <td colspan="5" class="text-center">No existen veterinarios</td>
+            </tr>
             {% endfor %}
         </tbody>
     </table>

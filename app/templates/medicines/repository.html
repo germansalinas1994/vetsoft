@@ -1,6 +1,4 @@
-{% extends 'base.html' %}
-
-{% block main %}
+{% extends 'base.html' %} {% block main %}
 <div class="container">
     <h1 class="mb-4">Medicinas</h1>
 
@@ -22,31 +20,38 @@
         </thead>
 
         <tbody>
-            {% for medicine in medicines  %}
+            {% for medicine in medicines %}
             <tr>
-                    <td>{{medicine.name}}</td>
-                    <td>{{medicine.description}}</td>
-                    <td>{{medicine.dose}}</td>
-                    <td>
-                        <a class="btn btn-outline-primary"
-                           href="{% url 'medicines_edit' id=medicine.id %}"
-                        >Editar</a>
-                        <form method="POST"
-                            action="{% url 'medicines_delete' %}"
-                            aria-label="Formulario de eliminación de medicina">
-                            {% csrf_token %}
+                <td>{{medicine.name}}</td>
+                <td>{{medicine.description}}</td>
+                <td>{{medicine.dose}}</td>
+                <td>
+                    <div class="btn-group">
+                        <a class="btn btn-outline-primary me-2"
+                        class="btn btn-outline-primary"
+                        href="{% url 'medicines_edit' id=medicine.id %}"
+                        >Editar</a
+                    >
+                    <form
+                        method="POST"
+                        action="{% url 'medicines_delete' %}"
+                        aria-label="Formulario de eliminación de medicina"
+                    >
+                        {% csrf_token %}
 
-                            <input type="hidden" name="medicine_id" value="{{ medicine.id }}" />
-                            <button class="btn btn-outline-danger">Eliminar</button>
-                        </form>
-                    </td>
+                        <input
+                            type="hidden"
+                            name="medicine_id"
+                            value="{{ medicine.id }}"
+                        />
+                        <button class="btn btn-outline-danger">Eliminar</button>
+                    </form>
+                </td>
             </tr>
             {% empty %}
-                <tr>
-                    <td colspan="5" class="text-center">
-                        No existen Medicinas
-                    </td>
-                </tr>
+            <tr>
+                <td colspan="5" class="text-center">No existen Medicinas</td>
+            </tr>
             {% endfor %}
         </tbody>
     </table>
