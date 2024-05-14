@@ -46,7 +46,7 @@ La imagen Docker actual es `vetsoft-app:v1.1`.
 
 ` docker run -d -e SECRET_KEY="django-insecure-p)^5i@33c#q)%j(g5d+**-yo%)6l*vge=^_ig" -e DB_ENGINE=django.db.backends.sqlite3 -e DB_NAME=db.sqlite3 -e DEBUG=True --name vetsoft-container -p 4000:8000 vetsoft-app:v1.1 `
 
-## Para correr la aplicacion http://localhost:4000
+## Para correr la aplicacion ` http://localhost:4000 `
 
 ## Para detener el contenedor
 
