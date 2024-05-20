@@ -66,7 +66,21 @@
                     <div class="invalid-feedback">{{ errors.birthday }}</div>
                     {% endif %}
                 </div>
+                <div>
+                    <label for="weight" class="form-label">Peso</label>
+                    <input
+                        type="text"
+                        id="weight"
+                        name="weight"
+                        class="form-control"
+                        value="{{pet.weight}}"
+                        required
+                    />
 
+                    {% if errors.breed %}
+                    <div class="invalid-feedback">{{ errors.breed }}</div>
+                    {% endif %}
+                </div>
                 <button class="btn btn-primary">Guardar</button>
             </form>
         </div>
