@@ -178,6 +178,7 @@ class Pet(models.Model):
     name = models.CharField(max_length=100)
     breed = models.CharField(max_length=100)
     birthday = models.DateField()
+    weight = models.DecimalField(max_digits=5, decimal_places=2, default=0.00)
 
     def __str__(self):
         return self.name
@@ -192,6 +193,7 @@ class Pet(models.Model):
             name=pet_data.get("name"),
             breed=pet_data.get("breed"),
             birthday=parse_date(pet_data.get("birthday")),
+            weight=pet_data.get("weight"),
         )
 
         return True, None
@@ -204,6 +206,7 @@ class Pet(models.Model):
         self.name = pet_data.get("name", self.name)
         self.breed = pet_data.get("breed", self.breed)
         self.birthday = parse_date(pet_data.get("birthday")) or self.birthday
+        self.weight = pet_data.get("weight", self.weight)
 
         self.save()
         return True, None
