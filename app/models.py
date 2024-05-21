@@ -259,8 +259,10 @@ def validate_medicine(data):
     if dose != "":
         try:
             int(dose)
-            if int(dose) < 0:
-                errors["dose"] = "Por favor ingrese una dosis válida"
+            if int(dose) < 1:
+                errors["dose"] = "Por favor ingrese una dosis entre 1 y 10"
+            elif int(dose) > 10:
+                errors["dose"] = "Por favor ingrese una dosis menor a 10"
         except ValueError:
             errors["dose"] = "Por favor ingrese una dosis válida"
 
