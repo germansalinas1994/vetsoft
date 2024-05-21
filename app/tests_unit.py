@@ -1,5 +1,8 @@
 from django.test import TestCase
 from app.models import Client
+from app.models import Pet
+from decimal import Decimal
+from datetime import datetime
 
 
 class ClientModelTest(TestCase):
@@ -57,3 +60,22 @@ class ClientModelTest(TestCase):
         client_updated = Client.objects.get(pk=1)
 
         self.assertEqual(client_updated.phone, "221555232")
+
+class PetModelTest(TestCase):
+    def test_can_create_and_get_pet(self):
+        Pet.save_pet(
+            {
+                "name": "Fido",
+                "breed": "Golden Retriever",
+                "birthday": "01/01/2015",
+                "weight": "10.50",
+            }
+        )
+        pets = Pet.objects.all()
+        self.assertEqual(len(pets), 1)
+
+        self.assertEqual(pets[0].name, "Fido")
+        self.assertEqual(pets[0].breed, "Golden Retriever")
+        self.assertEqual(pets[0].birthday.strftime("%d/%m/%Y"), "01/01/2015")
+        self.assertEqual(pets[0].weight, Decimal("10.50"))
+

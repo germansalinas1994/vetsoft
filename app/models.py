@@ -182,8 +182,8 @@ def validate_weight(weight):
     except (ValueError, TypeError):
         return "El peso debe ser un número positivo con hasta dos decimales."
 
-    if weight_value <= 0:
-        return "El peso debe ser mayor que 0."
+    if weight_value < 0:
+        return "El peso no debe ser menor que 0."
     if round(weight_value, 2) != weight_value:
         return "El peso debe tener hasta dos decimales."
 
@@ -192,6 +192,8 @@ def validate_weight(weight):
 
 def parse_date(date_str):
     try:
+        if not date_str:
+            return None
         return datetime.strptime(date_str, "%d/%m/%Y").date()
     except ValueError:
         return None  # Retorna None si hay un error en la conversión, con none se puede validar si la fecha es correcta o no
@@ -227,8 +229,11 @@ class Pet(models.Model):
 
         self.name = pet_data.get("name", self.name)
         self.breed = pet_data.get("breed", self.breed)
-        self.birthday = parse_date(pet_data.get("birthday")) or self.birthday
-        self.weight = pet_data.get("weight", self.weight)
+        if pet_data.get("birthday"):
+            self.birthday = parse_date(pet_data.get("birthday"))
+        else:
+            self.birthday = self.birthday
+        self.weight = Decimal(pet_data.get("weight", self.weight))
 
         self.save()
         return True, None

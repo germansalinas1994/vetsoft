@@ -58,7 +58,7 @@
                         id="birthday"
                         name="birthday"
                         class="form-control datepicker"
-                        value="{{ pet.birthday}}"
+                        value="{{ pet.birthday | date:'d/m/Y'}}"
                         required
                     />
 
