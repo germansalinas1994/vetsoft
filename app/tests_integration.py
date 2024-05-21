@@ -1,6 +1,9 @@
 from django.test import TestCase
 from django.shortcuts import reverse
 from app.models import Client
+from app.models import Pet
+from decimal import Decimal
+from datetime import datetime
 
 
 
@@ -94,3 +97,46 @@ class ClientsTest(TestCase):
         self.assertEqual(editedClient.phone, client.phone)
         self.assertEqual(editedClient.address, client.address)
         self.assertEqual(editedClient.email, client.email)
+
+
+
+class PetsTest(TestCase):
+    # defino el test de la pagina de inicio para mascota y el template que se va a usar
+    # esto es para chequear que la pagina de inicio de mascotas use el template correcto
+    def test_repo_use_repo_template(self):
+        response = self.client.get(reverse("pets_repo"))
+        self.assertTemplateUsed(response, "pets/repository.html")
+
+    # defino el test para ver si se muestran todas las mascotas en la pagina de inicio
+    def test_repo_display_all_pets(self):
+        response = self.client.get(reverse("pets_repo"))
+        self.assertTemplateUsed(response, "pets/repository.html")
+
+    # defino el test para ver si se usa el template correcto en el formulario de mascotas
+    def test_form_use_form_template(self):
+        response = self.client.get(reverse("pets_form"))
+        self.assertTemplateUsed(response, "pets/form.html")
+
+
+    # defino el test para crear una mascota
+    def test_can_create_pet(self):
+        response = self.client.post(
+            reverse("pets_form"),
+            data={
+                "name": "Fido",
+                "breed": "Golden Retriever",
+                "birthday": "01/01/2015",
+                "weight": "10.50",
+            },
+        )
+        # traigo todas las mascotas
+        pets = Pet.objects.all()
+        # verifico que se haya creado una mascota con los datos correctos
+        self.assertEqual(len(pets), 1)
+        self.assertEqual(pets[0].name, "Fido")
+        self.assertEqual(pets[0].breed, "Golden Retriever")
+        self.assertEqual(pets[0].birthday.strftime("%d/%m/%Y"), "01/01/2015")
+        self.assertEqual(pets[0].weight, Decimal("10.50"))
+        # verifico que se redirija a la pagina de inicio de mascotas
+        self.assertRedirects(response, reverse("pets_repo"))
+
