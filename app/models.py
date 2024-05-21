@@ -1,5 +1,6 @@
 from django.db import models
 from datetime import datetime
+from decimal import Decimal
 
 
 def validate_client(data):
@@ -165,8 +166,29 @@ def validate_pet(pet_data):
         errors["birthday"] = "La fecha de nacimiento es requerida."
     if not parse_date(pet_data.get("birthday")):
         errors["birthday"] = "Formato de fecha incorrecto. Debe ser DD/MM/YYYY."
+    weight = pet_data.get("weight")
+    if not weight:
+        errors["weight"] = "El peso es requerido."
+    else:
+        weight_error = validate_weight(weight)
+        if weight_error:
+            errors["weight"] = weight_error
 
     return errors
+
+def validate_weight(weight):
+    try:
+        weight_value = float(weight)
+    except (ValueError, TypeError):
+        return "El peso debe ser un número positivo con hasta dos decimales."
+
+    if weight_value <= 0:
+        return "El peso debe ser mayor que 0."
+    if round(weight_value, 2) != weight_value:
+        return "El peso debe tener hasta dos decimales."
+
+    return None
+
 
 def parse_date(date_str):
     try:
@@ -178,7 +200,7 @@ class Pet(models.Model):
     name = models.CharField(max_length=100)
     breed = models.CharField(max_length=100)
     birthday = models.DateField()
-    weight = models.DecimalField(max_digits=5, decimal_places=2, default=0.00)
+    weight = models.DecimalField(max_digits=20, decimal_places=2, validators=[validate_weight], default=0.00)
 
     def __str__(self):
         return self.name
@@ -193,7 +215,7 @@ class Pet(models.Model):
             name=pet_data.get("name"),
             breed=pet_data.get("breed"),
             birthday=parse_date(pet_data.get("birthday")),
-            weight=pet_data.get("weight"),
+            weight= Decimal(pet_data.get("weight")),
         )
 
         return True, None
