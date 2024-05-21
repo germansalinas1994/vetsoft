@@ -79,3 +79,47 @@ class PetModelTest(TestCase):
         self.assertEqual(pets[0].birthday.strftime("%d/%m/%Y"), "01/01/2015")
         self.assertEqual(pets[0].weight, Decimal("10.50"))
 
+
+    def test_can_update_pet(self):
+        Pet.save_pet(
+            {
+                "name": "Fido",
+                "breed": "Golden Retriever",
+                "birthday": "01/01/2015",
+                "weight": "10.50",
+            }
+        )
+        pet = Pet.objects.get(pk=1)
+
+        self.assertEqual(pet.weight, Decimal("10.50"))
+
+        pet.update_pet({"weight": "12.30"})
+
+        pet_updated = Pet.objects.get(pk=1)
+
+        self.assertEqual(pet_updated.weight, Decimal("12.30"))
+
+    def test_update_pet_with_error(self):
+        success, errors = Pet.save_pet(
+            {
+                "name": "Fido",
+                "breed": "Golden Retriever",
+                "birthday": "01/01/2015",
+                "weight": "10.50",
+            }
+        )
+        self.assertTrue(success)
+        self.assertIsNone(errors)
+
+        pet = Pet.objects.get(pk=1)
+
+        self.assertEqual(pet.weight, Decimal("10.50"))
+
+        success, errors = pet.update_pet({"weight": ""})
+
+        self.assertFalse(success)
+        self.assertIn("weight", errors)
+
+        pet_updated = Pet.objects.get(pk=1)
+
+        self.assertEqual(pet_updated.weight, Decimal("10.50"))

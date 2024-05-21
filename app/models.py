@@ -58,7 +58,6 @@ class Client(models.Model):
         self.save()
 
 
-
 def validate_vet(data):
     errors = {}
 
@@ -78,7 +77,6 @@ def validate_vet(data):
         errors["email"] = "Por favor ingrese un email valido"
 
     return errors
-
 
 
 class Vet(models.Model):
@@ -155,26 +153,29 @@ class Provider(models.Model):
         self.email = provider_data.get("email", "") or self.email
         self.save()
 
-#Pet model
+
+# Pet model
 def validate_pet(pet_data):
     errors = {}
-    if not pet_data.get("name"):
+    if "name" in pet_data and not pet_data.get("name"):
         errors["name"] = "El nombre es requerido."
-    if not pet_data.get("breed"):
+    if "breed" in pet_data and not pet_data.get("breed"):
         errors["breed"] = "La raza es requerida."
-    if not pet_data.get("birthday"):
-        errors["birthday"] = "La fecha de nacimiento es requerida."
-    if not parse_date(pet_data.get("birthday")):
-        errors["birthday"] = "Formato de fecha incorrecto. Debe ser DD/MM/YYYY."
-    weight = pet_data.get("weight")
-    if not weight:
-        errors["weight"] = "El peso es requerido."
-    else:
-        weight_error = validate_weight(weight)
-        if weight_error:
-            errors["weight"] = weight_error
+    if "birthday" in pet_data:
+        if not pet_data.get("birthday"):
+            errors["birthday"] = "La fecha de nacimiento es requerida."
+        elif not parse_date(pet_data.get("birthday")):
+            errors["birthday"] = "Formato de fecha incorrecto. Debe ser DD/MM/YYYY."
+    if "weight" in pet_data:
+        if not pet_data.get("weight"):
+            errors["weight"] = "El peso es requerido."
+        else:
+            weight_error = validate_weight(pet_data.get("weight"))
+            if weight_error:
+                errors["weight"] = weight_error
 
     return errors
+
 
 def validate_weight(weight):
     try:
@@ -198,11 +199,12 @@ def parse_date(date_str):
     except ValueError:
         return None  # Retorna None si hay un error en la conversión, con none se puede validar si la fecha es correcta o no
 
+
 class Pet(models.Model):
     name = models.CharField(max_length=100)
     breed = models.CharField(max_length=100)
     birthday = models.DateField()
-    weight = models.DecimalField(max_digits=20, decimal_places=2, validators=[validate_weight], default=0.00)
+    weight = models.DecimalField(max_digits=20, decimal_places=2, default=0.00)
 
     def __str__(self):
         return self.name
@@ -217,7 +219,7 @@ class Pet(models.Model):
             name=pet_data.get("name"),
             breed=pet_data.get("breed"),
             birthday=parse_date(pet_data.get("birthday")),
-            weight= Decimal(pet_data.get("weight")),
+            weight=Decimal(pet_data.get("weight")),
         )
 
         return True, None
@@ -227,17 +229,17 @@ class Pet(models.Model):
         if errors:
             return False, errors
 
-        self.name = pet_data.get("name", self.name)
-        self.breed = pet_data.get("breed", self.breed)
-        if pet_data.get("birthday"):
-            self.birthday = parse_date(pet_data.get("birthday"))
-        else:
-            self.birthday = self.birthday
-        self.weight = Decimal(pet_data.get("weight", self.weight))
+        if "name" in pet_data:
+            self.name = pet_data["name"]
+        if "breed" in pet_data:
+            self.breed = pet_data["breed"]
+        if "birthday" in pet_data:
+            self.birthday = parse_date(pet_data["birthday"])
+        if "weight" in pet_data:
+            self.weight = Decimal(pet_data["weight"])
 
         self.save()
         return True, None
-
 
 
 class Medicine(models.Model):
@@ -270,6 +272,7 @@ class Medicine(models.Model):
 
         self.save()
 
+
 def validate_medicine(data):
     errors = {}
 
@@ -293,7 +296,6 @@ def validate_medicine(data):
                 errors["dose"] = "Por favor ingrese una dosis válida"
         except ValueError:
             errors["dose"] = "Por favor ingrese una dosis válida"
-
 
     return errors
 
