@@ -54,11 +54,11 @@
                         >Fecha de Nacimiento</label
                     >
                     <input
-                        type="text"
+                        type="datepicker"
                         id="birthday"
                         name="birthday"
                         class="form-control datepicker"
-                        value="{{ pet.birthday | date:'d/m/Y' }}"
+                        value="{{ pet.birthday}}"
                         required
                     />
 
@@ -72,13 +72,15 @@
                         type="text"
                         id="weight"
                         name="weight"
+                        maxlength="14"
                         class="form-control"
                         value="{{pet.weight}}"
+                        title="El peso debe ser un número positivo con hasta dos decimales"
                         required
                     />
 
-                    {% if errors.breed %}
-                    <div class="invalid-feedback">{{ errors.breed }}</div>
+                    {% if errors.weight %}
+                    <div class="invalid-feedback">{{ errors.weight }}</div>
                     {% endif %}
                 </div>
                 <button class="btn btn-primary">Guardar</button>
@@ -86,4 +88,24 @@
         </div>
     </div>
 </div>
+
+<script>
+    $(document).ready(function () {
+
+        Inputmask({
+            alias: "decimal",
+            groupSeparator: "",
+            autoGroup: true,
+            digits: 2,
+            digitsOptional: false,
+            placeholder: "0.00",
+            suffix: " Kg",
+            integerDigits: 6,
+            rightAlign: false,
+            removeMaskOnSubmit: true,
+            allowMinus: false, // No permite valores negativos
+        }).mask($("#weight"));
+    });
+</script>
+
 {% endblock %}
