@@ -78,15 +78,26 @@ def validate_vet(data):
 
     return errors
 
+class Speciality(models.TextChoices):
+    GENERAL = "General"
+    DENTAL = "Dentista"
+    TRAUMATOLOGY = "Traumatología"
+    DERMATOLOGY = "Dermatología"
+    CARDIOLOGY = "Cardiología"
+
 
 
 class Vet(models.Model):
     name = models.CharField(max_length=100)
     email = models.EmailField()
     phone = models.CharField(max_length=15)
+    speciality = models.CharField(max_length=50, choices=Speciality.choices, default=Speciality.GENERAL)
 
     def __str__(self):
         return self.name
+
+    def get_speciality_display(self):
+        return self.get_speciality_display()
 
     @classmethod
     def save_vet(cls, vet_data):
@@ -109,6 +120,8 @@ class Vet(models.Model):
         self.phone = vet_data.get("phone", "") or self.phone
 
         self.save()
+
+
 
 
 def validate_provider(data):
