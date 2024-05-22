@@ -260,46 +260,43 @@ class PetCreateEditTestCase(PlaywrightTestCase):
         # Activar el calendario haciendo clic en el campo de fecha
         self.page.get_by_label("Fecha de Nacimiento").click()
 
-    # Esperar a que el calendario sea visible y luego seleccionar el día deseado
-    # Suponemos que los días están en botones o celdas que se pueden identificar fácilmente
         self.page.locator('text="10"').click()  # Ajusta este selector según la estructura exacta del calendario
+        self.page.get_by_role("button", name="Guardar").click()
+        expect(self.page.get_by_text("Juan Sebastián Veron")).to_be_visible()
+        expect(self.page.get_by_text("Perro")).to_be_visible()
+        expect(self.page.get_by_text("10/05/2024")).to_be_visible()
+        expect(self.page.get_by_text("70.50")).to_be_visible()
 
+    def test_should_view_errors_if_form_pet_is_invalid(self):
+        self.page.goto(f"{self.live_server_url}{reverse('pets_form')}")
 
+        expect(self.page.get_by_role("form")).to_be_visible()
 
         self.page.get_by_role("button", name="Guardar").click()
 
-        expect(self.page.get_by_text("Juan Sebastián Veron")).to_be_visible()
-        expect(self.page.get_by_text("Perro")).to_be_visible()
-        expect(self.page.get_by_text("10/10/2023")).to_be_visible()
-        expect(self.page.get_by_text("70.50")).to_be_visible()
+        expect(self.page.get_by_text("El nombre es requerido.")).to_be_visible()
+        expect(self.page.get_by_text("La raza es requerida.")).to_be_visible()
+        expect(self.page.get_by_text("La fecha de nacimiento es requerida.")).to_be_visible()
+        expect(self.page.get_by_text("El peso es requerido.")).to_be_visible()
 
-    # def test_should_view_errors_if_form_is_invalid(self):
-    #     self.page.goto(f"{self.live_server_url}{reverse('pets_form')}")
+        self.page.get_by_label("Nombre").fill("Juan Sebastián Veron")
+        self.page.get_by_label("Raza").fill("Perro")
+        self.page.get_by_label("Fecha de Nacimiento").click()
+        self.page.locator('text="10"').click()  # Ajusta este selector según la estructura exacta del calendario
+        self.page.get_by_label("Peso").fill("")
 
-    #     expect(self.page.get_by_role("form")).to_be_visible()
+        self.page.get_by_role("button", name="Guardar").click()
 
-    #     self.page.get_by_role("button", name="Guardar").click()
-
-    #     expect(self.page.get_by_text("El nombre es requerido.")).to_be_visible()
-    #     expect(self.page.get_by_text("La raza es requerida.")).to_be_visible()
-    #     expect(self.page.get_by_text("La fecha de nacimiento es requerida.")).to_be_visible()
-    #     expect(self.page.get_by_text("El peso es requerido.")).to_be_visible()
-
-    #     self.page.get_by_label("Nombre").fill("Juan Sebastián Veron")
-    #     self.page.get_by_label("Raza").fill("Perro")
-    #     self.page.get_by_label("Fecha de Nacimiento").fill("10/10/2023")
-    #     self.page.get_by_label("Peso").fill("dsadsadas")
-
-    #     self.page.get_by_role("button", name="Guardar").click()
-
-    #     expect(self.page.get_by_text("El nombre es requerido.")).not_to_be_visible()
-    #     expect(
-    #         self.page.get_by_text("La raza es requerida.")
-    #     ).not_to_be_visible()
-
-    #     expect(
-    #         self.page.get_by_text("El peso debe ser un número positivo con hasta dos decimales.")
-    #     ).to_be_visible()
+        expect(self.page.get_by_text("El nombre es requerido.")).not_to_be_visible()
+        expect(
+            self.page.get_by_text("La raza es requerida.")
+        ).not_to_be_visible()
+        self.page.get_by_label("Fecha de Nacimiento").click()
+        self.page.locator('text="10"').click()  # Ajusta este selector según la estructura exacta del calendario
+        expect(self.page.get_by_text("La fecha de nacimiento es requerida.")).not_to_be_visible()
+        expect(
+            self.page.get_by_text("El peso es requerido.")
+        ).to_be_visible()
 
     # def test_should_be_able_to_edit_a_client(self):
     #     client = Client.objects.create(
