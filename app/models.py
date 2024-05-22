@@ -244,6 +244,7 @@ class Medicine(models.Model):
         self.dose = medicine_data.get("dose", "") or self.dose
 
         self.save()
+        return True, None
 
 def validate_medicine(data):
     errors = {}
