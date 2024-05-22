@@ -54,8 +54,8 @@
                         >Fecha de Nacimiento</label
                     >
                     <input
-                        type="datepicker"
-                        id="birthday"
+                    type="datepicker"
+                    id="birthday"
                         name="birthday"
                         class="form-control datepicker"
                         value="{{ pet.birthday | date:'d/m/Y'}}"
@@ -71,6 +71,7 @@
                     <input
                         type="text"
                         id="weight"
+                        pattern="^[0-9]+(\.[0-9]{1,2})?$"
                         name="weight"
                         maxlength="14"
                         class="form-control"
@@ -92,6 +93,13 @@
 <script>
     $(document).ready(function () {
 
+        $(".datepicker").datepicker({
+            format: "dd/mm/yyyy",
+            language: "es",
+            autoclose: true,
+            todayHighlight: true,
+        });
+
         Inputmask({
             alias: "decimal",
             groupSeparator: "",
@@ -99,7 +107,6 @@
             digits: 2,
             digitsOptional: false,
             placeholder: "0.00",
-            suffix: " Kg",
             integerDigits: 6,
             rightAlign: false,
             removeMaskOnSubmit: true,
