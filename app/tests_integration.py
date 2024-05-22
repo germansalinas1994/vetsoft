@@ -141,7 +141,7 @@ class MedicinesTest(TestCase):
         self.assertContains(response, "Por favor ingrese una descripción")
         self.assertContains(response, "Por favor ingrese una dosis")
 
-    def test_validation_invalid_dose(self):
+    def test_validation_invalid_dose_is_greater_than_10(self):
         response = self.client.post(
             reverse("medicines_form"),
             data={
@@ -152,6 +152,18 @@ class MedicinesTest(TestCase):
         )
         self.assertContains(response, "Por favor ingrese una dosis entre 1 y 10")
 
+    def test_validation_dose_must_be_numeric(self):
+        response = self.client.post(
+            reverse("medicines_form"),
+            data={
+                "name": "Ivermectina",
+                "description": "ectoparásitos y endoparásitos",
+                "dose": "abc",
+            },
+        )
+        self.assertContains(response, "Por favor ingrese una dosis válida")
+        
+    def test_validation_dose_is_less_than_1(self):
         response = self.client.post(
             reverse("medicines_form"),
             data={
@@ -162,15 +174,7 @@ class MedicinesTest(TestCase):
         )
         self.assertContains(response, "Por favor ingrese una dosis entre 1 y 10")
 
-        response = self.client.post(
-            reverse("medicines_form"),
-            data={
-                "name": "Ivermectina",
-                "description": "ectoparásitos y endoparásitos",
-                "dose": "abc",
-            },
-        )
-        self.assertContains(response, "Por favor ingrese una dosis válida")
+
 
     def test_should_response_with_404_status_if_medicine_doesnt_exist(self):
         response = self.client.get(reverse("medicines_edit", kwargs={"id": 100}))
