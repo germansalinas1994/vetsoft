@@ -169,49 +169,45 @@ class PetsTest(TestCase):
         self.assertContains(response, "El peso es requerido.")
 
     #  test para editar una mascota con datos validos
-def test_edit_pet_with_valid_data(self):
-    # Creación de una mascota con datos iniciales.
-    pet = Pet.objects.create(
-        name="Fido",
-        breed="Golden Retriever",
-        birthday="2015-01-01",
-        weight=Decimal("10.50"),
-    )
+    def test_edit_pet_with_valid_data(self):
+        # Creación de una mascota con datos iniciales.
+        pet = Pet.objects.create(
+            name="Fido",
+            breed="Golden Retriever",
+            birthday="2015-01-01",
+            weight="10.50",
+        )
 
-    # Impresión de los datos iniciales para depuración.
-    print(pet.name)
-    print(pet.breed)
-    print(pet.birthday)
-    print(pet.weight)
+        # Impresión de los datos iniciales para depuración.
+        print(pet.name)
+        print(pet.breed)
+        print(pet.birthday)
+        print(pet.weight)
 
-    # Intento de editar la mascota enviando datos en el formato correcto.
-    response = self.client.post(
-        reverse("pets_edit", kwargs={"id": pet.id}),
-        data={
-            "name": "Fido",
-            "breed": "Golden Retriever",
-            "birthday": "2015-01-01",  # Formato correcto de fecha.
-            "weight": "12.12",  # Peso que se intenta establecer.
-        },
-    )
+        # Intento de editar la mascota enviando datos en el formato correcto.
+        response = self.client.post(
+            reverse("pets_edit", kwargs={"id": pet.id}),
+            data ={
+                "id": pet.id,
+                "name": "cambio",
+                "breed": "cambio",
+                "birthday": "01/01/2014",  # Formato correcto de fecha.
+                "weight": "1212",  # Peso que se intenta establecer.
+            },
+        )
 
-    # Impresión del código de estado para depuración.
-    print(response.status_code)
+        self.assertEqual(response.status_code, 302)
 
-    # Verificación de la redirección después de POST.
-    self.assertEqual(response.status_code, 302)
+        # Obtención de la mascota editada para verificación.
+        editedPet = Pet.objects.get(pk=pet.id)
+        print(editedPet.name)
+        print(editedPet.breed)
+        print(editedPet.birthday)
+        print(editedPet.weight)
 
-    # Obtención de la mascota editada para verificación.
-    editedPet = Pet.objects.get(pk=pet.id)
-    print(editedPet.name)
-    print(editedPet.breed)
-    print(editedPet.birthday)
-    print(editedPet.weight)
-
-    # Verificaciones para asegurar que los datos no han cambiado incorrectamente.
-    self.assertEqual(editedPet.name, pet.name)
-    self.assertEqual(editedPet.breed, pet.breed)
-    self.assertEqual(editedPet.birthday.strftime("%Y-%m-%d"), pet.birthday.strftime("%Y-%m-%d"))
-
-    # Chequeo que el peso de la mascota coincida con el peso editado.
-    self.assertEqual(editedPet.weight, Decimal("12.12"))  # Corrección al valor correcto de peso esperado.
+        # Verificaciones para asegurar que los datos no han cambiado incorrectamente.
+        self.assertNotEqual(editedPet.name, pet.name)
+        self.assertNotEqual(editedPet.breed, pet.breed)
+        self.assertNotEqual(editedPet.birthday, pet.birthday)
+        self.assertNotEqual(editedPet.weight, pet.weight)
+        self.assertEqual(editedPet.weight, Decimal("1212.00"))  # Corrección al valor correcto de peso esperado.

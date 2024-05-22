@@ -118,10 +118,13 @@ class PetModelTest(TestCase):
         pet = Pet.objects.get(pk=1)
         self.assertEqual(pet.weight, Decimal("1.50"))
         pet.update_pet({
-                "weight": "2.50",
+                "name": "cambio",
+                "breed": "cambio",
+                "birthday": "01/01/2010",
+                "weight": "3333.33",
             })
         pet_updated = Pet.objects.get(pk=1)
-        self.assertEqual(pet_updated.weight, Decimal("1.50"))
+        self.assertEqual(pet_updated.weight, Decimal("3333.33"))
 
 
     def test_update_pet_with_error(self):
