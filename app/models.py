@@ -273,7 +273,7 @@ def validate_product(data):
 
     name = data.get("name", "")
     type = data.get("type", "")
-    price = data.get("price", "")
+    price_str = data.get("price", "")
 
     if name == "":
         errors["name"] = "Por favor ingrese el nombre del producto"
@@ -281,8 +281,12 @@ def validate_product(data):
     if type == "":
         errors["type"] = "Por favor ingrese el tipo de producto"
 
-    if price == "":
-        errors["price"] = "Por favor ingrese el precio del producto"
+    try:
+        price = float(price_str)
+        if price < 0:
+            errors["price"] = "Por favor ingrese un precio positivo"
+    except ValueError:
+        errors["price"] = "Por favor ingrese un precio válido"
 
     return errors
 
