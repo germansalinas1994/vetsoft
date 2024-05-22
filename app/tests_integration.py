@@ -1,6 +1,7 @@
 from django.test import TestCase
 from django.shortcuts import reverse
 from app.models import Client
+from app.models import Medicine
 
 
 
@@ -94,3 +95,118 @@ class ClientsTest(TestCase):
         self.assertEqual(editedClient.phone, client.phone)
         self.assertEqual(editedClient.address, client.address)
         self.assertEqual(editedClient.email, client.email)
+
+
+from django.test import TestCase
+from django.shortcuts import reverse
+from app.models import Medicine
+
+class MedicinesTest(TestCase):
+    def test_repo_use_repo_template(self):
+        response = self.client.get(reverse("medicines_repo"))
+        self.assertTemplateUsed(response, "medicines/repository.html")
+
+    def test_repo_display_all_medicines(self):
+        Medicine.objects.create(name="Ivermectina", description="ectoparásitos y endoparásitos", dose=5)
+        Medicine.objects.create(name="Frontline ", description="pulgas y piojos", dose=3)
+
+        response = self.client.get(reverse("medicines_repo"))
+        self.assertTemplateUsed(response, "medicines/repository.html")
+        self.assertContains(response, "Ivermectina")
+        self.assertContains(response, "Frontline ")
+
+    def test_form_use_form_template(self):
+        response = self.client.get(reverse("medicines_form"))
+        self.assertTemplateUsed(response, "medicines/form.html")
+
+    def test_can_create_medicine(self):
+        response = self.client.post(
+            reverse("medicines_form"),
+            data={
+                "name": "Ivermectina",
+                "description": "ectoparásitos y endoparásitos",
+                "dose": 5,
+            },
+        )
+        medicines = Medicine.objects.all()
+        self.assertEqual(len(medicines), 1)
+        self.assertEqual(medicines[0].name, "Ivermectina")
+        self.assertEqual(medicines[0].description, "ectoparásitos y endoparásitos")
+        self.assertEqual(medicines[0].dose, 5)
+        self.assertRedirects(response, reverse("medicines_repo"))
+
+    def test_validation_errors_create_medicine(self):
+        response = self.client.post(reverse("medicines_form"), data={})
+        self.assertContains(response, "Por favor ingrese un nombre")
+        self.assertContains(response, "Por favor ingrese una descripción")
+        self.assertContains(response, "Por favor ingrese una dosis")
+
+    def test_validation_invalid_dose(self):
+        response = self.client.post(
+            reverse("medicines_form"),
+            data={
+                "name": "Ivermectina",
+                "description": "ectoparásitos y endoparásitos",
+                "dose": 11,
+            },
+        )
+        self.assertContains(response, "Por favor ingrese una dosis entre 1 y 10")
+
+        response = self.client.post(
+            reverse("medicines_form"),
+            data={
+                "name": "Ivermectina",
+                "description": "ectoparásitos y endoparásitos",
+                "dose": 0,
+            },
+        )
+        self.assertContains(response, "Por favor ingrese una dosis entre 1 y 10")
+
+        response = self.client.post(
+            reverse("medicines_form"),
+            data={
+                "name": "Ivermectina",
+                "description": "ectoparásitos y endoparásitos",
+                "dose": "abc",
+            },
+        )
+        self.assertContains(response, "Por favor ingrese una dosis válida")
+
+    def test_should_response_with_404_status_if_medicine_doesnt_exist(self):
+        response = self.client.get(reverse("medicines_edit", kwargs={"id": 100}))
+        self.assertEqual(response.status_code, 404)
+
+    def test_can_delete_medicine(self):
+        medicine = Medicine.objects.create(
+            name="Ivermectina", description="ectoparásitos y endoparásitos", dose=5
+        )
+        response = self.client.post(reverse("medicines_delete"), data={"medicine_id": medicine.id})
+        self.assertEqual(response.status_code, 302)
+
+        medicines = Medicine.objects.all()
+        self.assertEqual(len(medicines), 0)
+        
+   
+    def test_edit_medicine_with_valid_data(self):
+        medicine = Medicine.objects.create(
+            name="Ivermectina", description="ectoparásitos y endoparásitos", dose=5
+        )
+
+        response = self.client.post(
+            reverse("medicines_edit", kwargs={"id": medicine.id}),
+            data={
+                "id": medicine.id,
+                "name": "Frontline ",
+                "description": "pulgas y piojos",
+                "dose": 3,
+            },
+        )
+        self.assertEqual(response.status_code, 302)
+
+        edited_medicine = Medicine.objects.get(pk=medicine.id)
+        self.assertEqual(edited_medicine.name, "Frontline ")
+        self.assertEqual(edited_medicine.description, "pulgas y piojos")
+        self.assertEqual(edited_medicine.dose, 3)
+
+           
+
