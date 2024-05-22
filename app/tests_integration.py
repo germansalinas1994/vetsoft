@@ -6,7 +6,6 @@ from decimal import Decimal
 from datetime import datetime
 
 
-
 class HomePageTest(TestCase):
     def test_use_home_template(self):
         response = self.client.get(reverse("home"))
@@ -140,3 +139,79 @@ class PetsTest(TestCase):
         # verifico que se redirija a la pagina de inicio de mascotas
         self.assertRedirects(response, reverse("pets_repo"))
 
+    # creo un test para verificar si la mascota no existe
+    def test_should_response_with_404_status_if_pet_doesnt_exists(self):
+        response = self.client.get(reverse("pets_edit", kwargs={"id": 100}))
+        self.assertEqual(response.status_code, 404)
+
+    # creo un test para verificar si el peso de la mascota es invalido
+    def test_validation_invalid_weight(self):
+        response = self.client.post(
+            reverse("pets_form"),
+            data={
+                "name": "Fido",
+                "breed": "Golden Retriever",
+                "birthday": "01/01/2015",
+                "weight": "invalid",
+            },
+        )
+        # verifico que se muestre el error de validacion
+        self.assertContains(response, "El peso debe ser un número positivo con hasta dos decimales.")
+
+    def test_validation_errors_create_pet(self):
+        response = self.client.post(
+            reverse("pets_form"),
+            data={},  # Asegúrate de que este dict está vacío si quieres probar la validación.
+        )
+        self.assertContains(response, "El nombre es requerido.")
+        self.assertContains(response, "La raza es requerida.")
+        self.assertContains(response, "La fecha de nacimiento es requerida.")
+        self.assertContains(response, "El peso es requerido.")
+
+    #  test para editar una mascota con datos validos
+def test_edit_pet_with_valid_data(self):
+    # Creación de una mascota con datos iniciales.
+    pet = Pet.objects.create(
+        name="Fido",
+        breed="Golden Retriever",
+        birthday="2015-01-01",
+        weight=Decimal("10.50"),
+    )
+
+    # Impresión de los datos iniciales para depuración.
+    print(pet.name)
+    print(pet.breed)
+    print(pet.birthday)
+    print(pet.weight)
+
+    # Intento de editar la mascota enviando datos en el formato correcto.
+    response = self.client.post(
+        reverse("pets_edit", kwargs={"id": pet.id}),
+        data={
+            "name": "Fido",
+            "breed": "Golden Retriever",
+            "birthday": "2015-01-01",  # Formato correcto de fecha.
+            "weight": "12.12",  # Peso que se intenta establecer.
+        },
+    )
+
+    # Impresión del código de estado para depuración.
+    print(response.status_code)
+
+    # Verificación de la redirección después de POST.
+    self.assertEqual(response.status_code, 302)
+
+    # Obtención de la mascota editada para verificación.
+    editedPet = Pet.objects.get(pk=pet.id)
+    print(editedPet.name)
+    print(editedPet.breed)
+    print(editedPet.birthday)
+    print(editedPet.weight)
+
+    # Verificaciones para asegurar que los datos no han cambiado incorrectamente.
+    self.assertEqual(editedPet.name, pet.name)
+    self.assertEqual(editedPet.breed, pet.breed)
+    self.assertEqual(editedPet.birthday.strftime("%Y-%m-%d"), pet.birthday.strftime("%Y-%m-%d"))
+
+    # Chequeo que el peso de la mascota coincida con el peso editado.
+    self.assertEqual(editedPet.weight, Decimal("12.12"))  # Corrección al valor correcto de peso esperado.
