@@ -155,25 +155,37 @@ class Provider(models.Model):
 
 
 # Pet model
+
 def validate_pet(pet_data):
     errors = {}
-    if "name" in pet_data and not pet_data.get("name"):
+    # valido que el nombre no este vacio ni sea null
+    name = pet_data.get("name")
+    if not name or name == None:
         errors["name"] = "El nombre es requerido."
-    if "breed" in pet_data and not pet_data.get("breed"):
+    if name == "":
+        errors["name"] = "El nombre es requerido."
+    # valido que la raza no este vacia ni sea null
+    breed = pet_data.get("breed")
+    if not breed or breed == None:
         errors["breed"] = "La raza es requerida."
-    if "birthday" in pet_data:
-        if not pet_data.get("birthday"):
-            errors["birthday"] = "La fecha de nacimiento es requerida."
-        elif not parse_date(pet_data.get("birthday")):
-            errors["birthday"] = "Formato de fecha incorrecto. Debe ser DD/MM/YYYY."
-    if "weight" in pet_data:
-        if not pet_data.get("weight"):
-            errors["weight"] = "El peso es requerido."
-        else:
-            weight_error = validate_weight(pet_data.get("weight"))
-            if weight_error:
-                errors["weight"] = weight_error
-
+    if breed == "":
+        errors["breed"] = "La raza es requerida."
+    # valido que la fecha de nacimiento no este vacia ni sea null
+    birthday = pet_data.get("birthday")
+    if not birthday or birthday == None:
+        errors["birthday"] = "La fecha de nacimiento es requerida."
+    elif not parse_date(birthday):
+        errors["birthday"] = "Formato de fecha incorrecto. Debe ser DD/MM/YYYY."
+    if birthday == "":
+        errors["birthday"] = "La fecha de nacimiento es requerida."
+    # valido que el peso no este vacio ni sea null
+    weight = pet_data.get("weight")
+    if not weight or weight == None:
+        errors["weight"] = "El peso es requerido."
+    else:
+        weight_error = validate_weight(weight)
+        if weight_error:
+            errors["weight"] = weight_error
     return errors
 
 
@@ -235,7 +247,7 @@ class Pet(models.Model):
             self.breed = pet_data["breed"]
         if "birthday" in pet_data:
             self.birthday = parse_date(pet_data["birthday"])
-        if "weight" in pet_data:
+        if pet_data.get("weight"):
             self.weight = Decimal(pet_data["weight"])
 
         self.save()
