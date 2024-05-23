@@ -209,18 +209,22 @@ def validate_pet(pet_data):
     errors = {}
     # valido que el nombre no este vacio ni sea null
     name = pet_data.get("name")
+
     if not name or name == None:
         errors["name"] = "El nombre es requerido."
     if name == "":
         errors["name"] = "El nombre es requerido."
     # valido que la raza no este vacia ni sea null
-    breed = pet_data.get("breed")
-    if not breed or breed == None:
+    breed = pet_data.get("breed","")
+
+    if breed == "" or breed == None:
         errors["breed"] = "La raza es requerida."
-    if breed == "":
-        errors["breed"] = "La raza es requerida."
+    elif breed not in dict(Breed.choices):
+        errors["breed"] = "La raza no es válida."
+
     # valido que la fecha de nacimiento no este vacia ni sea null
     birthday = pet_data.get("birthday")
+
     if not birthday or birthday == None:
         errors["birthday"] = "La fecha de nacimiento es requerida."
     elif not parse_date(birthday):
@@ -229,6 +233,7 @@ def validate_pet(pet_data):
         errors["birthday"] = "La fecha de nacimiento es requerida."
     # valido que el peso no este vacio ni sea null
     weight = pet_data.get("weight")
+
     if not weight or weight == None:
         errors["weight"] = "El peso es requerido."
     else:
