@@ -97,10 +97,6 @@ class ClientsTest(TestCase):
         self.assertEqual(editedClient.email, client.email)
 
 
-from django.test import TestCase
-from django.shortcuts import reverse
-from app.models import Medicine
-
 class MedicinesTest(TestCase):
     def test_repo_use_repo_template(self):
         response = self.client.get(reverse("medicines_repo"))
