@@ -175,6 +175,7 @@ def validate_provider(data):
     return errors
 
 
+
 class Provider(models.Model):
     name = models.CharField(max_length=100)
     email = models.EmailField()
@@ -260,9 +261,22 @@ def parse_date(date_str):
         return None  # Retorna None si hay un error en la conversión, con none se puede validar si la fecha es correcta o no
 
 
+class Breed(models.TextChoices):
+        LABRADOR_RETRIEVER = 'Labrador Retriever'
+        PASTOR_ALEMAN = 'Pastor Alemán'
+        GOLDEN_RETRIEVER = 'Golden Retriever'
+        BEAGLE = 'Beagle'
+        BOXER = 'Boxer'
+        SIAMES = 'Siamés'
+        EUROPEO = 'Europeo'
+        PERSA = 'Persa'
+        BENGALI = 'Bengalí'
+        SPHYNX = 'Sphynx'
+
+
 class Pet(models.Model):
     name = models.CharField(max_length=100)
-    breed = models.CharField(max_length=100)
+    breed = models.CharField(max_length=50, choices=Breed.choices, default=Breed.GENERAL)
     birthday = models.DateField()
     weight = models.DecimalField(max_digits=20, decimal_places=2, default=0.00)
 
