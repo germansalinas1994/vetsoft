@@ -62,10 +62,10 @@ class Client(models.Model):
 
 class Speciality(models.TextChoices):
     GENERAL = "General"
-    DENTAL = "Dentista"
-    TRAUMATOLOGY = "Traumatología"
-    DERMATOLOGY = "Dermatología"
-    CARDIOLOGY = "Cardiología"
+    DENTISTA = "Dentista"
+    TRAUMATOLOGO = "Traumatología"
+    DERMATOLOGO = "Dermatología"
+    CARDIOLOGO = "Cardiología"
 
 
 
@@ -80,6 +80,8 @@ class Vet(models.Model):
 
     def get_speciality_display(self):
         return self.get_speciality_display()
+    def formatted_phone(self):
+        return f"{self.phone[:3]}-{self.phone[3:6]}-{self.phone[6:]}"
 
     @classmethod
     def save_vet(cls, vet_data):
@@ -121,10 +123,14 @@ def validate_vet(data):
     if name == "" or name == None:
         errors["name"] = "Por favor ingrese un nombre"
 
+
     if phone == "" or phone == None:
         errors["phone"] = "Por favor ingrese un teléfono"
-    elif len(phone) != 12:
-        errors["phone"] = "Por favor ingrese un teléfono válido"
+    else:
+        error = validate_phone(phone)
+        if error != None:
+            errors["phone"] = validate_phone(phone)
+
 
     if email == "" or email == None:
         errors["email"] = "Por favor ingrese un email"
@@ -138,7 +144,19 @@ def validate_vet(data):
 
     return errors
 
+def validate_phone(phone):
+    #le extraigo los guiones al teléfono y guion bajo
+    phone = phone.replace("-", "").replace("_", "")
+    if len(phone) == 10:
+        #verifico que el teléfono tenga solo numeros
+        try:
+            int(phone)
+        except ValueError:
+            return "Por favor ingrese un teléfono válido"
+    else:
+        return "Por favor ingrese un teléfono válido"
 
+    return None
 
 def validate_provider(data):
     errors = {}
