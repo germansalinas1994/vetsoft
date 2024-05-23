@@ -278,11 +278,17 @@ class Medicine(models.Model):
         return True, None
 
     def update_medicine(self, medicine_data):
+        errors = validate_medicine(medicine_data)
+
+        if len(errors.keys()) > 0:
+            return False, errors
+
         self.name = medicine_data.get("name", "") or self.name
         self.description = medicine_data.get("description", "") or self.description
         self.dose = medicine_data.get("dose", "") or self.dose
 
         self.save()
+        return True, None
 
 
 def validate_medicine(data):
@@ -304,8 +310,8 @@ def validate_medicine(data):
     if dose != "":
         try:
             int(dose)
-            if int(dose) < 0:
-                errors["dose"] = "Por favor ingrese una dosis válida"
+            if int(dose) < 1 or int(dose) > 10:
+                errors["dose"] = "Por favor ingrese una dosis entre 1 y 10"
         except ValueError:
             errors["dose"] = "Por favor ingrese una dosis válida"
 

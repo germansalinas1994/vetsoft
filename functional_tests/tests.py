@@ -6,6 +6,7 @@ from playwright.sync_api import sync_playwright, expect, Browser
 from django.urls import reverse
 
 from app.models import Client
+from app.models import Medicine
 from app.models import Pet
 from decimal import Decimal
 
@@ -441,4 +442,140 @@ class PetCreateEditTestCase(PlaywrightTestCase):
         expect(edit_action).to_have_attribute(
             "href", reverse("pets_edit", kwargs={"id": pet.id})
         )
+
+class MedicineCreateEditTestCase(PlaywrightTestCase):
+    def test_create_a_new_medicine_with_valid_dose(self):
+        self.page.goto(f"{self.live_server_url}{reverse('medicines_form')}")
+
+        expect(self.page.get_by_role("form")).to_be_visible()
+
+        self.page.get_by_label("Nombre").fill("Aspirina")
+        self.page.get_by_label("Descripcion").fill("Analgésico y antipirético")
+        self.page.get_by_label("Dosis").fill("5")
+
+        self.page.get_by_role("button", name="Guardar").click()
+
+        expected_url = f"{self.live_server_url}{reverse('medicines_repo')}"
+        expect(self.page).to_have_url(expected_url)
+        expect(self.page.get_by_text("Aspirina")).to_be_visible()
+        expect(self.page.get_by_text("Analgésico y antipirético")).to_be_visible()
+        expect(self.page.get_by_text("5")).to_be_visible()
+
+
+    def test_error_if_dose_is_empty(self):
+        self.page.goto(f"{self.live_server_url}{reverse('medicines_form')}")
+
+        expect(self.page.get_by_role("form")).to_be_visible()
+
+        self.page.get_by_label("Nombre").fill("Aspirina")
+        self.page.get_by_label("Descripcion").fill("Analgésico y antipirético")
+        self.page.get_by_label("Dosis").fill("")
+
+        self.page.get_by_role("button", name="Guardar").click()
+
+        expect(self.page.get_by_text("Por favor ingrese una dosis")).to_be_visible()
+
+    def test_error_if_dose_is_greater_than_10(self):
+        self.page.goto(f"{self.live_server_url}{reverse('medicines_form')}")
+
+        expect(self.page.get_by_role("form")).to_be_visible()
+
+        self.page.get_by_label("Nombre").fill("Aspirina")
+        self.page.get_by_label("Descripcion").fill("Analgésico y antipirético")
+        self.page.get_by_label("Dosis").fill("15")
+
+        self.page.get_by_role("button", name="Guardar").click()
+
+        expect(self.page.get_by_text("Por favor ingrese una dosis entre 1 y 10")).to_be_visible()
+
+    def test_error_if_dose_is_less_than_1(self):
+        self.page.goto(f"{self.live_server_url}{reverse('medicines_form')}")
+
+        expect(self.page.get_by_role("form")).to_be_visible()
+
+        self.page.get_by_label("Nombre").fill("Aspirina")
+        self.page.get_by_label("Descripcion").fill("Analgésico y antipirético")
+        self.page.get_by_label("Dosis").fill("-1")
+
+        self.page.get_by_role("button", name="Guardar").click()
+
+        expect(self.page.get_by_text("Por favor ingrese una dosis entre 1 y 10")).to_be_visible()
+
+
+
+    def test_edit_medicine_with_valid_dose(self):
+    # Edición con dosis válida
+        medicine = Medicine.objects.create(
+            name="Aspirina",
+            description="Analgésico y antipirético",
+            dose=5,
+        )
+
+        path = reverse("medicines_edit", kwargs={"id": medicine.id})
+        self.page.goto(f"{self.live_server_url}{path}")
+
+        self.page.get_by_label("Nombre").fill("Paracetamol")
+        self.page.get_by_label("Descripcion").fill("Analgésico y antipirético")
+        self.page.get_by_label("Dosis").fill("8")
+
+        self.page.get_by_role("button", name="Guardar").click()
+
+        expected_url = f"{self.live_server_url}{reverse('medicines_repo')}"
+        expect(self.page).to_have_url(expected_url)
+        expect(self.page.get_by_text("Paracetamol")).to_be_visible()
+        expect(self.page.get_by_text("8")).to_be_visible()
+
+
+    def test_edit_medicine_without_dose(self):
+        # Edición sin ingresar dosis
+        medicine = Medicine.objects.create(
+            name="Aspirina",
+            description="Analgésico y antipirético",
+            dose=5,
+        )
+
+        path = reverse("medicines_edit", kwargs={"id": medicine.id})
+        self.page.goto(f"{self.live_server_url}{path}")
+
+        self.page.get_by_label("Dosis").fill("")
+        self.page.get_by_role("button", name="Guardar").click()
+
+        expect(self.page.get_by_text("Por favor ingrese una dosis")).to_be_visible()
+
+    def test_edit_medicine_with_dose_is_less_than_1(self):
+        # Edición con dosis inválida
+        medicine = Medicine.objects.create(
+            name="Aspirina",
+            description="Analgésico y antipirético",
+            dose=5,
+        )
+
+        path = reverse("medicines_edit", kwargs={"id": medicine.id})
+        self.page.goto(f"{self.live_server_url}{path}")
+
+        self.page.get_by_label("Dosis").fill("-12")
+        self.page.get_by_role("button", name="Guardar").click()
+
+        expect(self.page.get_by_text("Por favor ingrese una dosis entre 1 y 10")).to_be_visible()
+
+    def test_edit_medicine_with_dose_is_greater_than_10(self):
+        # Edición con dosis inválida
+        medicine = Medicine.objects.create(
+            name="Aspirina",
+            description="Analgésico y antipirético",
+            dose=5,
+        )
+
+        path = reverse("medicines_edit", kwargs={"id": medicine.id})
+        self.page.goto(f"{self.live_server_url}{path}")
+
+        self.page.get_by_label("Dosis").fill("15")
+        self.page.get_by_role("button", name="Guardar").click()
+
+        expect(self.page.get_by_text("Por favor ingrese una dosis entre 1 y 10")).to_be_visible()
+
+
+
+
+
 
