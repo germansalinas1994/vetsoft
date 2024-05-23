@@ -178,12 +178,6 @@ class PetsTest(TestCase):
             weight="10.50",
         )
 
-        # Impresión de los datos iniciales para depuración.
-        print(pet.name)
-        print(pet.breed)
-        print(pet.birthday)
-        print(pet.weight)
-
         # Intento de editar la mascota enviando datos en el formato correcto.
         response = self.client.post(
             reverse("pets_edit", kwargs={"id": pet.id}),
@@ -200,10 +194,6 @@ class PetsTest(TestCase):
 
         # Obtención de la mascota editada para verificación.
         editedPet = Pet.objects.get(pk=pet.id)
-        print(editedPet.name)
-        print(editedPet.breed)
-        print(editedPet.birthday)
-        print(editedPet.weight)
 
         # Verificaciones para asegurar que los datos no han cambiado incorrectamente.
         self.assertNotEqual(editedPet.name, pet.name)

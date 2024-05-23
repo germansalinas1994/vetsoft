@@ -435,7 +435,7 @@ class PetCreateEditTestCase(PlaywrightTestCase):
         expect(self.page.get_by_text("Guido Carrillo")).to_be_visible()
         expect(self.page.get_by_text("Gatito")).to_be_visible()
         expect(self.page.get_by_text("10/05/2024")).to_be_visible()
-        expect(self.page.get_by_text("10.00")).to_be_visible()
+        expect(self.page.get_by_text("1000")).to_be_visible()
 
         edit_action = self.page.get_by_role("link", name="Editar")
         expect(edit_action).to_have_attribute(
