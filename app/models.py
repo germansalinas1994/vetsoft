@@ -58,25 +58,6 @@ class Client(models.Model):
 
 
 
-def validate_vet(data):
-    errors = {}
-
-    name = data.get("name", "")
-    phone = data.get("phone", "")
-    email = data.get("email", "")
-
-    if name == "":
-        errors["name"] = "Por favor ingrese un nombre"
-
-    if phone == "":
-        errors["phone"] = "Por favor ingrese un teléfono"
-
-    if email == "":
-        errors["email"] = "Por favor ingrese un email"
-    elif email.count("@") == 0:
-        errors["email"] = "Por favor ingrese un email valido"
-
-    return errors
 
 class Speciality(models.TextChoices):
     GENERAL = "General"
@@ -110,17 +91,51 @@ class Vet(models.Model):
             name=vet_data.get("name"),
             phone=vet_data.get("phone"),
             email=vet_data.get("email"),
+            speciality=vet_data.get("speciality"),
         )
 
         return True, None
 
     def update_vet(self, vet_data):
+        errors = validate_vet(vet_data)
+        if len(errors.keys()) > 0:
+            return False, errors
+
         self.name = vet_data.get("name", "") or self.name
         self.email = vet_data.get("email", "") or self.email
         self.phone = vet_data.get("phone", "") or self.phone
-
+        self.speciality = vet_data.get("speciality", "") or self.speciality
         self.save()
 
+        return True, None
+
+def validate_vet(data):
+    errors = {}
+
+    name = data.get("name", "")
+    phone = data.get("phone", "")
+    email = data.get("email", "")
+    speciality = data.get("speciality", "")
+
+    if name == "" or name == None:
+        errors["name"] = "Por favor ingrese un nombre"
+
+    if phone == "" or phone == None:
+        errors["phone"] = "Por favor ingrese un teléfono"
+    elif len(phone) != 12:
+        errors["phone"] = "Por favor ingrese un teléfono válido"
+
+    if email == "" or email == None:
+        errors["email"] = "Por favor ingrese un email"
+    elif email.count("@") == 0:
+        errors["email"] = "Por favor ingrese un email valido"
+
+    if speciality == "" or speciality == None:
+        errors["speciality"] = "Por favor ingrese una especialidad"
+    elif speciality not in dict(Speciality.choices):
+        errors["speciality"] = "Especialidad no válida"
+
+    return errors
 
 
 
