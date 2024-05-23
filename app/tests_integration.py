@@ -4,6 +4,7 @@ from app.models import Client
 from app.models import Product
 from app.models import Medicine
 from app.models import Pet
+from app.models import Vet, Speciality
 from decimal import Decimal
 from datetime import datetime
 
@@ -400,3 +401,199 @@ class PetsTest(TestCase):
         self.assertNotEqual(editedPet.birthday, pet.birthday)
         self.assertNotEqual(editedPet.weight, pet.weight)
         self.assertEqual(editedPet.weight, Decimal("1212.00"))  # Corrección al valor correcto de peso esperado.
+
+
+class VetsTest(TestCase):
+    def test_repo_use_repo_template_vet(self):
+        response = self.client.get(reverse("vets_repo"))
+        self.assertTemplateUsed(response, "vets/repository.html")
+
+    def test_repo_display_all_vets(self):
+        response = self.client.get(reverse("vets_repo"))
+        self.assertTemplateUsed(response, "vets/repository.html")
+
+    def test_form_use_form_template_vet(self):
+        response = self.client.get(reverse("vets_form"))
+        self.assertTemplateUsed(response, "vets/form.html")
+
+    def test_can_create_vet(self):
+        response = self.client.post(
+            reverse("vets_form"),
+            data={
+                "name": "Juan Sebastian Veron",
+                "email": "brujita75@hotmail.com",
+                "phone": "2215552324",
+                "speciality": Speciality.DERMATOLOGO,
+            },
+        )
+        vets = Vet.objects.all()
+        self.assertEqual(len(vets), 1)
+
+        self.assertEqual(vets[0].name, "Juan Sebastian Veron")
+        self.assertEqual(vets[0].email, "brujita75@hotmail.com")
+        self.assertEqual(vets[0].phone, "2215552324")
+        self.assertEqual(vets[0].speciality, Speciality.DERMATOLOGO)
+
+        self.assertRedirects(response, reverse("vets_repo"))
+
+    def test_validation_errors_create_vet(self):
+        response = self.client.post(
+            reverse("vets_form"),
+            data={},
+        )
+
+        self.assertContains(response, "Por favor ingrese un nombre")
+        self.assertContains(response, "Por favor ingrese un teléfono")
+        self.assertContains(response, "Por favor ingrese un email")
+        self.assertContains(response, "Por favor ingrese una especialidad")
+
+    def test_should_response_with_404_status_if_vet_doesnt_exists(self):
+        response = self.client.get(reverse("vets_edit", kwargs={"id": 1000}))
+        self.assertEqual(response.status_code, 404)
+
+    def test_validation_invalid_speciality(self):
+        response = self.client.post(
+            reverse("vets_form"),
+            data={
+                "name": "Juan Sebastian Veron",
+                "email": "brujita75@hotmail.com",
+                "phone": "2215552324",
+                "speciality": "esta especialidad no existe",
+            },
+        )
+
+
+    def test_validation_invalid_speciality_none(self):
+        response = self.client.post(
+            reverse("vets_form"),
+            data={
+                "name": "Juan Sebastian Veron",
+                "email": "brujita75@hotmail.com",
+                "phone": "2215552324",
+            },
+        )
+
+    def test_validation_invalid_speciality_empty(self):
+        response = self.client.post(
+            reverse("vets_form"),
+            data={
+                "name": "Juan Sebastian Veron",
+                "email": "brujita75@hotmail.com",
+                "phone": "",
+            },
+        )
+
+    def test_edit_vet_with_valid_data(self):
+        vet = Vet.objects.create(
+            name="Juan Sebastián Veron",
+            email="brujita75@hotmail.com",
+            phone="2215552324",
+            speciality = Speciality.CARDIOLOGO,
+        )
+
+        response = self.client.post(
+            reverse("vets_form"),
+            data={
+                "id": vet.id,
+                "name": "Juan Sebastian Veron",
+                "email": "brujita75@hotmail.com",
+                "phone": "2215552324",
+                "speciality": Speciality.DERMATOLOGO,
+            },
+        )
+
+        # redirect after post
+        self.assertEqual(response.status_code, 302)
+
+        editedVet = Vet.objects.get(pk=vet.id)
+        self.assertEqual(editedVet.name, "Juan Sebastian Veron")
+        self.assertEqual(editedVet.email, vet.email)
+        self.assertEqual(editedVet.phone, vet.phone)
+        self.assertEqual(editedVet.speciality, Speciality.DERMATOLOGO)
+
+
+    def test_edit_vet_with_invalid_data_speciality_none(self):
+        vet = Vet.objects.create(
+            name="Juan Sebastián Veron",
+            email="brujita75@hotmail.com",
+            phone="2215552324",
+            speciality = Speciality.CARDIOLOGO,
+        )
+
+        response = self.client.post(
+            reverse("vets_form"),
+            data={
+                "id": vet.id,
+                "name": "Juan Sebastian Veron",
+                "email": "brujita75@hotmail.com",
+                "phone": "2215552324",
+            },
+        )
+
+        # redirect after post
+        self.assertEqual(response.status_code, 200)
+
+        editedVet = Vet.objects.get(pk=vet.id)
+        self.assertEqual(editedVet.name, vet.name)
+        self.assertEqual(editedVet.email, vet.email)
+        self.assertEqual(editedVet.phone, vet.phone)
+        self.assertEqual(editedVet.speciality, Speciality.CARDIOLOGO)
+        self.assertNotEqual(editedVet.speciality, Speciality.DERMATOLOGO)
+
+    def test_edit_vet_with_invalid_data_speciality_empty(self):
+        vet = Vet.objects.create(
+            name="Juan Sebastián Veron",
+            email="brujita75@hotmail.com",
+            phone="2215552324",
+            speciality = Speciality.CARDIOLOGO,
+        )
+
+        response = self.client.post(
+            reverse("vets_form"),
+            data={
+                "id": vet.id,
+                "name": "Juan Sebastian Veron",
+                "email": "brujita75@hotmail.com",
+                "phone": "2215552324",
+                "speciality": "",
+            },
+        )
+
+        # redirect after post
+        self.assertEqual(response.status_code, 200)
+
+        editedVet = Vet.objects.get(pk=vet.id)
+        self.assertEqual(editedVet.name, vet.name)
+        self.assertEqual(editedVet.email, vet.email)
+        self.assertEqual(editedVet.phone, vet.phone)
+        self.assertEqual(editedVet.speciality, Speciality.CARDIOLOGO)
+        self.assertNotEqual(editedVet.speciality, Speciality.DERMATOLOGO)
+
+    def test_edit_vet_with_invalid_data_speciality(self):
+        vet = Vet.objects.create(
+            name="Juan Sebastián Veron",
+            email="brujita75@hotmail.com",
+            phone="2215552324",
+            speciality = Speciality.CARDIOLOGO,
+        )
+
+        response = self.client.post(
+            reverse("vets_form"),
+            data={
+                "id": vet.id,
+                "name": "Juan Sebastian Veron",
+                "email": "brujita75@hotmail.com",
+                "phone": "2215552324",
+                "speciality": "esta especialidad no existe, no deberia actualizar",
+            },
+        )
+
+        # redirect after post
+        self.assertEqual(response.status_code, 200)
+
+        editedVet = Vet.objects.get(pk=vet.id)
+        self.assertEqual(editedVet.name, vet.name)
+        self.assertEqual(editedVet.email, vet.email)
+        self.assertEqual(editedVet.phone, vet.phone)
+        self.assertEqual(editedVet.speciality, Speciality.CARDIOLOGO)
+        self.assertNotEqual(editedVet.speciality, Speciality.DERMATOLOGO)
