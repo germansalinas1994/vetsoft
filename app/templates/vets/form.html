@@ -40,11 +40,14 @@
                     <input type="text"
                         id="phone"
                         name="phone"
-                        minlength = "12"
-                        maxlength = "12"
                         class="form-control"
+                        placeholder="Ej: 1123456789"
                         value="{{vet.phone}}"
-                        required/>
+                        pattern = "[0-9]{10}"
+                        maxlength="10"
+                        minlength="10"
+                        required
+                        />
 
                     {% if errors.phone %}
                         <div class="invalid-feedback">
@@ -89,12 +92,7 @@
         </div>
     </div>
 </div>
-<script>
-    $(document).ready(function() {
-        $('#phone').mask('000-000-0000', {placeholder: '000-000-0000'});
 
-        // Validación en el evento change
-    });
 
-</script>
+
 {% endblock %}
