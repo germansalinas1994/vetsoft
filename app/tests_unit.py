@@ -121,7 +121,7 @@ class ProductModelTest(TestCase):
         })
         self.assertFalse(valid)
         self.assertIn("price", errors)
-        self.assertEqual(errors["price"], "Por favor ingrese un precio positivo")
+        self.assertEqual(errors["price"], "Por favor ingrese un precio válido")
 
 
     def test_product_price_no_words_or_symbols(self):
