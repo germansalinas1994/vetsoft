@@ -58,34 +58,30 @@ class Client(models.Model):
         self.save()
 
 
-def validate_vet(data):
-    errors = {}
 
-    name = data.get("name", "")
-    phone = data.get("phone", "")
-    email = data.get("email", "")
 
-    if name == "":
-        errors["name"] = "Por favor ingrese un nombre"
+class Speciality(models.TextChoices):
+    GENERAL = "General"
+    DENTISTA = "Dentista"
+    TRAUMATOLOGO = "Traumatología"
+    DERMATOLOGO = "Dermatología"
+    CARDIOLOGO = "Cardiología"
 
-    if phone == "":
-        errors["phone"] = "Por favor ingrese un teléfono"
-
-    if email == "":
-        errors["email"] = "Por favor ingrese un email"
-    elif email.count("@") == 0:
-        errors["email"] = "Por favor ingrese un email valido"
-
-    return errors
 
 
 class Vet(models.Model):
     name = models.CharField(max_length=100)
     email = models.EmailField()
     phone = models.CharField(max_length=15)
+    speciality = models.CharField(max_length=50, choices=Speciality.choices, default=Speciality.GENERAL)
 
     def __str__(self):
         return self.name
+
+    def get_speciality_display(self):
+        return self.get_speciality_display()
+    def formatted_phone(self):
+        return f"{self.phone[:3]}-{self.phone[3:6]}-{self.phone[6:]}"
 
     @classmethod
     def save_vet(cls, vet_data):
@@ -98,17 +94,69 @@ class Vet(models.Model):
             name=vet_data.get("name"),
             phone=vet_data.get("phone"),
             email=vet_data.get("email"),
+            speciality=vet_data.get("speciality"),
         )
 
         return True, None
 
     def update_vet(self, vet_data):
+        errors = validate_vet(vet_data)
+        if len(errors.keys()) > 0:
+            return False, errors
+
         self.name = vet_data.get("name", "") or self.name
         self.email = vet_data.get("email", "") or self.email
         self.phone = vet_data.get("phone", "") or self.phone
-
+        self.speciality = vet_data.get("speciality", "") or self.speciality
         self.save()
 
+        return True, None
+
+def validate_vet(data):
+    errors = {}
+
+    name = data.get("name", "")
+    phone = data.get("phone", "")
+    email = data.get("email", "")
+    speciality = data.get("speciality", "")
+
+    if name == "" or name == None:
+        errors["name"] = "Por favor ingrese un nombre"
+
+
+    if phone == "" or phone == None:
+        errors["phone"] = "Por favor ingrese un teléfono"
+    else:
+        error = validate_phone(phone)
+        if error != None:
+            errors["phone"] = validate_phone(phone)
+
+
+    if email == "" or email == None:
+        errors["email"] = "Por favor ingrese un email"
+    elif email.count("@") == 0:
+        errors["email"] = "Por favor ingrese un email valido"
+
+    if speciality == "" or speciality == None:
+        errors["speciality"] = "Por favor ingrese una especialidad"
+    elif speciality not in dict(Speciality.choices):
+        errors["speciality"] = "Especialidad no válida"
+
+    return errors
+
+def validate_phone(phone):
+    #le extraigo los guiones al teléfono y guion bajo
+    phone = phone.replace("-", "").replace("_", "")
+    if len(phone) == 10:
+        #verifico que el teléfono tenga solo numeros
+        try:
+            int(phone)
+        except ValueError:
+            return "Por favor ingrese un teléfono válido"
+    else:
+        return "Por favor ingrese un teléfono válido"
+
+    return None
 
 def validate_provider(data):
     errors = {}
