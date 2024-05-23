@@ -40,6 +40,8 @@
                     <input type="text"
                         id="phone"
                         name="phone"
+                        minlength = "12"
+                        maxlength = "12"
                         class="form-control"
                         value="{{vet.phone}}"
                         required/>
@@ -65,11 +67,34 @@
                         </div>
                     {% endif %}
                 </div>
-             
+                <div>
+                    <label for="speciality" class="form-label">Especialidad</label>
+                    <select id="speciality" name="speciality" class="form-select" required>
+                        {% for value, label in specialities %}
+                            <option value="{{ value }}" {% if vet.speciality == value %}selected{% endif %}>
+                                {{ label }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                    {% if errors.speciality %}
+                        <div class="invalid-feedback">
+                            {{ errors.speciality }}
+                        </div>
+                     {% endif %}
+                </div>
+
 
                 <button class="btn btn-primary">Guardar</button>
             </form>
         </div>
     </div>
 </div>
+<script>
+    $(document).ready(function() {
+        $('#phone').mask('000-000-0000', {placeholder: '000-000-0000'});
+
+        // Validación en el evento change
+    });
+
+</script>
 {% endblock %}
