@@ -54,11 +54,11 @@
                         >Fecha de Nacimiento</label
                     >
                     <input
-                        type="text"
-                        id="birthday"
+                    type="datepicker"
+                    id="birthday"
                         name="birthday"
                         class="form-control datepicker"
-                        value="{{ pet.birthday | date:'d/m/Y' }}"
+                        value="{{ pet.birthday | date:'d/m/Y'}}"
                         required
                     />
 
@@ -66,10 +66,47 @@
                     <div class="invalid-feedback">{{ errors.birthday }}</div>
                     {% endif %}
                 </div>
+                <div>
+                    <label for="weight" class="form-label">Peso</label>
+                    <input
+                        type="text"
+                        id="weight"
+                        pattern="^[0-9]+(\.[0-9]{1,2})?$"
+                        name="weight"
+                        maxlength="14"
+                        class="form-control"
+                        value="{{pet.weight}}"
+                        title="El peso debe ser un número positivo con hasta dos decimales"
+                        required
+                    />
 
+                    {% if errors.weight %}
+                    <div class="invalid-feedback">{{ errors.weight }}</div>
+                    {% endif %}
+                </div>
                 <button class="btn btn-primary">Guardar</button>
             </form>
         </div>
     </div>
 </div>
+
+<script>
+    $(document).ready(function () {
+
+        Inputmask({
+            alias: "decimal",
+            groupSeparator: "",
+            autoGroup: true,
+            digits: 2,
+            digitsOptional: false,
+            placeholder: "0.00",
+            integerDigits: 6,
+            rightAlign: false,
+            suffix: " Kg",
+            removeMaskOnSubmit: true,
+            allowMinus: false, // No permite valores negativos
+        }).mask($("#weight"));
+    });
+</script>
+
 {% endblock %}
