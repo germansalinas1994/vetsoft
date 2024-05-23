@@ -285,7 +285,7 @@ def validate_product(data):
         price = float(price_str)
         if price < 0:
             errors["price"] = "Por favor ingrese un precio positivo"
-        if not validate_price_format(price_str):
+        elif not validate_price_format(price_str):
             errors["price"] = "El precio debe tener un formato correcto (n.nn)"
     except ValueError:
         errors["price"] = "Por favor ingrese un precio válido"
