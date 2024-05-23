@@ -3,7 +3,7 @@ from django.shortcuts import reverse
 from app.models import Client
 from app.models import Medicine
 from app.models import Pet
-from app.models import Vet, Speciality
+from app.models import Vet, Speciality, Breed
 from decimal import Decimal
 from datetime import datetime
 
@@ -238,7 +238,7 @@ class PetsTest(TestCase):
             reverse("pets_form"),
             data={
                 "name": "Fido",
-                "breed": "Golden Retriever",
+                "breed": Breed.GOLDEN_RETRIEVER,
                 "birthday": "01/01/2015",
                 "weight": "10.50",
             },
@@ -265,7 +265,7 @@ class PetsTest(TestCase):
             reverse("pets_form"),
             data={
                 "name": "Fido",
-                "breed": "Golden Retriever",
+                "breed": Breed.GOLDEN_RETRIEVER,
                 "birthday": "01/01/2015",
                 "weight": "invalid",
             },
@@ -288,7 +288,7 @@ class PetsTest(TestCase):
         # Creación de una mascota con datos iniciales.
         pet = Pet.objects.create(
             name="Fido",
-            breed="Golden Retriever",
+            breed=Breed.GOLDEN_RETRIEVER,
             birthday="2015-01-01",
             weight="10.50",
         )
@@ -299,7 +299,7 @@ class PetsTest(TestCase):
             data ={
                 "id": pet.id,
                 "name": "cambio",
-                "breed": "cambio",
+                "breed": Breed.BEAGLE,
                 "birthday": "01/01/2014",  # Formato correcto de fecha.
                 "weight": "1212",  # Peso que se intenta establecer.
             },
