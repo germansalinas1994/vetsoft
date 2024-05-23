@@ -93,13 +93,6 @@
 <script>
     $(document).ready(function () {
 
-        $(".datepicker").datepicker({
-            format: "dd/mm/yyyy",
-            language: "es",
-            autoclose: true,
-            todayHighlight: true,
-        });
-
         Inputmask({
             alias: "decimal",
             groupSeparator: "",
@@ -109,6 +102,7 @@
             placeholder: "0.00",
             integerDigits: 6,
             rightAlign: false,
+            suffix: " Kg",
             removeMaskOnSubmit: true,
             allowMinus: false, // No permite valores negativos
         }).mask($("#weight"));
