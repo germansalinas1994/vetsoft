@@ -305,3 +305,105 @@ class VetModelTest(TestCase):
 
 
 
+    def test_can_update_vet(self):
+        Vet.save_vet(
+            {
+                "name": "Juan Sebastian Veron",
+                "email": "brujita75@hotmail.com",
+                "phone": "2215552324",
+                "speciality": Speciality.CARDIOLOGO,
+            }
+        )
+        vet = Vet.objects.get(pk=1)
+
+        self.assertEqual(vet.speciality, Speciality.CARDIOLOGO)
+
+        vet.update_vet(
+            {
+                "name": "Juan Sebastian Veron",
+                "email": "brujita75@hotmail.com",
+                "phone": "2215552324",
+                "speciality": Speciality.DERMATOLOGO,
+            }
+        )
+        vet_updated = Vet.objects.get(pk=1)
+
+        self.assertEqual(vet_updated.speciality, Speciality.DERMATOLOGO)
+
+    def test_update_vet_with_error_speciality(self):
+        Vet.save_vet(
+            {
+                "name": "Juan Sebastian Veron",
+                "email": "brujita75@hotmail.com",
+                "phone": "2215552324",
+                "speciality": Speciality.DERMATOLOGO,
+            }
+        )
+        vet = Vet.objects.get(pk=1)
+
+        self.assertEqual(vet.speciality, Speciality.DERMATOLOGO)
+
+        vet.update_vet(
+            {
+                "name": "Juan Sebastian Veron",
+                "email": "brujita75@hotmail.com",
+                "phone": "2215552324",
+                "speciality": "esta especialidad no existe y no deberia guardarlo",
+            }
+        )
+
+        vet_updated = Vet.objects.get(pk=1)
+        # como no se actualizo la especialidad deberia ser la misma
+        self.assertEqual(vet_updated.speciality, Speciality.DERMATOLOGO)
+
+    def test_update_vet_with_error_speciality_empty(self):
+        Vet.save_vet(
+            {
+                "name": "Juan Sebastian Veron",
+                "email": "brujita75@hotmail.com",
+                "phone": "2215552324",
+                "speciality": Speciality.DERMATOLOGO,
+            }
+        )
+        vet = Vet.objects.get(pk=1)
+
+        self.assertEqual(vet.speciality, Speciality.DERMATOLOGO)
+
+        vet.update_vet(
+            {
+                "name": "Juan Sebastian Veron",
+                "email": "brujita75@hotmail.com",
+                "phone": "2215552324",
+                "speciality": "",
+            }
+        )
+
+        vet_updated = Vet.objects.get(pk=1)
+        # como no se actualizo la especialidad deberia ser la misma
+        self.assertEqual(vet_updated.speciality, Speciality.DERMATOLOGO)
+
+    def test_update_vet_with_error_speciality_none(self):
+        Vet.save_vet(
+            {
+                "name": "Juan Sebastian Veron",
+                "email": "brujita75@hotmail.com",
+                "phone": "2215552324",
+                "speciality": Speciality.DERMATOLOGO,
+            }
+        )
+        vet = Vet.objects.get(pk=1)
+
+        self.assertEqual(vet.speciality, Speciality.DERMATOLOGO)
+
+        vet.update_vet(
+            {
+                "name": "Juan Sebastian Veron",
+                "email": "brujita75@hotmail.com",
+                "phone": "2215552324",
+                #no mando la especialidad
+            }
+        )
+
+        vet_updated = Vet.objects.get(pk=1)
+        # como no se actualizo la especialidad deberia ser la misma
+        self.assertEqual(vet_updated.speciality, Speciality.DERMATOLOGO)
