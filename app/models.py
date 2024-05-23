@@ -276,7 +276,7 @@ class Breed(models.TextChoices):
 
 class Pet(models.Model):
     name = models.CharField(max_length=100)
-    breed = models.CharField(max_length=50, choices=Breed.choices, default=Breed.GENERAL)
+    breed = models.CharField(max_length=50, choices=Breed.choices)
     birthday = models.DateField()
     weight = models.DecimalField(max_digits=20, decimal_places=2, default=0.00)
 
