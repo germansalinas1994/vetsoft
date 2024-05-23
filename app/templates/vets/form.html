@@ -41,8 +41,13 @@
                         id="phone"
                         name="phone"
                         class="form-control"
+                        placeholder="Ej: 1123456789"
                         value="{{vet.phone}}"
-                        required/>
+                        pattern = "[0-9]{10}"
+                        maxlength="10"
+                        minlength="10"
+                        required
+                        />
 
                     {% if errors.phone %}
                         <div class="invalid-feedback">
@@ -65,11 +70,30 @@
                         </div>
                     {% endif %}
                 </div>
-             
+                <div>
+                    <label for="speciality" class="form-label">Especialidad</label>
+                    <select id="speciality" name="speciality" class="form-select" required>
+                        <option value="" disabled selected>Seleccione una opción</option>
+                        {% for value, label in specialities %}
+                            <option value="{{ value }}" {% if vet.speciality == value %}selected{% endif %}>
+                                {{ label }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                    {% if errors.speciality %}
+                        <div class="invalid-feedback">
+                            {{ errors.speciality }}
+                        </div>
+                     {% endif %}
+                </div>
+
 
                 <button class="btn btn-primary">Guardar</button>
             </form>
         </div>
     </div>
 </div>
+
+
+
 {% endblock %}

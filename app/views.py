@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect, reverse, get_object_or_404
 from .models import Client
-from .models import Vet
+from .models import Vet, Speciality
 from .models import Provider
 from .models import Pet
 from .models import Medicine
@@ -57,6 +57,8 @@ def vets_repository(request):
 
 
 def vets_form(request, id=None):
+    specialities = Speciality.choices
+
     if request.method == "POST":
         vet_id = request.POST.get("id", "")
         errors = {}
@@ -66,20 +68,21 @@ def vets_form(request, id=None):
             saved, errors = Vet.save_vet(request.POST)
         else:
             vet = get_object_or_404(Vet, pk=vet_id)
-            vet.update_vet(request.POST)
+            saved,errors = vet.update_vet(request.POST)
 
         if saved:
             return redirect(reverse("vets_repo"))
 
         return render(
-            request, "vets/form.html", {"errors": errors, "vet": request.POST}
+            request, "vets/form.html", {"errors": errors, "vet": request.POST, "specialities": specialities}
         )
 
     vet = None
     if id is not None:
         vet = get_object_or_404(Vet, pk=id)
 
-    return render(request, "vets/form.html", {"vet": vet})
+
+    return render(request, "vets/form.html", {"vet": vet, "specialities": specialities})
 
 def vets_delete(request):
     vet_id = request.POST.get("vet_id")
