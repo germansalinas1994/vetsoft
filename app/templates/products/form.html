@@ -56,7 +56,7 @@
                         id="price"
                         name="price"
                         class="form-control"
-                        pattern="\d+(\.\d+)?"
+                        pattern="\d+(\.\d+)?" 
                         title="Ingrese un número con el separador decimal ."
                         value="{{ product.price }}"
                         required/>
@@ -82,8 +82,8 @@
             value = value.replace(",", ".");
             // Reemplazar cualquier caracter no numérico o no un punto por una cadena vacía
             value = value.replace(/[^0-9.]/g, "");
-            // Verificar si el valor resultante es un número válido
-            if (!isNaN(parseFloat(value))) {
+            // Verificar si el valor resultante es un número válido y no es 0
+            if (!isNaN(parseFloat(value)) && parseFloat(value) !== 0) {
                 // Verificar si ya hay más de un punto en el valor
                 if ((value.match(/\./g) || []).length > 1) {
                     // Si ya hay más de un punto, eliminar el último caracter ingresado
@@ -91,10 +91,10 @@
                 }
                 event.target.value = value; // Asignar el nuevo valor al campo de precio
             } else {
-                // Si no es un número válido, eliminar el último caracter ingresado
-                event.target.value = value.slice(0, -1);
+                // Si no es un número válido o es 0, eliminar el contenido del campo
+                event.target.value = "";
             }
         });
     });
-    </script>
+</script>
 {% endblock %}
