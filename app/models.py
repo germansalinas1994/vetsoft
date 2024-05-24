@@ -203,10 +203,15 @@ class Provider(models.Model):
         return True, None
 
     def update_provider(self, provider_data):
+        errors = validate_provider(provider_data)
+        if len(errors.keys()) > 0:
+            return False, errors
+
         self.name = provider_data.get("name", "") or self.name
         self.email = provider_data.get("email", "") or self.email
         self.direccion = provider_data.get("direccion", "") or self.direccion
         self.save()
+        return True, None
 
 
 # Pet model
