@@ -51,6 +51,22 @@
                     {% endif %}
                 </div>
 
+                <div>
+                    <label for="direccion" class="form-label">Direccion</label>
+                    <input
+                        type="direccion"
+                        id="direccion"
+                        name="direccion"
+                        class="form-control"
+                        value="{{ provider.direccion }}"
+                        required
+                    />
+
+                    {% if errors.direccion %}
+                    <div class="invalid-feedback">{{ errors.direccion }}</div>
+                    {% endif %}
+                </div>
+
                 <button class="btn btn-primary">Guardar</button>
             </form>
         </div>

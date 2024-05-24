@@ -2,6 +2,7 @@ from django.test import TestCase
 from django.shortcuts import reverse
 from app.models import Client
 from app.models import Medicine
+from app.models import Provider
 from app.models import Pet
 from app.models import Vet, Speciality
 from decimal import Decimal
@@ -512,3 +513,95 @@ class VetsTest(TestCase):
         self.assertEqual(editedVet.phone, vet.phone)
         self.assertEqual(editedVet.speciality, Speciality.CARDIOLOGO)
         self.assertNotEqual(editedVet.speciality, Speciality.DERMATOLOGO)
+
+##############################
+
+class ProvidersTest(TestCase):
+    def test_repo_use_repo_template(self):
+        response = self.client.get(reverse("providers_repo"))
+        self.assertTemplateUsed(response, "providers/repository.html")
+
+    def test_repo_display_all_providers(self):
+        Provider.objects.create(name="Valentina", email="estudiantes@gmail.com", direccion="12 y 47")
+        Provider.objects.create(name="Faustina", email="boca@gmail.com", direccion="12 y 50")
+
+        response = self.client.get(reverse("providers_repo"))
+        self.assertTemplateUsed(response, "providers/repository.html")
+        self.assertContains(response, "Valentina")
+        self.assertContains(response, "Faustina")
+
+    def test_form_use_form_template(self):
+        response = self.client.get(reverse("providers_form"))
+        self.assertTemplateUsed(response, "providers/form.html")
+
+    def test_can_create_provider(self):
+        response = self.client.post(
+            reverse("providers_form"),
+            data={
+                "name": "Valentina",
+                "email": "estudiantes@gmail.com",
+                "direccion": "12 y 47",
+            },
+        )
+        providers = Provider.objects.all()
+        self.assertEqual(len(providers), 1)
+        self.assertEqual(providers[0].name, "Valentina")
+        self.assertEqual(providers[0].email, "estudiantes@gmail.com")
+        self.assertEqual(providers[0].direccion, "12 y 47")
+        self.assertRedirects(response, reverse("providers_repo"))
+
+    def test_validation_errors_create_provider(self):
+        response = self.client.post(reverse("providers_form"), data={})
+        self.assertContains(response, "Por favor ingrese un nombre")
+        self.assertContains(response, "Por favor ingrese un email")
+        self.assertContains(response, "Por favor ingrese una direccion")
+
+
+    def test_validation_invalid_email(self):
+        response = self.client.post(
+            reverse("providers_form"),
+            data={
+                "name": "Valentina",
+                "email": "estudiantes",
+                "direccion": "12 y 47",
+            },
+        )
+
+        self.assertContains(response, "Por favor ingrese un email valido")
+
+
+    def test_should_response_with_404_status_if_provider_doesnt_exist(self):
+        response = self.client.get(reverse("providers_edit", kwargs={"id": 100}))
+        self.assertEqual(response.status_code, 404)
+
+    def test_can_delete_provider(self):
+        provider = Provider.objects.create(
+            name="Valentina", email="estudiantes@gmail.com", direccion="12 y 47"
+        )
+        response = self.client.post(reverse("providers_delete"), data={"provider_id": provider.id})
+        self.assertEqual(response.status_code, 302)
+
+        providers = Provider.objects.all()
+        self.assertEqual(len(providers), 0)
+
+
+    def test_edit_provider_with_valid_data(self):
+        provider = Provider.objects.create(
+            name="Valentina", email="estudiantes@gmail.com", direccion="12 y 47"
+        )
+
+        response = self.client.post(
+            reverse("providers_edit", kwargs={"id": provider.id}),
+            data={
+                "id": provider.id,
+                "name": "Faustina",
+                "email": "boca@gmail.com",
+                "direccion": "12 y 50",
+            },
+        )
+        self.assertEqual(response.status_code, 302)
+
+        edited_provider = Provider.objects.get(pk=provider.id)
+        self.assertEqual(edited_provider.name, "Faustina")
+        self.assertEqual(edited_provider.email, "boca@gmail.com")
+        self.assertEqual(edited_provider.direccion, "12 y 50")
