@@ -3,6 +3,7 @@ from app.models import Client
 from app.models import Medicine
 from app.models import Vet, Speciality, Breed
 from app.models import Pet
+from app.models import Provider
 from decimal import Decimal
 from datetime import datetime
 
@@ -479,3 +480,69 @@ class VetModelTest(TestCase):
         vet_updated = Vet.objects.get(pk=1)
         # como no se actualizo la especialidad deberia ser la misma
         self.assertEqual(vet_updated.speciality, Speciality.DERMATOLOGO)
+
+class ProviderModelTest(TestCase):
+    def test_can_create_and_get_provider(self):
+        Provider.save_provider(
+            {
+                "name": "Valentina",
+                "email": "estudiantes@gmail.com",
+                "direccion": "12 y 47",
+            }
+        )
+        providers = Provider.objects.all()
+        self.assertEqual(len(providers), 1)
+
+        self.assertEqual(providers[0].name, "Valentina")
+        self.assertEqual(providers[0].email, "estudiantes@gmail.com")
+        self.assertEqual(providers[0].direccion, "12 y 47")
+
+    def test_can_update_provider(self):
+        Provider.save_provider(
+            {
+                "name": "Valentina",
+                "email": "estudiantes@gmail.com",
+                "direccion": "casa",
+            }
+        )
+        provider = Provider.objects.get(pk=1)
+
+        self.assertEqual(provider.direccion, "casa")
+
+        provider.update_provider({
+                "name": "Valentina",
+                "email": "estudiantes@gmail.com",
+                "direccion": "facultad",
+            })
+
+        provider_updated = Provider.objects.get(pk=1)
+
+        self.assertEqual(provider_updated.direccion, "facultad")
+
+    def test_update_provider_with_error(self):
+        Provider.save_provider(
+            {
+                "name": "Valentina",
+                "email": "estudiantes@gmail.com",
+                "direccion": "12 y 47",
+            }
+        )
+        provider = Provider.objects.get(pk=1)
+
+        self.assertEqual(provider.direccion, "12 y 47")
+
+        provider.update_provider({"direccion": ""})
+
+        provider_updated = Provider.objects.get(pk=1)
+
+        self.assertEqual(provider_updated.direccion, "12 y 47")
+
+    def test_provider_adress_cannot_be_empty(self):
+        valid, errors = Provider.save_provider({
+            "name": "Valentina",
+            "email": "estudiantes@gmail.com",
+            "direccion": "",
+        })
+        self.assertFalse(valid)
+        self.assertIn("direccion", errors)
+        self.assertEqual(errors["direccion"], "Por favor ingrese una direccion")

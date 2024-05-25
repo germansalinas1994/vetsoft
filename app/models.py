@@ -163,6 +163,7 @@ def validate_provider(data):
 
     name = data.get("name", "")
     email = data.get("email", "")
+    direccion = data.get("direccion", "")
 
     if name == "":
         errors["name"] = "Por favor ingrese un nombre"
@@ -172,6 +173,9 @@ def validate_provider(data):
     elif email.count("@") == 0:
         errors["email"] = "Por favor ingrese un email valido"
 
+    if direccion == "":
+       errors["direccion"] = "Por favor ingrese una direccion"
+
     return errors
 
 
@@ -179,6 +183,7 @@ def validate_provider(data):
 class Provider(models.Model):
     name = models.CharField(max_length=100)
     email = models.EmailField()
+    direccion = models.CharField(max_length=100, blank=True)
 
     def __str__(self):
         return self.name
@@ -193,14 +198,21 @@ class Provider(models.Model):
         Provider.objects.create(
             name=provider_data.get("name"),
             email=provider_data.get("email"),
+            direccion=provider_data.get("direccion")
         )
 
         return True, None
 
     def update_provider(self, provider_data):
+        errors = validate_provider(provider_data)
+        if len(errors.keys()) > 0:
+            return False, errors
+
         self.name = provider_data.get("name", "") or self.name
         self.email = provider_data.get("email", "") or self.email
+        self.direccion = provider_data.get("direccion", "") or self.direccion
         self.save()
+        return True, None
 
 
 # Pet model
