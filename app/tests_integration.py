@@ -4,7 +4,7 @@ from app.models import Client
 from app.models import Medicine
 from app.models import Provider
 from app.models import Pet
-from app.models import Vet, Speciality
+from app.models import Vet, Speciality, Breed
 from decimal import Decimal
 from datetime import datetime
 
@@ -239,7 +239,7 @@ class PetsTest(TestCase):
             reverse("pets_form"),
             data={
                 "name": "Fido",
-                "breed": "Golden Retriever",
+                "breed": Breed.GOLDEN_RETRIEVER,
                 "birthday": "01/01/2015",
                 "weight": "10.50",
             },
@@ -266,13 +266,27 @@ class PetsTest(TestCase):
             reverse("pets_form"),
             data={
                 "name": "Fido",
-                "breed": "Golden Retriever",
+                "breed": Breed.GOLDEN_RETRIEVER,
                 "birthday": "01/01/2015",
                 "weight": "invalid",
             },
         )
         # verifico que se muestre el error de validacion
         self.assertContains(response, "El peso debe ser un número positivo con hasta dos decimales.")
+
+    # creo un test para verificar si el peso de la mascota es invalido
+    def test_validation_invalid_breed(self):
+        response = self.client.post(
+            reverse("pets_form"),
+            data={
+                "name": "Fido",
+                "breed": "No deberia de funcionar",
+                "birthday": "01/01/2015",
+                "weight": "1000.00",
+            },
+        )
+        # verifico que se muestre el error de validacion
+        self.assertContains(response, "La raza no es válida.")
 
     def test_validation_errors_create_pet(self):
         response = self.client.post(
@@ -289,7 +303,7 @@ class PetsTest(TestCase):
         # Creación de una mascota con datos iniciales.
         pet = Pet.objects.create(
             name="Fido",
-            breed="Golden Retriever",
+            breed=Breed.GOLDEN_RETRIEVER,
             birthday="2015-01-01",
             weight="10.50",
         )
@@ -300,7 +314,7 @@ class PetsTest(TestCase):
             data ={
                 "id": pet.id,
                 "name": "cambio",
-                "breed": "cambio",
+                "breed": Breed.BEAGLE,
                 "birthday": "01/01/2014",  # Formato correcto de fecha.
                 "weight": "1212",  # Peso que se intenta establecer.
             },
