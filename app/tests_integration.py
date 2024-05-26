@@ -274,6 +274,20 @@ class PetsTest(TestCase):
         # verifico que se muestre el error de validacion
         self.assertContains(response, "El peso debe ser un número positivo con hasta dos decimales.")
 
+    # creo un test para verificar si el peso de la mascota es invalido
+    def test_validation_invalid_breed(self):
+        response = self.client.post(
+            reverse("pets_form"),
+            data={
+                "name": "Fido",
+                "breed": "No deberia de funcionar",
+                "birthday": "01/01/2015",
+                "weight": "1000.00",
+            },
+        )
+        # verifico que se muestre el error de validacion
+        self.assertContains(response, "La raza no es válida.")
+
     def test_validation_errors_create_pet(self):
         response = self.client.post(
             reverse("pets_form"),
