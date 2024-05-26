@@ -1,5 +1,6 @@
 from django.db import models
 from datetime import datetime
+import re
 from decimal import Decimal
 
 
@@ -402,7 +403,7 @@ def validate_product(data):
 
     name = data.get("name", "")
     type = data.get("type", "")
-    price = data.get("price", "")
+    price_str = data.get("price", "")
 
     if name == "":
         errors["name"] = "Por favor ingrese el nombre del producto"
@@ -410,10 +411,21 @@ def validate_product(data):
     if type == "":
         errors["type"] = "Por favor ingrese el tipo de producto"
 
-    if price == "":
-        errors["price"] = "Por favor ingrese el precio del producto"
+    try:
+        price = float(price_str)
+        if price <= 0:
+            errors["price"] = "Por favor ingrese un precio válido"
+        elif not validate_price_format(price_str):
+            errors["price"] = "El precio debe tener un formato correcto (n.nn)"
+    except ValueError:
+        errors["price"] = "Por favor ingrese un precio válido"
 
     return errors
+
+def validate_price_format(price_str):
+    pattern = r"^\d+(\.\d+)?$"
+    match = re.match(pattern, price_str)
+    return match is not None
 
 
 class Product(models.Model):

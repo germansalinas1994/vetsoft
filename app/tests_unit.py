@@ -1,5 +1,7 @@
 from django.test import TestCase
 from app.models import Client
+from app.models import Product
+from decimal import Decimal
 from app.models import Medicine
 from app.models import Vet, Speciality, Breed
 from app.models import Pet
@@ -65,6 +67,79 @@ class ClientModelTest(TestCase):
         self.assertEqual(client_updated.phone, "221555232")
 
 
+# PRODUCT
+class ProductModelTest(TestCase):
+    def test_can_create_and_get_product(self):
+        Product.save_product(
+            {
+                "name": "Whiskas",
+                "type": "Gato adulto",
+                "price": "1454.3",
+            }
+        )
+        products = Product.objects.all()
+        self.assertEqual(len(products), 1)
+
+        self.assertEqual(products[0].name, "Whiskas")
+        self.assertEqual(products[0].type, "Gato adulto")
+        self.assertEqual(products[0].price, 1454.3)
+
+    def test_can_update_product(self):
+        Product.save_product(
+            {
+                "name": "Whiskas",
+                "type": "Gato adulto",
+                "price": "1454.3",
+            }
+        )
+        product = Product.objects.get(pk=1)
+
+        self.assertEqual(product.price, 1454.3)
+
+        product.update_product({"price": 1454.3})
+
+        product_updated = Product.objects.get(pk=1)
+
+        self.assertEqual(product_updated.price, 1454.3)
+
+    def test_update_product_with_error(self):
+        Product.save_product(
+            {
+                "name": "Whiskas",
+                "type": "Gato adulto",
+                "price": "1454.3",
+            }
+        )
+        product = Product.objects.get(pk=1)
+
+        self.assertEqual(product.price, 1454.3)
+
+        product.update_product({"name": "Whiskas", "type": "Gato adulto","price": ""})
+
+        product_updated = Product.objects.get(pk=1)
+
+        self.assertEqual(product_updated.price, 1454.3)
+
+    def test_product_price_no_negative(self):
+        valid, errors = Product.save_product({
+            "name": "DogChow",
+            "type": "Perro adulto",
+            "price": "-434.00"
+        })
+        self.assertFalse(valid)
+        self.assertIn("price", errors)
+        self.assertEqual(errors["price"], "Por favor ingrese un precio válido")
+
+
+    def test_product_price_no_words_or_symbols(self):
+        valid, errors = Product.save_product({
+            "name": "DogChow",
+            "type": "Perro adulto",
+            "price": "-434abc/e"
+        })
+        self.assertFalse(valid)  
+        self.assertIn("price", errors)  
+        self.assertEqual(errors["price"], "Por favor ingrese un precio válido") 
 
 class MedicineModelTest(TestCase):
     def test_medicine_dose_cannot_be_empty(self):

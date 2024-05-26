@@ -1,6 +1,7 @@
 from django.test import TestCase
 from django.shortcuts import reverse
 from app.models import Client
+from app.models import Product
 from app.models import Medicine
 from app.models import Provider
 from app.models import Pet
@@ -101,6 +102,90 @@ class ClientsTest(TestCase):
         self.assertEqual(editedClient.email, client.email)
 
 
+# Test Producto
+class ProductsTest(TestCase):
+    def test_repo_use_repo_template(self):
+        response = self.client.get(reverse("products_repo"))
+        self.assertTemplateUsed(response, "products/repository.html")
+
+    def test_repo_display_all_products(self):
+        response = self.client.get(reverse("products_repo"))
+        self.assertTemplateUsed(response, "products/repository.html")
+
+    def test_form_use_form_template(self):
+        response = self.client.get(reverse("products_form"))
+        self.assertTemplateUsed(response, "products/form.html")
+
+    def test_can_create_product(self):
+        response = self.client.post(
+            reverse("products_form"),
+            data={
+                "name": "DogChow",
+                "type": "Perro adulto",
+                "price": "10400.50"
+            },
+        )
+        products = Product.objects.all()
+        self.assertEqual(len(products), 1)
+
+        self.assertEqual(products[0].name, "DogChow")
+        self.assertEqual(products[0].type, "Perro adulto")
+        self.assertEqual(products[0].price, 10400.50)
+
+        self.assertRedirects(response, reverse("products_repo"))
+
+    def test_validation_errors_create_product(self):
+        response = self.client.post(
+            reverse("products_form"),
+            data={},
+        )
+
+        self.assertContains(response, "Por favor ingrese el nombre del producto")
+        self.assertContains(response, "Por favor ingrese el tipo de producto")
+        self.assertContains(response, "Por favor ingrese un precio válido")
+
+    def test_should_response_with_404_status_if_product_doesnt_exists(self):
+        response = self.client.get(reverse("products_edit", kwargs={"id": 100}))
+        self.assertEqual(response.status_code, 404)
+
+    def test_validation_invalid_price(self):
+        response = self.client.post(
+            reverse("products_form"),
+            data={
+                "name": "DogChow",
+                "type": "Perro adulto",
+                "price": "10 mil pesos"
+            },
+        )
+
+        self.assertContains(response, "Por favor ingrese un precio válido")
+
+    def test_edit_user_with_valid_data(self):
+        product = Product.objects.create(
+            name="DogChow",
+            type="Perro adulto",
+            price="10400.50"
+        )
+
+        response = self.client.post(
+            reverse("products_form"),
+            data={
+                "id": product.id,
+                "name": "DogChow",
+                "type": "Perro adulto",
+                "price": "14400.50"
+            },
+        )
+
+        # redirect after post
+        self.assertEqual(response.status_code, 302)
+
+        editedProduct = Product.objects.get(pk=product.id)
+        self.assertEqual(editedProduct.name, "DogChow")
+        self.assertEqual(editedProduct.type, product.type)
+        self.assertEqual(editedProduct.price,  14400.50)
+        self.assertNotEqual(editedProduct.price, product.price)
+        
 class MedicinesTest(TestCase):
     def test_repo_use_repo_template(self):
         response = self.client.get(reverse("medicines_repo"))
