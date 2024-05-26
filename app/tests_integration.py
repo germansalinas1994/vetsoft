@@ -3,8 +3,9 @@ from django.shortcuts import reverse
 from app.models import Client
 from app.models import Product
 from app.models import Medicine
+from app.models import Provider
 from app.models import Pet
-from app.models import Vet, Speciality
+from app.models import Vet, Speciality, Breed
 from decimal import Decimal
 from datetime import datetime
 
@@ -323,7 +324,7 @@ class PetsTest(TestCase):
             reverse("pets_form"),
             data={
                 "name": "Fido",
-                "breed": "Golden Retriever",
+                "breed": Breed.GOLDEN_RETRIEVER,
                 "birthday": "01/01/2015",
                 "weight": "10.50",
             },
@@ -350,13 +351,27 @@ class PetsTest(TestCase):
             reverse("pets_form"),
             data={
                 "name": "Fido",
-                "breed": "Golden Retriever",
+                "breed": Breed.GOLDEN_RETRIEVER,
                 "birthday": "01/01/2015",
                 "weight": "invalid",
             },
         )
         # verifico que se muestre el error de validacion
         self.assertContains(response, "El peso debe ser un número positivo con hasta dos decimales.")
+
+    # creo un test para verificar si el peso de la mascota es invalido
+    def test_validation_invalid_breed(self):
+        response = self.client.post(
+            reverse("pets_form"),
+            data={
+                "name": "Fido",
+                "breed": "No deberia de funcionar",
+                "birthday": "01/01/2015",
+                "weight": "1000.00",
+            },
+        )
+        # verifico que se muestre el error de validacion
+        self.assertContains(response, "La raza no es válida.")
 
     def test_validation_errors_create_pet(self):
         response = self.client.post(
@@ -373,7 +388,7 @@ class PetsTest(TestCase):
         # Creación de una mascota con datos iniciales.
         pet = Pet.objects.create(
             name="Fido",
-            breed="Golden Retriever",
+            breed=Breed.GOLDEN_RETRIEVER,
             birthday="2015-01-01",
             weight="10.50",
         )
@@ -384,7 +399,7 @@ class PetsTest(TestCase):
             data ={
                 "id": pet.id,
                 "name": "cambio",
-                "breed": "cambio",
+                "breed": Breed.BEAGLE,
                 "birthday": "01/01/2014",  # Formato correcto de fecha.
                 "weight": "1212",  # Peso que se intenta establecer.
             },
@@ -597,3 +612,95 @@ class VetsTest(TestCase):
         self.assertEqual(editedVet.phone, vet.phone)
         self.assertEqual(editedVet.speciality, Speciality.CARDIOLOGO)
         self.assertNotEqual(editedVet.speciality, Speciality.DERMATOLOGO)
+
+##############################
+
+class ProvidersTest(TestCase):
+    def test_repo_use_repo_template(self):
+        response = self.client.get(reverse("providers_repo"))
+        self.assertTemplateUsed(response, "providers/repository.html")
+
+    def test_repo_display_all_providers(self):
+        Provider.objects.create(name="Valentina", email="estudiantes@gmail.com", direccion="12 y 47")
+        Provider.objects.create(name="Faustina", email="boca@gmail.com", direccion="12 y 50")
+
+        response = self.client.get(reverse("providers_repo"))
+        self.assertTemplateUsed(response, "providers/repository.html")
+        self.assertContains(response, "Valentina")
+        self.assertContains(response, "Faustina")
+
+    def test_form_use_form_template(self):
+        response = self.client.get(reverse("providers_form"))
+        self.assertTemplateUsed(response, "providers/form.html")
+
+    def test_can_create_provider(self):
+        response = self.client.post(
+            reverse("providers_form"),
+            data={
+                "name": "Valentina",
+                "email": "estudiantes@gmail.com",
+                "direccion": "12 y 47",
+            },
+        )
+        providers = Provider.objects.all()
+        self.assertEqual(len(providers), 1)
+        self.assertEqual(providers[0].name, "Valentina")
+        self.assertEqual(providers[0].email, "estudiantes@gmail.com")
+        self.assertEqual(providers[0].direccion, "12 y 47")
+        self.assertRedirects(response, reverse("providers_repo"))
+
+    def test_validation_errors_create_provider(self):
+        response = self.client.post(reverse("providers_form"), data={})
+        self.assertContains(response, "Por favor ingrese un nombre")
+        self.assertContains(response, "Por favor ingrese un email")
+        self.assertContains(response, "Por favor ingrese una direccion")
+
+
+    def test_validation_invalid_email(self):
+        response = self.client.post(
+            reverse("providers_form"),
+            data={
+                "name": "Valentina",
+                "email": "estudiantes",
+                "direccion": "12 y 47",
+            },
+        )
+
+        self.assertContains(response, "Por favor ingrese un email valido")
+
+
+    def test_should_response_with_404_status_if_provider_doesnt_exist(self):
+        response = self.client.get(reverse("providers_edit", kwargs={"id": 100}))
+        self.assertEqual(response.status_code, 404)
+
+    def test_can_delete_provider(self):
+        provider = Provider.objects.create(
+            name="Valentina", email="estudiantes@gmail.com", direccion="12 y 47"
+        )
+        response = self.client.post(reverse("providers_delete"), data={"provider_id": provider.id})
+        self.assertEqual(response.status_code, 302)
+
+        providers = Provider.objects.all()
+        self.assertEqual(len(providers), 0)
+
+
+    def test_edit_provider_with_valid_data(self):
+        provider = Provider.objects.create(
+            name="Valentina", email="estudiantes@gmail.com", direccion="12 y 47"
+        )
+
+        response = self.client.post(
+            reverse("providers_edit", kwargs={"id": provider.id}),
+            data={
+                "id": provider.id,
+                "name": "Faustina",
+                "email": "boca@gmail.com",
+                "direccion": "12 y 50",
+            },
+        )
+        self.assertEqual(response.status_code, 302)
+
+        edited_provider = Provider.objects.get(pk=provider.id)
+        self.assertEqual(edited_provider.name, "Faustina")
+        self.assertEqual(edited_provider.email, "boca@gmail.com")
+        self.assertEqual(edited_provider.direccion, "12 y 50")
