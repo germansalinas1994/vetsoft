@@ -378,35 +378,79 @@ class PetCreateEditTestCase(PlaywrightTestCase):
         expect(self.page.get_by_text("10/05/2024")).to_be_visible()
         expect(self.page.get_by_text("70.50")).to_be_visible()
 
-    def test_should_view_errors_if_form_pet_is_invalid(self):
+    def test_should_not_be_able_to_create_a_new_pet_invalidad_breed(self):
         self.page.goto(f"{self.live_server_url}{reverse('pets_form')}")
 
         expect(self.page.get_by_role("form")).to_be_visible()
 
-        self.page.get_by_role("button", name="Guardar").click()
+        self.page.get_by_label("Nombre").fill("Juan Sebastián Veron")
+        self.page.get_by_label("Raza").select_option("")
+        self.page.get_by_label("Peso").fill("70.50")
+        # Activar el calendario haciendo clic en el campo de fecha
+        self.page.get_by_label("Fecha de Nacimiento").click()
 
+        self.page.locator('text="10"').click()  # Ajusta este selector según la estructura exacta del calendario
+        self.page.get_by_role("button", name="Guardar").click()
+        expect(self.page.get_by_text("La raza es requerida.")).to_be_visible()
+
+
+    def test_should_not_be_able_to_create_a_new_pet_invalidad_weight(self):
+        self.page.goto(f"{self.live_server_url}{reverse('pets_form')}")
+
+        expect(self.page.get_by_role("form")).to_be_visible()
+
+        self.page.get_by_label("Nombre").fill("Juan Sebastián Veron")
+        self.page.get_by_label("Raza").select_option("")
+        self.page.get_by_label("Peso").fill("")
+        # Activar el calendario haciendo clic en el campo de fecha
+        self.page.get_by_label("Fecha de Nacimiento").click()
+
+        self.page.locator('text="10"').click()  # Ajusta este selector según la estructura exacta del calendario
+        self.page.get_by_role("button", name="Guardar").click()
+        expect(self.page.get_by_text("El peso es requerido.")).to_be_visible()
+
+
+    def test_should_view_errors_if_form_pet_is_empty_weight(self):
+        self.page.goto(f"{self.live_server_url}{reverse('pets_form')}")
+        expect(self.page.get_by_role("form")).to_be_visible()
+        self.page.get_by_role("button", name="Guardar").click()
         expect(self.page.get_by_text("El nombre es requerido.")).to_be_visible()
         expect(self.page.get_by_text("La raza es requerida.")).to_be_visible()
         expect(self.page.get_by_text("La fecha de nacimiento es requerida.")).to_be_visible()
         expect(self.page.get_by_text("El peso es requerido.")).to_be_visible()
-
         self.page.get_by_label("Nombre").fill("Juan Sebastián Veron")
         self.page.get_by_label("Fecha de Nacimiento").click()
-        self.page.locator('text="10"').click()  # Ajusta este selector según la estructura exacta del calendario
+        self.page.locator('text="10"').click()
+        self.page.get_by_label("Raza").select_option("Golden Retriever")
         self.page.get_by_label("Peso").fill("")
-
         self.page.get_by_role("button", name="Guardar").click()
-
         expect(self.page.get_by_text("El nombre es requerido.")).not_to_be_visible()
-        expect(
-            self.page.get_by_text("La raza es requerida.")
-        ).to_be_visible()
+        expect(self.page.get_by_text("La raza es requerida.")).not_to_be_visible()
         self.page.get_by_label("Fecha de Nacimiento").click()
-        self.page.locator('text="10"').click()  # Ajusta este selector según la estructura exacta del calendario
+        self.page.locator('text="10"').click()
         expect(self.page.get_by_text("La fecha de nacimiento es requerida.")).not_to_be_visible()
-        expect(
-            self.page.get_by_text("El peso es requerido.")
-        ).to_be_visible()
+        expect(self.page.get_by_text("El peso es requerido.")).to_be_visible()
+
+    def test_should_view_errors_if_form_pet_is_empty_breed(self):
+        self.page.goto(f"{self.live_server_url}{reverse('pets_form')}")
+        expect(self.page.get_by_role("form")).to_be_visible()
+        self.page.get_by_role("button", name="Guardar").click()
+        expect(self.page.get_by_text("El nombre es requerido.")).to_be_visible()
+        expect(self.page.get_by_text("La raza es requerida.")).to_be_visible()
+        expect(self.page.get_by_text("La fecha de nacimiento es requerida.")).to_be_visible()
+        expect(self.page.get_by_text("El peso es requerido.")).to_be_visible()
+        self.page.get_by_label("Nombre").fill("Juan Sebastián Veron")
+        self.page.get_by_label("Fecha de Nacimiento").click()
+        self.page.locator('text="10"').click()
+        self.page.get_by_label("Raza").select_option("")
+        self.page.get_by_label("Peso").fill("33")
+        self.page.get_by_role("button", name="Guardar").click()
+        expect(self.page.get_by_text("El nombre es requerido.")).not_to_be_visible()
+        expect(self.page.get_by_text("La raza es requerida.")).to_be_visible()
+        self.page.get_by_label("Fecha de Nacimiento").click()
+        self.page.locator('text="10"').click()
+        expect(self.page.get_by_text("La fecha de nacimiento es requerida.")).not_to_be_visible()
+        expect(self.page.get_by_text("El peso es requerido.")).not_to_be_visible()
 
     def test_should_be_able_to_edit_a_pet(self):
         pet = Pet.objects.create(
@@ -422,7 +466,7 @@ class PetCreateEditTestCase(PlaywrightTestCase):
         self.page.get_by_label("Nombre").fill("Guido Carrillo")
         self.page.get_by_label("Raza").select_option("Golden Retriever")
         self.page.get_by_label("Fecha de Nacimiento").click()
-        self.page.locator('text="10"').click()  # Ajusta este selector según la estructura exacta del calendario
+        self.page.locator('text="10"').click()
         self.page.get_by_label("Peso").click()
         self.page.keyboard.press("ArrowUp")
         self.page.get_by_label("Peso").fill("10,00")
@@ -443,6 +487,32 @@ class PetCreateEditTestCase(PlaywrightTestCase):
         expect(edit_action).to_have_attribute(
             "href", reverse("pets_edit", kwargs={"id": pet.id})
         )
+
+    def test_should_not_be_able_to_edit_a_pet_with_invalida_breed(self):
+        pet = Pet.objects.create(
+            name="Juan Sebastián Veron",
+            breed=Breed.PASTOR_ALEMAN,
+            birthday="2024-05-13",
+            weight= Decimal("70.50"),
+        )
+
+        path = reverse("pets_edit", kwargs={"id": pet.id})
+        self.page.goto(f"{self.live_server_url}{path}")
+
+        self.page.get_by_label("Nombre").fill("Guido Carrillo")
+        self.page.get_by_label("Raza").select_option("")
+        self.page.get_by_label("Fecha de Nacimiento").click()
+        self.page.locator('text="10"').click()
+        self.page.get_by_label("Peso").click()
+        self.page.keyboard.press("ArrowUp")
+        self.page.get_by_label("Peso").fill("10,00")
+
+        self.page.get_by_role("button", name="Guardar").click()
+
+        expect(self.page.get_by_text("La raza es requerida.")).to_be_visible()
+
+
+
 
 
 class MedicineCreateEditTestCase(PlaywrightTestCase):
