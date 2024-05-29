@@ -185,7 +185,6 @@ class ProductsTest(TestCase):
         self.assertEqual(editedProduct.type, product.type)
         self.assertEqual(editedProduct.price,  14400.50)
         self.assertNotEqual(editedProduct.price, product.price)
-        
 class MedicinesTest(TestCase):
     def test_repo_use_repo_template(self):
         response = self.client.get(reverse("medicines_repo"))
@@ -466,7 +465,7 @@ class VetsTest(TestCase):
         response = self.client.get(reverse("vets_edit", kwargs={"id": 1000}))
         self.assertEqual(response.status_code, 404)
 
-    def test_validation_invalid_speciality(self):
+    def test_validation_create_with_invalid_speciality(self):
         response = self.client.post(
             reverse("vets_form"),
             data={
@@ -476,9 +475,12 @@ class VetsTest(TestCase):
                 "speciality": "esta especialidad no existe",
             },
         )
+        self.assertContains(response, "Especialidad no válida")
 
 
-    def test_validation_invalid_speciality_none(self):
+
+
+    def test_validation_create_with_invalid_speciality_none(self):
         response = self.client.post(
             reverse("vets_form"),
             data={
@@ -487,16 +489,19 @@ class VetsTest(TestCase):
                 "phone": "2215552324",
             },
         )
+        self.assertContains(response, "Por favor ingrese una especialidad")
 
-    def test_validation_invalid_speciality_empty(self):
+    def test_validation_create_with_invalid_speciality_empty(self):
         response = self.client.post(
             reverse("vets_form"),
             data={
                 "name": "Juan Sebastian Veron",
                 "email": "brujita75@hotmail.com",
-                "phone": "",
+                "phone": "2214202798",
+                "speciality": "",
             },
         )
+        self.assertContains(response, "Por favor ingrese una especialidad")
 
     def test_edit_vet_with_valid_data(self):
         vet = Vet.objects.create(

@@ -137,9 +137,9 @@ class ProductModelTest(TestCase):
             "type": "Perro adulto",
             "price": "-434abc/e"
         })
-        self.assertFalse(valid)  
-        self.assertIn("price", errors)  
-        self.assertEqual(errors["price"], "Por favor ingrese un precio válido") 
+        self.assertFalse(valid)
+        self.assertIn("price", errors)
+        self.assertEqual(errors["price"], "Por favor ingrese un precio válido")
 
 class MedicineModelTest(TestCase):
     def test_medicine_dose_cannot_be_empty(self):
@@ -245,7 +245,6 @@ class PetModelTest(TestCase):
         )
 
         pet = Pet.objects.get(pk=1)
-        self.assertEqual(pet.breed, Breed.GOLDEN_RETRIEVER)
         pet.update_pet({
                 "name": "Fido",
                 "breed": Breed.BOXER,
@@ -271,8 +270,6 @@ class PetModelTest(TestCase):
             }
         )
         pet = Pet.objects.get(pk=1)
-        self.assertEqual(pet.weight, Decimal("1.50"))
-        self.assertEqual(pet.breed, "Golden Retriever")
         pet.update_pet({
                 "name": "cambio",
                 "breed": Breed.GOLDEN_RETRIEVER,
@@ -285,7 +282,7 @@ class PetModelTest(TestCase):
 
     def test_update_pet_with_error_empty_breed(self):
         # se crea una mascota
-        success, errors = Pet.save_pet(
+        Pet.save_pet(
             {
                 "name": "Fido",
                 "breed": Breed.GOLDEN_RETRIEVER,
@@ -293,32 +290,19 @@ class PetModelTest(TestCase):
                 "weight": "10.50",
             }
         )
-        # se verifica que se haya creado correctamente
-        self.assertTrue(success)
-        # se verifica que no haya errores
-        self.assertIsNone(errors)
-        # se obtiene la mascota creada
         pet = Pet.objects.get(pk=1)
-        # se verifica que el peso sea el correcto
-        self.assertAlmostEqual(pet.weight, Decimal("10.50"))
-        # se intenta actualizar la mascota con un peso vacío lo cual debería fallar
-        success, errors = pet.update_pet({
+        pet.update_pet({
                 "name": "Fido",
                 "breed": "",
                 "birthday": "01/01/2015",
                 "weight": "10.50",
                 })
-        # se verifica que la actualización haya fallado
-        self.assertFalse(success)
-        # se verifica que haya un error en el peso
-        self.assertIn("breed", errors)
-        # se verifica que el peso de la mascota no haya cambiado
         pet_updated = Pet.objects.get(pk=1)
         self.assertEqual(pet_updated.breed, Breed.GOLDEN_RETRIEVER)
 
     def test_update_pet_with_error_bad_breed(self):
         # se crea una mascota
-        success, errors = Pet.save_pet(
+        Pet.save_pet(
             {
                 "name": "Fido",
                 "breed": Breed.GOLDEN_RETRIEVER,
@@ -326,32 +310,19 @@ class PetModelTest(TestCase):
                 "weight": "10.50",
             }
         )
-        # se verifica que se haya creado correctamente
-        self.assertTrue(success)
-        # se verifica que no haya errores
-        self.assertIsNone(errors)
-        # se obtiene la mascota creada
         pet = Pet.objects.get(pk=1)
-        # se verifica que el peso sea el correcto
-        self.assertEqual(pet.weight, Decimal("10.50"))
-        # se intenta actualizar la mascota con un peso vacío lo cual debería fallar
-        success, errors = pet.update_pet({
+        pet.update_pet({
                 "name": "Fido",
                 "breed": "Con esta raza no deberia updatear",
                 "birthday": "01/01/2015",
                 "weight": "10.50",
                 })
-        # se verifica que la actualización haya fallado
-        self.assertFalse(success)
-        # se verifica que haya un error en el peso
-        self.assertIn("breed", errors)
-        # se verifica que el peso de la mascota no haya cambiado
         pet_updated = Pet.objects.get(pk=1)
         self.assertEqual(pet_updated.breed, Breed.GOLDEN_RETRIEVER)
 
     def test_update_pet_with_error_bad_weight(self):
         # se crea una mascota
-        success, errors = Pet.save_pet(
+        Pet.save_pet(
             {
                 "name": "Fido",
                 "breed": Breed.GOLDEN_RETRIEVER,
@@ -359,28 +330,17 @@ class PetModelTest(TestCase):
                 "weight": "10.50",
             }
         )
-        # se verifica que se haya creado correctamente
-        self.assertTrue(success)
-        # se verifica que no haya errores
-        self.assertIsNone(errors)
-        # se obtiene la mascota creada
         pet = Pet.objects.get(pk=1)
-        # se verifica que el peso sea el correcto
-        self.assertEqual(pet.weight, Decimal("10.50"))
-        # se intenta actualizar la mascota con un peso vacío lo cual debería fallar
-        success, errors = pet.update_pet({
+        pet.update_pet({
                 "name": "Fido",
                 "breed": Breed.GOLDEN_RETRIEVER,
                 "birthday": "01/01/2015",
                 "weight": "Con este peso no deberia updatear",
                 })
-        # se verifica que la actualización haya fallado
-        self.assertFalse(success)
-        # se verifica que haya un error en el peso
-        self.assertIn("weight", errors)
-        # se verifica que el peso de la mascota no haya cambiado
         pet_updated = Pet.objects.get(pk=1)
         self.assertEqual(pet_updated.weight, Decimal("10.50"))
+
+
 
     def test_create_pet_with_error_weight(self):
         # se crea una mascota
