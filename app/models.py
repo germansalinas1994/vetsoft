@@ -457,3 +457,5 @@ class Product(models.Model):
         self.price = product_data.get("price", "") or self.price
 
         self.save()
+
+        return True, None
