@@ -452,10 +452,6 @@ class Product(models.Model):
         return True, None
 
     def update_product(self, product_data):
-        errors = validate_product(product_data)
-        if len(errors.keys()) > 0:
-            return False, errors
-
         self.name = product_data.get("name", "") or self.name
         self.type = product_data.get("type", "") or self.type
         self.price = product_data.get("price", "") or self.price

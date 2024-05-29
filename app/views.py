@@ -105,7 +105,7 @@ def providers_form(request, id=None):
             saved, errors = Provider.save_provider(request.POST)
         else:
             provider = get_object_or_404(Provider, pk=provider_id)
-            saved, errors = provider.update_provider(request.POST)
+            provider.update_provider(request.POST)
 
         if saved:
             return redirect(reverse("providers_repo"))
@@ -228,7 +228,7 @@ def products_form(request, id=None):
             saved, errors = Product.save_product(request.POST)
         else:
             product = get_object_or_404(Product, pk=product_id)
-            saved, errors = product.update_product(request.POST)
+            product.update_product(request.POST)
 
         if saved:
             return redirect(reverse("products_repo"))
