@@ -182,7 +182,7 @@ def validate_provider(data):
 class Provider(models.Model):
     name = models.CharField(max_length=100)
     email = models.EmailField()
-    direccion = models.CharField(max_length=100, blank=True)
+    direccion = models.CharField(max_length=100)
 
     def __str__(self):
         return self.name
