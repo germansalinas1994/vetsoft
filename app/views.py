@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect, reverse, get_object_or_404
 from .models import Client
-from .models import Vet, Speciality
+from .models import Vet, Speciality, Breed
 from .models import Provider
 from .models import Pet
 from .models import Medicine
@@ -105,7 +105,7 @@ def providers_form(request, id=None):
             saved, errors = Provider.save_provider(request.POST)
         else:
             provider = get_object_or_404(Provider, pk=provider_id)
-            provider.update_provider(request.POST)
+            saved, errors = provider.update_provider(request.POST)
 
         if saved:
             return redirect(reverse("providers_repo"))
@@ -138,6 +138,9 @@ def pets_repository(request):
 
 
 def pets_form(request, id=None):
+    breeds = Breed.choices
+
+
     if request.method == "POST":
         pet_id = request.POST.get("id", "")
         errors = {}
@@ -153,14 +156,14 @@ def pets_form(request, id=None):
             return redirect(reverse("pets_repo"))
 
         return render(
-            request, "pets/form.html", {"errors": errors, "pet": request.POST}
+            request, "pets/form.html", {"errors": errors, "pet": request.POST, "breeds": breeds}
         )
 
     pet = None
     if id is not None:
         pet = get_object_or_404(Pet, pk=id)
 
-    return render(request, "pets/form.html", {"pet": pet})
+    return render(request, "pets/form.html", {"pet": pet, "breeds": breeds})
 
 def pets_delete(request):
     pet_id = request.POST.get("pet_id")
@@ -225,7 +228,7 @@ def products_form(request, id=None):
             saved, errors = Product.save_product(request.POST)
         else:
             product = get_object_or_404(Product, pk=product_id)
-            product.update_product(request.POST)
+            saved, errors = product.update_product(request.POST)
 
         if saved:
             return redirect(reverse("products_repo"))

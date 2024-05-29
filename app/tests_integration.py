@@ -1,10 +1,11 @@
 from django.test import TestCase
 from django.shortcuts import reverse
 from app.models import Client
+from app.models import Product
 from app.models import Medicine
 from app.models import Provider
 from app.models import Pet
-from app.models import Vet, Speciality
+from app.models import Vet, Speciality, Breed
 from decimal import Decimal
 from datetime import datetime
 
@@ -101,6 +102,89 @@ class ClientsTest(TestCase):
         self.assertEqual(editedClient.email, client.email)
 
 
+# Test Producto
+class ProductsTest(TestCase):
+    def test_repo_use_repo_template(self):
+        response = self.client.get(reverse("products_repo"))
+        self.assertTemplateUsed(response, "products/repository.html")
+
+    def test_repo_display_all_products(self):
+        response = self.client.get(reverse("products_repo"))
+        self.assertTemplateUsed(response, "products/repository.html")
+
+    def test_form_use_form_template(self):
+        response = self.client.get(reverse("products_form"))
+        self.assertTemplateUsed(response, "products/form.html")
+
+    def test_can_create_product(self):
+        response = self.client.post(
+            reverse("products_form"),
+            data={
+                "name": "DogChow",
+                "type": "Perro adulto",
+                "price": "10400.50"
+            },
+        )
+        products = Product.objects.all()
+        self.assertEqual(len(products), 1)
+
+        self.assertEqual(products[0].name, "DogChow")
+        self.assertEqual(products[0].type, "Perro adulto")
+        self.assertEqual(products[0].price, 10400.50)
+
+        self.assertRedirects(response, reverse("products_repo"))
+
+    def test_validation_errors_create_product(self):
+        response = self.client.post(
+            reverse("products_form"),
+            data={},
+        )
+
+        self.assertContains(response, "Por favor ingrese el nombre del producto")
+        self.assertContains(response, "Por favor ingrese el tipo de producto")
+        self.assertContains(response, "Por favor ingrese un precio válido")
+
+    def test_should_response_with_404_status_if_product_doesnt_exists(self):
+        response = self.client.get(reverse("products_edit", kwargs={"id": 100}))
+        self.assertEqual(response.status_code, 404)
+
+    def test_validation_invalid_price(self):
+        response = self.client.post(
+            reverse("products_form"),
+            data={
+                "name": "DogChow",
+                "type": "Perro adulto",
+                "price": "10 mil pesos"
+            },
+        )
+
+        self.assertContains(response, "Por favor ingrese un precio válido")
+
+    def test_edit_user_with_valid_data(self):
+        product = Product.objects.create(
+            name="DogChow",
+            type="Perro adulto",
+            price="10400.50"
+        )
+
+        response = self.client.post(
+            reverse("products_form"),
+            data={
+                "id": product.id,
+                "name": "DogChow",
+                "type": "Perro adulto",
+                "price": "14400.50"
+            },
+        )
+
+        # redirect after post
+        self.assertEqual(response.status_code, 302)
+
+        editedProduct = Product.objects.get(pk=product.id)
+        self.assertEqual(editedProduct.name, "DogChow")
+        self.assertEqual(editedProduct.type, product.type)
+        self.assertEqual(editedProduct.price,  14400.50)
+        self.assertNotEqual(editedProduct.price, product.price)
 class MedicinesTest(TestCase):
     def test_repo_use_repo_template(self):
         response = self.client.get(reverse("medicines_repo"))
@@ -239,7 +323,7 @@ class PetsTest(TestCase):
             reverse("pets_form"),
             data={
                 "name": "Fido",
-                "breed": "Golden Retriever",
+                "breed": Breed.GOLDEN_RETRIEVER,
                 "birthday": "01/01/2015",
                 "weight": "10.50",
             },
@@ -266,13 +350,27 @@ class PetsTest(TestCase):
             reverse("pets_form"),
             data={
                 "name": "Fido",
-                "breed": "Golden Retriever",
+                "breed": Breed.GOLDEN_RETRIEVER,
                 "birthday": "01/01/2015",
                 "weight": "invalid",
             },
         )
         # verifico que se muestre el error de validacion
         self.assertContains(response, "El peso debe ser un número positivo con hasta dos decimales.")
+
+    # creo un test para verificar si el peso de la mascota es invalido
+    def test_validation_invalid_breed(self):
+        response = self.client.post(
+            reverse("pets_form"),
+            data={
+                "name": "Fido",
+                "breed": "No deberia de funcionar",
+                "birthday": "01/01/2015",
+                "weight": "1000.00",
+            },
+        )
+        # verifico que se muestre el error de validacion
+        self.assertContains(response, "La raza no es válida.")
 
     def test_validation_errors_create_pet(self):
         response = self.client.post(
@@ -289,7 +387,7 @@ class PetsTest(TestCase):
         # Creación de una mascota con datos iniciales.
         pet = Pet.objects.create(
             name="Fido",
-            breed="Golden Retriever",
+            breed=Breed.GOLDEN_RETRIEVER,
             birthday="2015-01-01",
             weight="10.50",
         )
@@ -300,7 +398,7 @@ class PetsTest(TestCase):
             data ={
                 "id": pet.id,
                 "name": "cambio",
-                "breed": "cambio",
+                "breed": Breed.BEAGLE,
                 "birthday": "01/01/2014",  # Formato correcto de fecha.
                 "weight": "1212",  # Peso que se intenta establecer.
             },
@@ -367,7 +465,7 @@ class VetsTest(TestCase):
         response = self.client.get(reverse("vets_edit", kwargs={"id": 1000}))
         self.assertEqual(response.status_code, 404)
 
-    def test_validation_invalid_speciality(self):
+    def test_validation_create_with_invalid_speciality(self):
         response = self.client.post(
             reverse("vets_form"),
             data={
@@ -377,9 +475,12 @@ class VetsTest(TestCase):
                 "speciality": "esta especialidad no existe",
             },
         )
+        self.assertContains(response, "Especialidad no válida")
 
 
-    def test_validation_invalid_speciality_none(self):
+
+
+    def test_validation_create_with_invalid_speciality_none(self):
         response = self.client.post(
             reverse("vets_form"),
             data={
@@ -388,16 +489,19 @@ class VetsTest(TestCase):
                 "phone": "2215552324",
             },
         )
+        self.assertContains(response, "Por favor ingrese una especialidad")
 
-    def test_validation_invalid_speciality_empty(self):
+    def test_validation_create_with_invalid_speciality_empty(self):
         response = self.client.post(
             reverse("vets_form"),
             data={
                 "name": "Juan Sebastian Veron",
                 "email": "brujita75@hotmail.com",
-                "phone": "",
+                "phone": "2214202798",
+                "speciality": "",
             },
         )
+        self.assertContains(response, "Por favor ingrese una especialidad")
 
     def test_edit_vet_with_valid_data(self):
         vet = Vet.objects.create(

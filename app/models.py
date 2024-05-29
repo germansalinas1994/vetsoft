@@ -1,5 +1,6 @@
 from django.db import models
 from datetime import datetime
+import re
 from decimal import Decimal
 
 
@@ -179,6 +180,7 @@ def validate_provider(data):
     return errors
 
 
+
 class Provider(models.Model):
     name = models.CharField(max_length=100)
     email = models.EmailField()
@@ -220,18 +222,22 @@ def validate_pet(pet_data):
     errors = {}
     # valido que el nombre no este vacio ni sea null
     name = pet_data.get("name")
+
     if not name or name == None:
         errors["name"] = "El nombre es requerido."
     if name == "":
         errors["name"] = "El nombre es requerido."
     # valido que la raza no este vacia ni sea null
-    breed = pet_data.get("breed")
-    if not breed or breed == None:
+    breed = pet_data.get("breed","")
+
+    if breed == "" or breed == None:
         errors["breed"] = "La raza es requerida."
-    if breed == "":
-        errors["breed"] = "La raza es requerida."
+    elif breed not in dict(Breed.choices):
+        errors["breed"] = "La raza no es válida."
+
     # valido que la fecha de nacimiento no este vacia ni sea null
     birthday = pet_data.get("birthday")
+
     if not birthday or birthday == None:
         errors["birthday"] = "La fecha de nacimiento es requerida."
     elif not parse_date(birthday):
@@ -240,6 +246,7 @@ def validate_pet(pet_data):
         errors["birthday"] = "La fecha de nacimiento es requerida."
     # valido que el peso no este vacio ni sea null
     weight = pet_data.get("weight")
+
     if not weight or weight == None:
         errors["weight"] = "El peso es requerido."
     else:
@@ -272,9 +279,22 @@ def parse_date(date_str):
         return None  # Retorna None si hay un error en la conversión, con none se puede validar si la fecha es correcta o no
 
 
+class Breed(models.TextChoices):
+        LABRADOR_RETRIEVER = 'Labrador Retriever'
+        PASTOR_ALEMAN = 'Pastor Alemán'
+        GOLDEN_RETRIEVER = 'Golden Retriever'
+        BEAGLE = 'Beagle'
+        BOXER = 'Boxer'
+        SIAMES = 'Siamés'
+        EUROPEO = 'Europeo'
+        PERSA = 'Persa'
+        BENGALI = 'Bengalí'
+        SPHYNX = 'Sphynx'
+
+
 class Pet(models.Model):
     name = models.CharField(max_length=100)
-    breed = models.CharField(max_length=100)
+    breed = models.CharField(max_length=50, choices=Breed.choices)
     birthday = models.DateField()
     weight = models.DecimalField(max_digits=20, decimal_places=2, default=0.00)
 
@@ -383,7 +403,7 @@ def validate_product(data):
 
     name = data.get("name", "")
     type = data.get("type", "")
-    price = data.get("price", "")
+    price_str = data.get("price", "")
 
     if name == "":
         errors["name"] = "Por favor ingrese el nombre del producto"
@@ -391,10 +411,21 @@ def validate_product(data):
     if type == "":
         errors["type"] = "Por favor ingrese el tipo de producto"
 
-    if price == "":
-        errors["price"] = "Por favor ingrese el precio del producto"
+    try:
+        price = float(price_str)
+        if price <= 0:
+            errors["price"] = "Por favor ingrese un precio válido"
+        elif not validate_price_format(price_str):
+            errors["price"] = "El precio debe tener un formato correcto (n.nn)"
+    except ValueError:
+        errors["price"] = "Por favor ingrese un precio válido"
 
     return errors
+
+def validate_price_format(price_str):
+    pattern = r"^\d+(\.\d+)?$"
+    match = re.match(pattern, price_str)
+    return match is not None
 
 
 class Product(models.Model):
@@ -421,6 +452,10 @@ class Product(models.Model):
         return True, None
 
     def update_product(self, product_data):
+        errors = validate_product(product_data)
+        if len(errors.keys()) > 0:
+            return False, errors
+
         self.name = product_data.get("name", "") or self.name
         self.type = product_data.get("type", "") or self.type
         self.price = product_data.get("price", "") or self.price
