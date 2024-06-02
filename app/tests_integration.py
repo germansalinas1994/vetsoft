@@ -7,6 +7,7 @@ from app.models import Breed, Client, Medicine, Pet, Product, Provider, Speciali
 
 
 class HomePageTest(TestCase):
+    """testea la pagina de inicio y el template que se va a usar."""
     def test_use_home_template(self):
         """
         test para verificar que la pagina de inicio use el template correcto
@@ -16,6 +17,7 @@ class HomePageTest(TestCase):
 
 
 class ClientsTest(TestCase):
+    """testea la pagina de clientes y la creacion de un cliente."""
     def test_repo_use_repo_template(self):
         """"
         test para verificar que la pagina de inicio de clientes use el template correcto
@@ -127,6 +129,7 @@ class ClientsTest(TestCase):
 
 # Test Producto
 class ProductsTest(TestCase):
+    """Testea la pagina de productos y la creacion de un producto."""
     def test_repo_use_repo_template(self):
         """"
         test para verificar que la pagina de inicio de productos use el template correcto
@@ -233,6 +236,7 @@ class ProductsTest(TestCase):
         self.assertEqual(editedProduct.price,  14400.50)
         self.assertNotEqual(editedProduct.price, product.price)
 class MedicinesTest(TestCase):
+    """Testea la pagina de medicamentos y la creacion de un medicamento."""
     def test_repo_use_repo_template(self):
         """"
         test para verificar que la pagina de inicio de medicamentos use el template correcto
@@ -380,6 +384,7 @@ class MedicinesTest(TestCase):
 
 
 class PetsTest(TestCase):
+    """Testea la pagina de mascotas y la creacion de una mascota."""
     # defino el test de la pagina de inicio para mascota y el template que se va a usar
     # esto es para chequear que la pagina de inicio de mascotas use el template correcto
     def test_repo_use_repo_template(self):
@@ -525,6 +530,7 @@ class PetsTest(TestCase):
 
 
 class VetsTest(TestCase):
+    """Testea la pagina de veterinarios y la creacion de un veterinario."""
     def test_repo_use_repo_template_vet(self):
         """"
         test para verificar que la pagina de inicio de veterinarios use el template correcto
@@ -767,6 +773,7 @@ class VetsTest(TestCase):
 ##############################
 
 class ProvidersTest(TestCase):
+    """Testea la pagina de proveedores y la creacion de un proveedor de servicios."""
     def test_repo_use_repo_template(self):
         """"
         test para verificar que la pagina de inicio de proveedores use el template correcto

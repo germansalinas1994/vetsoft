@@ -14,6 +14,7 @@ slow_mo = os.environ.get("SLOW_MO", 0)
 
 
 class PlaywrightTestCase(StaticLiveServerTestCase):
+    """ Test base para Playwright """
     @classmethod
     def setUpClass(cls):
         """"
@@ -48,6 +49,7 @@ class PlaywrightTestCase(StaticLiveServerTestCase):
 
 
 class HomeTestCase(PlaywrightTestCase):
+    """Caso de prueba para la página de inicio, este caso de prueba verificará que la página de inicio tenga los elementos y enlaces esperados."""
     def test_should_have_navbar_with_links(self):
         """"
         Verifica que el navbar tenga los links correctos
@@ -80,6 +82,7 @@ class HomeTestCase(PlaywrightTestCase):
 
 
 class ClientsRepoTestCase(PlaywrightTestCase):
+    """Caso de prueba para el repositorio de clientes, este caso de prueba verificará que el repositorio de clientes tenga los elementos y enlaces esperados."""
     def test_should_show_message_if_table_is_empty(self):
         """"
         Verifica que se muestre un mensaje si la tabla está vacía
@@ -201,6 +204,7 @@ class ClientsRepoTestCase(PlaywrightTestCase):
 
 
 class ClientCreateEditTestCase(PlaywrightTestCase):
+    """Caso de prueba para el formulario de clientes, este caso de prueba verificará que el formulario de clientes tenga los elementos y enlaces esperados."""
     def test_should_be_able_to_create_a_new_client(self):
         """"
         Verifica que se pueda crear un nuevo cliente
@@ -293,6 +297,7 @@ class ClientCreateEditTestCase(PlaywrightTestCase):
 
 
 class PetsRepoTestCase(PlaywrightTestCase):
+    """caso de prueba para el repositorio de mascotas, este caso de prueba verificará que el repositorio de mascotas tenga los elementos y enlaces esperados."""
     def test_should_show_message_if_table_is_empty(self):
         """"
         Verifica que se muestre un mensaje si la tabla está vacía
@@ -416,6 +421,7 @@ class PetsRepoTestCase(PlaywrightTestCase):
 
 
 class PetCreateEditTestCase(PlaywrightTestCase):
+    """Caso de prueba para el formulario de mascotas, este caso de prueba verificará que el formulario de mascotas tenga los elementos y enlaces esperados."""
     def test_should_be_able_to_create_a_new_pet(self):
         """"
         Verifica que se pueda crear una nueva mascota
@@ -593,6 +599,7 @@ class PetCreateEditTestCase(PlaywrightTestCase):
 
 
 class MedicineCreateEditTestCase(PlaywrightTestCase):
+    """Caso de prueba para el formulario de medicamentos, este caso de prueba verificará que el formulario de medicamentos tenga los elementos y enlaces esperados."""
     def test_create_a_new_medicine_with_valid_dose(self):
         """"
         Creación con dosis válida
@@ -750,6 +757,7 @@ class MedicineCreateEditTestCase(PlaywrightTestCase):
 
 # TEST E2E PRODUCTO
 class ProductsRepoTestCase(PlaywrightTestCase):
+    """Caso de prueba para el repositorio de productos, este caso de prueba verificará que el repositorio de productos tenga los elementos y enlaces esperados."""
     def test_should_show_message_if_table_is_empty(self):
         """"
         Verifica que se muestre un mensaje si la tabla está vacía
@@ -867,6 +875,7 @@ class ProductsRepoTestCase(PlaywrightTestCase):
 
 
 class ProductCreateEditTestCase(PlaywrightTestCase):
+    """Caso de prueba para el formulario de productos, este caso de prueba verificará que el formulario de productos tenga los elementos y enlaces esperados."""
     def test_should_be_able_to_create_a_new_product(self):
         """"
         Verifica que se pueda crear un nuevo producto
@@ -950,6 +959,7 @@ class ProductCreateEditTestCase(PlaywrightTestCase):
 # #validacion para vet - speciality
 
 class VetsRepoTestCase(PlaywrightTestCase):
+    """Caso de prueba para el repositorio de veterinarios, este caso de prueba verificará que el repositorio de veterinarios tenga los elementos y enlaces esperados."""
     def test_should_show_message_if_table_is_empty(self):
         """"
         Verifica que se muestre un mensaje si la tabla está vacía
@@ -1075,6 +1085,7 @@ class VetsRepoTestCase(PlaywrightTestCase):
 
 
 class VetCreateEditTestCase(PlaywrightTestCase):
+    """Caso de prueba para el formulario de veterinarios, este caso de prueba verificará que el formulario de veterinarios tenga los elementos y enlaces esperados."""
     def test_should_be_able_to_create_a_new_vet(self):
         """"
         Verifica que se pueda crear un nuevo veterinario
@@ -1164,6 +1175,7 @@ class VetCreateEditTestCase(PlaywrightTestCase):
 
 
 class ProvidersRepoTestCase(PlaywrightTestCase):
+    """Caso de prueba para el repositorio de proveedores, este caso de prueba verificará que el repositorio de proveedores tenga los elementos y enlaces esperados."""
     def test_should_show_message_if_table_is_empty(self):
         """"
         Verifica que se muestre un mensaje si la tabla está vacía
@@ -1282,6 +1294,7 @@ class ProvidersRepoTestCase(PlaywrightTestCase):
 
 
 class ProviderCreateEditTestCase(PlaywrightTestCase):
+    """Caso de prueba para el formulario de proveedores, este caso de prueba verificará que el formulario de proveedores tenga los elementos y enlaces esperados."""
     def test_should_be_able_to_create_a_new_provider(self):
         """"
         Creación de un proveedor

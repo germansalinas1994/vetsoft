@@ -27,6 +27,7 @@ def validate_client(data):
 
 
 class Client(models.Model):
+    """Modelo de cliente para los clientes de la clínica."""
     name = models.CharField(max_length=100)
     phone = models.CharField(max_length=15)
     email = models.EmailField()
@@ -72,6 +73,7 @@ class Client(models.Model):
 
 
 class Speciality(models.TextChoices):
+    """Especialidades de los veterinarios."""
     GENERAL = "General"
     DENTISTA = "Dentista"
     TRAUMATOLOGO = "Traumatología"
@@ -81,6 +83,7 @@ class Speciality(models.TextChoices):
 
 
 class Vet(models.Model):
+    """Modelo de veterinario para los veterinarios de la clínica."""
     name = models.CharField(max_length=100)
     email = models.EmailField()
     phone = models.CharField(max_length=15)
@@ -207,6 +210,7 @@ def validate_provider(data):
 
 
 class Provider(models.Model):
+    """Modelo de proveedor para los proveedores de la clínica."""
     name = models.CharField(max_length=100)
     email = models.EmailField()
     direccion = models.CharField(max_length=100)
@@ -311,6 +315,7 @@ def parse_date(date_str):
 
 
 class Breed(models.TextChoices):
+        """Clase enumerativa de razas de mascotas."""
         LABRADOR_RETRIEVER = 'Labrador Retriever'
         PASTOR_ALEMAN = 'Pastor Alemán'
         GOLDEN_RETRIEVER = 'Golden Retriever'
@@ -324,6 +329,7 @@ class Breed(models.TextChoices):
 
 
 class Pet(models.Model):
+    """Clase modelo de mascota para las mascotas de la clínica."""
     name = models.CharField(max_length=100)
     breed = models.CharField(max_length=50, choices=Breed.choices)
     birthday = models.DateField()
@@ -377,6 +383,7 @@ class Pet(models.Model):
 
 
 class Medicine(models.Model):
+    """Clase modelo de medicina para las medicinas de la clínica."""
     name = models.CharField(max_length=100)
     description = models.CharField(max_length=300)
     dose = models.IntegerField()
@@ -482,6 +489,7 @@ def validate_price_format(price_str):
 
 
 class Product(models.Model):
+    """Clase modelo de producto para los productos de la clínica."""
     name = models.CharField(max_length=100)
     type = models.CharField(max_length=50)
     price = models.FloatField(max_length=20)

@@ -6,6 +6,7 @@ from app.models import Breed, Client, Medicine, Pet, Product, Provider, Speciali
 
 
 class ClientModelTest(TestCase):
+    """Modelo de test para la clase Client en app.models.py"""
     def test_can_create_and_get_client(self):
         """"
         Se crea un cliente y se verifica que se haya creado correctamente
@@ -73,6 +74,7 @@ class ClientModelTest(TestCase):
 
 # PRODUCT
 class ProductModelTest(TestCase):
+    """Modulo de test para la clase Product en app.models.py"""
     def test_can_create_and_get_product(self):
         """"
         Se crea un producto y se verifica que se haya creado correctamente
@@ -161,6 +163,7 @@ class ProductModelTest(TestCase):
         self.assertEqual(errors["price"], "Por favor ingrese un precio válido")
 
 class MedicineModelTest(TestCase):
+    """Modelo de test para la clase Medicine en app.models.py"""
     def test_medicine_dose_cannot_be_empty(self):
         """"
         Se crea un medicamento y se verifica que se haya creado correctamente
@@ -232,6 +235,7 @@ class MedicineModelTest(TestCase):
 
 
 class PetModelTest(TestCase):
+    """Modelo de test para la clase Pet en app.models.py"""
     def test_can_create_and_get_pet(self):
         """"
         Se crea una mascota y se verifica que se haya creado correctamente
@@ -471,6 +475,7 @@ class PetModelTest(TestCase):
 
 
 class VetModelTest(TestCase):
+    """Modelo de test para la clase Vet en app.models.py"""
     def test_can_create_and_get_vet(self):
         """"
         Se crea un veterinario y se verifica que se haya creado correctamente
@@ -623,6 +628,7 @@ class VetModelTest(TestCase):
         self.assertEqual(vet_updated.speciality, Speciality.DERMATOLOGO)
 
 class ProviderModelTest(TestCase):
+    """Modelo de test para la clase Provider en app.models.py"""
     def test_can_create_and_get_provider(self):
         """"
         Se crea un proveedor y se verifica que se haya creado correctamente
