@@ -27,16 +27,23 @@ def validate_client(data):
 
 
 class Client(models.Model):
+    """Modelo de cliente para los clientes de la clínica."""
     name = models.CharField(max_length=100)
     phone = models.CharField(max_length=15)
     email = models.EmailField()
     address = models.CharField(max_length=100, blank=True)
 
     def __str__(self):
+        """"
+        Retorna el nombre del cliente
+        """
         return self.name
 
     @classmethod
     def save_client(cls, client_data):
+        """""
+        Guarda un cliente en la base de datos
+        """
         errors = validate_client(client_data)
 
         if len(errors.keys()) > 0:
@@ -52,6 +59,9 @@ class Client(models.Model):
         return True, None
 
     def update_client(self, client_data):
+        """""
+        Actualiza los datos de un cliente
+        """
         self.name = client_data.get("name", "") or self.name
         self.email = client_data.get("email", "") or self.email
         self.phone = client_data.get("phone", "") or self.phone
@@ -63,6 +73,7 @@ class Client(models.Model):
 
 
 class Speciality(models.TextChoices):
+    """Especialidades de los veterinarios."""
     GENERAL = "General"
     DENTISTA = "Dentista"
     TRAUMATOLOGO = "Traumatología"
@@ -72,6 +83,7 @@ class Speciality(models.TextChoices):
 
 
 class Vet(models.Model):
+    """Modelo de veterinario para los veterinarios de la clínica."""
     name = models.CharField(max_length=100)
     email = models.EmailField()
     phone = models.CharField(max_length=15)
@@ -81,12 +93,21 @@ class Vet(models.Model):
         return self.name
 
     def get_speciality_display(self):
+        """"
+        Retorna el nombre de la especialidad
+        """
         return self.get_speciality_display()
     def formatted_phone(self):
+        """"
+        Retorna el teléfono formateado
+        """
         return f"{self.phone[:3]}-{self.phone[3:6]}-{self.phone[6:]}"
 
     @classmethod
     def save_vet(cls, vet_data):
+        """"
+        Guarda un veterinario en la base de datos
+        """
         errors = validate_vet(vet_data)
 
         if len(errors.keys()) > 0:
@@ -102,6 +123,9 @@ class Vet(models.Model):
         return True, None
 
     def update_vet(self, vet_data):
+        """"
+        Actualiza los datos de un veterinario
+        """
         errors = validate_vet(vet_data)
         if len(errors.keys()) > 0:
             return False, errors
@@ -115,6 +139,9 @@ class Vet(models.Model):
         return True, None
 
 def validate_vet(data):
+    """"
+    Valida los datos de un veterinario
+    """
     errors = {}
 
     name = data.get("name", "")
@@ -183,6 +210,7 @@ def validate_provider(data):
 
 
 class Provider(models.Model):
+    """Modelo de proveedor para los proveedores de la clínica."""
     name = models.CharField(max_length=100)
     email = models.EmailField()
     direccion = models.CharField(max_length=100)
@@ -192,6 +220,9 @@ class Provider(models.Model):
 
     @classmethod
     def save_provider(cls, provider_data):
+        """"
+        Guarda un proveedor en la base de datos
+        """
         errors = validate_provider(provider_data)
 
         if len(errors.keys()) > 0:
@@ -206,6 +237,9 @@ class Provider(models.Model):
         return True, None
 
     def update_provider(self, provider_data):
+        """"
+        Actualiza los datos de un proveedor
+        """
         errors = validate_provider(provider_data)
         if len(errors.keys()) > 0:
             return False, errors
@@ -281,6 +315,7 @@ def parse_date(date_str):
 
 
 class Breed(models.TextChoices):
+        """Clase enumerativa de razas de mascotas."""
         LABRADOR_RETRIEVER = 'Labrador Retriever'
         PASTOR_ALEMAN = 'Pastor Alemán'
         GOLDEN_RETRIEVER = 'Golden Retriever'
@@ -294,16 +329,23 @@ class Breed(models.TextChoices):
 
 
 class Pet(models.Model):
+    """Clase modelo de mascota para las mascotas de la clínica."""
     name = models.CharField(max_length=100)
     breed = models.CharField(max_length=50, choices=Breed.choices)
     birthday = models.DateField()
     weight = models.DecimalField(max_digits=20, decimal_places=2, default=0.00)
 
     def __str__(self):
+        """"
+        Retorna el nombre de la mascota
+        """
         return self.name
 
     @classmethod
     def save_pet(cls, pet_data):
+        """"
+        Guarda una mascota en la base de datos
+        """
         errors = validate_pet(pet_data)
         if errors:
             return False, errors
@@ -314,10 +356,15 @@ class Pet(models.Model):
             birthday=parse_date(pet_data.get("birthday")),
             weight=Decimal(pet_data.get("weight")),
         )
-
+        """"
+        Retorna True si no hay errores
+        """
         return True, None
 
     def update_pet(self, pet_data):
+        """"
+        Actualiza los datos de una mascota
+        """
         errors = validate_pet(pet_data)
         if errors:
             return False, errors
@@ -336,15 +383,23 @@ class Pet(models.Model):
 
 
 class Medicine(models.Model):
+    """Clase modelo de medicina para las medicinas de la clínica."""
     name = models.CharField(max_length=100)
     description = models.CharField(max_length=300)
     dose = models.IntegerField()
 
     def __str__(self):
+        """"
+        Retorna el nombre del medicamento
+        """
         return self.name
+
 
     @classmethod
     def save_medicine(cls, medicine_data):
+        """
+        Guarda un medicamento en la base de datos
+        """
         errors = validate_medicine(medicine_data)
 
         if len(errors.keys()) > 0:
@@ -359,6 +414,10 @@ class Medicine(models.Model):
         return True, None
 
     def update_medicine(self, medicine_data):
+        """"
+
+        Actualiza los datos de un medicamento
+        """
         errors = validate_medicine(medicine_data)
 
         if len(errors.keys()) > 0:
@@ -430,15 +489,22 @@ def validate_price_format(price_str):
 
 
 class Product(models.Model):
+    """Clase modelo de producto para los productos de la clínica."""
     name = models.CharField(max_length=100)
     type = models.CharField(max_length=50)
     price = models.FloatField(max_length=20)
 
     def __str__(self):
+        """"
+        Retorna el nombre del producto
+        """
         return self.name
 
     @classmethod
     def save_product(cls, product_data):
+        """"
+        Guarda un producto en la base de datos
+        """
         errors = validate_product(product_data)
 
         if len(errors.keys()) > 0:
@@ -453,6 +519,9 @@ class Product(models.Model):
         return True, None
 
     def update_product(self, product_data):
+        """"
+        Actualiza los datos de un producto
+        """
         self.name = product_data.get("name", "") or self.name
         self.type = product_data.get("type", "") or self.type
         self.price = product_data.get("price", "") or self.price
