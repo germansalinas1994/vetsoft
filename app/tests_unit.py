@@ -6,7 +6,7 @@ from app.models import Breed, Client, Medicine, Pet, Product, Provider, Speciali
 
 
 class ClientModelTest(TestCase):
-    """Test module for Client model class in app.models.py"""
+    """Modelo de test para la clase Client en app.models.py"""
     def test_can_create_and_get_client(self):
         Client.save_client(
             {
@@ -65,7 +65,7 @@ class ClientModelTest(TestCase):
 
 # PRODUCT
 class ProductModelTest(TestCase):
-    """Test module for Product model class in app.models.py"""
+    """Modulo de test para la clase Product en app.models.py"""
     def test_can_create_and_get_product(self):
         Product.save_product(
             {
@@ -139,7 +139,7 @@ class ProductModelTest(TestCase):
         self.assertEqual(errors["price"], "Por favor ingrese un precio válido")
 
 class MedicineModelTest(TestCase):
-    """Test module for Medicine model class in app.models.py"""
+    """Modelo de test para la clase Medicine en app.models.py"""
     def test_medicine_dose_cannot_be_empty(self):
         valid, errors = Medicine.save_medicine({
             "name": "Ivermectina",
@@ -196,7 +196,7 @@ class MedicineModelTest(TestCase):
 
 
 class PetModelTest(TestCase):
-    """Test module for Pet model class in app.models.py"""
+    """Modelo de test para la clase Pet en app.models.py"""
     def test_can_create_and_get_pet(self):
         # se crea una mascota
         Pet.save_pet(
@@ -403,7 +403,7 @@ class PetModelTest(TestCase):
 
 
 class VetModelTest(TestCase):
-    """Test module for Vet model class in app.models.py"""
+    """Modelo de test para la clase Vet en app.models.py"""
     def test_can_create_and_get_vet(self):
         Vet.save_vet(
             {
@@ -538,7 +538,7 @@ class VetModelTest(TestCase):
         self.assertEqual(vet_updated.speciality, Speciality.DERMATOLOGO)
 
 class ProviderModelTest(TestCase):
-    """Test module for Provider model class in app.models.py"""
+    """Modelo de test para la clase Provider en app.models.py"""
     def test_can_create_and_get_provider(self):
         Provider.save_provider(
             {

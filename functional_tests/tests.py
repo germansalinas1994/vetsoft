@@ -14,7 +14,7 @@ slow_mo = os.environ.get("SLOW_MO", 0)
 
 
 class PlaywrightTestCase(StaticLiveServerTestCase):
-    """ Base test case for Playwright, this class will be responsible for setting up and tearing down the browser instance"""
+    """ Test base para Playwright """
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
@@ -37,7 +37,7 @@ class PlaywrightTestCase(StaticLiveServerTestCase):
 
 
 class HomeTestCase(PlaywrightTestCase):
-    """Test case for the home page, this test case will verify that the home page has the expected elements and links."""
+    """Caso de prueba para la página de inicio, este caso de prueba verificará que la página de inicio tenga los elementos y enlaces esperados."""
     def test_should_have_navbar_with_links(self):
         self.page.goto(self.live_server_url)
 
@@ -64,7 +64,7 @@ class HomeTestCase(PlaywrightTestCase):
 
 
 class ClientsRepoTestCase(PlaywrightTestCase):
-    """Test case for the clients repository, this test case will verify that the clients repository has the expected elements and links."""
+    """Caso de prueba para el repositorio de clientes, este caso de prueba verificará que el repositorio de clientes tenga los elementos y enlaces esperados."""
     def test_should_show_message_if_table_is_empty(self):
         self.page.goto(f"{self.live_server_url}{reverse('clients_repo')}")
 
@@ -169,7 +169,7 @@ class ClientsRepoTestCase(PlaywrightTestCase):
 
 
 class ClientCreateEditTestCase(PlaywrightTestCase):
-    """Test case for the client form, this test case will verify that the client form has the expected elements and links."""
+    """Caso de prueba para el formulario de clientes, este caso de prueba verificará que el formulario de clientes tenga los elementos y enlaces esperados."""
     def test_should_be_able_to_create_a_new_client(self):
         self.page.goto(f"{self.live_server_url}{reverse('clients_form')}")
 
@@ -254,7 +254,7 @@ class ClientCreateEditTestCase(PlaywrightTestCase):
 
 
 class PetsRepoTestCase(PlaywrightTestCase):
-    """Test case for the pets repository, this test case will verify that the pets repository has the expected elements and links."""
+    """caso de prueba para el repositorio de mascotas, este caso de prueba verificará que el repositorio de mascotas tenga los elementos y enlaces esperados."""
     def test_should_show_message_if_table_is_empty(self):
         self.page.goto(f"{self.live_server_url}{reverse('pets_repo')}")
 
@@ -360,7 +360,7 @@ class PetsRepoTestCase(PlaywrightTestCase):
 
 
 class PetCreateEditTestCase(PlaywrightTestCase):
-    """Test case for the pet form, this test case will verify that the pet form has the expected elements and links."""
+    """Caso de prueba para el formulario de mascotas, este caso de prueba verificará que el formulario de mascotas tenga los elementos y enlaces esperados."""
     def test_should_be_able_to_create_a_new_pet(self):
         self.page.goto(f"{self.live_server_url}{reverse('pets_form')}")
 
@@ -517,7 +517,7 @@ class PetCreateEditTestCase(PlaywrightTestCase):
 
 
 class MedicineCreateEditTestCase(PlaywrightTestCase):
-    """Test case for the medicine form, this test case will verify that the medicine form has the expected elements and links."""
+    """Caso de prueba para el formulario de medicamentos, este caso de prueba verificará que el formulario de medicamentos tenga los elementos y enlaces esperados."""
     def test_create_a_new_medicine_with_valid_dose(self):
         self.page.goto(f"{self.live_server_url}{reverse('medicines_form')}")
 
@@ -651,7 +651,7 @@ class MedicineCreateEditTestCase(PlaywrightTestCase):
 
 # TEST E2E PRODUCTO
 class ProductsRepoTestCase(PlaywrightTestCase):
-    """Test case for the products repository, this test case will verify that the products repository has the expected elements and links."""
+    """Caso de prueba para el repositorio de productos, este caso de prueba verificará que el repositorio de productos tenga los elementos y enlaces esperados."""
     def test_should_show_message_if_table_is_empty(self):
         self.page.goto(f"{self.live_server_url}{reverse('products_repo')}")
 
@@ -749,7 +749,7 @@ class ProductsRepoTestCase(PlaywrightTestCase):
 
 
 class ProductCreateEditTestCase(PlaywrightTestCase):
-    """Test case for the product form, this test case will verify that the product form has the expected elements and links."""
+    """Caso de prueba para el formulario de productos, este caso de prueba verificará que el formulario de productos tenga los elementos y enlaces esperados."""
     def test_should_be_able_to_create_a_new_product(self):
         self.page.goto(f"{self.live_server_url}{reverse('products_form')}")
 
@@ -824,7 +824,7 @@ class ProductCreateEditTestCase(PlaywrightTestCase):
 # #validacion para vet - speciality
 
 class VetsRepoTestCase(PlaywrightTestCase):
-    """Test case for the vets repository, this test case will verify that the vets repository has the expected elements and links."""
+    """Caso de prueba para el repositorio de veterinarios, este caso de prueba verificará que el repositorio de veterinarios tenga los elementos y enlaces esperados."""
     def test_should_show_message_if_table_is_empty(self):
         self.page.goto(f"{self.live_server_url}{reverse('vets_repo')}")
 
@@ -929,7 +929,7 @@ class VetsRepoTestCase(PlaywrightTestCase):
 
 
 class VetCreateEditTestCase(PlaywrightTestCase):
-    """Test case for the vet form, this test case will verify that the vet form has the expected elements and links."""
+    """Caso de prueba para el formulario de veterinarios, este caso de prueba verificará que el formulario de veterinarios tenga los elementos y enlaces esperados."""
     def test_should_be_able_to_create_a_new_vet(self):
         self.page.goto(f"{self.live_server_url}{reverse('vets_form')}")
 
@@ -1010,7 +1010,7 @@ class VetCreateEditTestCase(PlaywrightTestCase):
 
 
 class ProvidersRepoTestCase(PlaywrightTestCase):
-    """Test case for the providers repository, this test case will verify that the providers repository has the expected elements and links."""
+    """Caso de prueba para el repositorio de proveedores, este caso de prueba verificará que el repositorio de proveedores tenga los elementos y enlaces esperados."""
     def test_should_show_message_if_table_is_empty(self):
         self.page.goto(f"{self.live_server_url}{reverse('providers_repo')}")
 
@@ -1108,7 +1108,7 @@ class ProvidersRepoTestCase(PlaywrightTestCase):
 
 
 class ProviderCreateEditTestCase(PlaywrightTestCase):
-    """Test case for the provider form, this test case will verify that the provider form has the expected elements and links."""
+    """Caso de prueba para el formulario de proveedores, este caso de prueba verificará que el formulario de proveedores tenga los elementos y enlaces esperados."""
     def test_should_be_able_to_create_a_new_provider(self):
         self.page.goto(f"{self.live_server_url}{reverse('providers_form')}")
 
