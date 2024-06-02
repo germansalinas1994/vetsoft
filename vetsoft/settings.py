@@ -29,14 +29,23 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 #DEBUG = os.getenv("DEBUG")
 #ALLOWED_HOSTS = []
 
-DEBUG = os.environ.get('DJANGO_ENV','dev') == 'dev'
+DEBUG = os.getenv("DEBUG")
+
+ALLOWED_HOSTS = ['localhost',
+    '127.0.0.1',
+    "vetsoft-app-v1-1-1.onrender.com"]
+
+CSRF_TRUSTED_ORIGINS = [
+    'https://vetsoft-app-v1-1.onrender.com',
+]
 
 if DEBUG:
-    SECRET_KEY = "django-insecure-p)^5i@33!)v)l7*c#q)%j(g5d+**-yo%)6l*vg!gs_w-e=^_ig"
+    SECRET_KEY = os.getenv("SECRET_KEY")
 else:
     SECRET_KEY = os.environ.get('SECRET_KEY')
     STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
-    ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', '').split(",")
+
+
 
 # Application definition
 
@@ -87,8 +96,9 @@ WSGI_APPLICATION = "vetsoft.wsgi.application"
 
 DATABASES = {
     "default": {
-        "ENGINE": os.getenv("DB_ENGINE"),
-        "NAME": BASE_DIR / os.getenv("DB_NAME"),
+        "ENGINE": "django.db.backends.sqlite3",
+        "NAME": BASE_DIR / "db.sqlite3",
+
     }
 }
 
