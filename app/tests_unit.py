@@ -1,13 +1,8 @@
+from decimal import Decimal
+
 from django.test import TestCase
-from app.models import Client
-from app.models import Product
-from decimal import Decimal
-from app.models import Medicine
-from app.models import Vet, Speciality, Breed
-from app.models import Pet
-from app.models import Provider
-from decimal import Decimal
-from datetime import datetime
+
+from app.models import Breed, Client, Medicine, Pet, Product, Provider, Speciality, Vet
 
 
 class ClientModelTest(TestCase):

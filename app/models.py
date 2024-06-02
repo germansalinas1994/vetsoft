@@ -1,7 +1,8 @@
-from django.db import models
-from datetime import datetime
 import re
+from datetime import datetime
 from decimal import Decimal
+
+from django.db import models
 
 
 def validate_client(data):
@@ -121,24 +122,24 @@ def validate_vet(data):
     email = data.get("email", "")
     speciality = data.get("speciality", "")
 
-    if name == "" or name == None:
+    if name == "" or name is None:
         errors["name"] = "Por favor ingrese un nombre"
 
 
-    if phone == "" or phone == None:
+    if phone == "" or phone is None:
         errors["phone"] = "Por favor ingrese un teléfono"
     else:
         error = validate_phone(phone)
-        if error != None:
+        if error is not None:
             errors["phone"] = validate_phone(phone)
 
 
-    if email == "" or email == None:
+    if email == "" or email is None:
         errors["email"] = "Por favor ingrese un email"
     elif email.count("@") == 0:
         errors["email"] = "Por favor ingrese un email valido"
 
-    if speciality == "" or speciality == None:
+    if speciality == "" or speciality is None:
         errors["speciality"] = "Por favor ingrese una especialidad"
     elif speciality not in dict(Speciality.choices):
         errors["speciality"] = "Especialidad no válida"
@@ -223,14 +224,14 @@ def validate_pet(pet_data):
     # valido que el nombre no este vacio ni sea null
     name = pet_data.get("name")
 
-    if not name or name == None:
+    if not name or name is None:
         errors["name"] = "El nombre es requerido."
     if name == "":
         errors["name"] = "El nombre es requerido."
     # valido que la raza no este vacia ni sea null
     breed = pet_data.get("breed","")
 
-    if breed == "" or breed == None:
+    if breed == "" or breed is None:
         errors["breed"] = "La raza es requerida."
     elif breed not in dict(Breed.choices):
         errors["breed"] = "La raza no es válida."
@@ -238,7 +239,7 @@ def validate_pet(pet_data):
     # valido que la fecha de nacimiento no este vacia ni sea null
     birthday = pet_data.get("birthday")
 
-    if not birthday or birthday == None:
+    if not birthday or birthday is None:
         errors["birthday"] = "La fecha de nacimiento es requerida."
     elif not parse_date(birthday):
         errors["birthday"] = "Formato de fecha incorrecto. Debe ser DD/MM/YYYY."
@@ -247,7 +248,7 @@ def validate_pet(pet_data):
     # valido que el peso no este vacio ni sea null
     weight = pet_data.get("weight")
 
-    if not weight or weight == None:
+    if not weight or weight is None:
         errors["weight"] = "El peso es requerido."
     else:
         weight_error = validate_weight(weight)
