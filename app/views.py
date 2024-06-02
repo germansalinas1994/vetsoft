@@ -1,10 +1,6 @@
-from django.shortcuts import render, redirect, reverse, get_object_or_404
-from .models import Client
-from .models import Vet, Speciality, Breed
-from .models import Provider
-from .models import Pet
-from .models import Medicine
-from .models import Product
+from django.shortcuts import get_object_or_404, redirect, render, reverse
+
+from .models import Breed, Client, Medicine, Pet, Product, Provider, Speciality, Vet
 
 
 def home(request):
