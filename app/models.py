@@ -34,10 +34,16 @@ class Client(models.Model):
     address = models.CharField(max_length=100, blank=True)
 
     def __str__(self):
+        """"
+        Retorna el nombre del cliente
+        """
         return self.name
 
     @classmethod
     def save_client(cls, client_data):
+        """""
+        Guarda un cliente en la base de datos
+        """
         errors = validate_client(client_data)
 
         if len(errors.keys()) > 0:
@@ -53,6 +59,9 @@ class Client(models.Model):
         return True, None
 
     def update_client(self, client_data):
+        """""
+        Actualiza los datos de un cliente
+        """
         self.name = client_data.get("name", "") or self.name
         self.email = client_data.get("email", "") or self.email
         self.phone = client_data.get("phone", "") or self.phone
@@ -84,12 +93,21 @@ class Vet(models.Model):
         return self.name
 
     def get_speciality_display(self):
+        """"
+        Retorna el nombre de la especialidad
+        """
         return self.get_speciality_display()
     def formatted_phone(self):
+        """"
+        Retorna el teléfono formateado
+        """
         return f"{self.phone[:3]}-{self.phone[3:6]}-{self.phone[6:]}"
 
     @classmethod
     def save_vet(cls, vet_data):
+        """"
+        Guarda un veterinario en la base de datos
+        """
         errors = validate_vet(vet_data)
 
         if len(errors.keys()) > 0:
@@ -105,6 +123,9 @@ class Vet(models.Model):
         return True, None
 
     def update_vet(self, vet_data):
+        """"
+        Actualiza los datos de un veterinario
+        """
         errors = validate_vet(vet_data)
         if len(errors.keys()) > 0:
             return False, errors
@@ -118,6 +139,9 @@ class Vet(models.Model):
         return True, None
 
 def validate_vet(data):
+    """"
+    Valida los datos de un veterinario
+    """
     errors = {}
 
     name = data.get("name", "")
@@ -196,6 +220,9 @@ class Provider(models.Model):
 
     @classmethod
     def save_provider(cls, provider_data):
+        """"
+        Guarda un proveedor en la base de datos
+        """
         errors = validate_provider(provider_data)
 
         if len(errors.keys()) > 0:
@@ -210,6 +237,9 @@ class Provider(models.Model):
         return True, None
 
     def update_provider(self, provider_data):
+        """"
+        Actualiza los datos de un proveedor
+        """
         errors = validate_provider(provider_data)
         if len(errors.keys()) > 0:
             return False, errors
@@ -306,10 +336,16 @@ class Pet(models.Model):
     weight = models.DecimalField(max_digits=20, decimal_places=2, default=0.00)
 
     def __str__(self):
+        """"
+        Retorna el nombre de la mascota
+        """
         return self.name
 
     @classmethod
     def save_pet(cls, pet_data):
+        """"
+        Guarda una mascota en la base de datos
+        """
         errors = validate_pet(pet_data)
         if errors:
             return False, errors
@@ -320,10 +356,15 @@ class Pet(models.Model):
             birthday=parse_date(pet_data.get("birthday")),
             weight=Decimal(pet_data.get("weight")),
         )
-
+        """"
+        Retorna True si no hay errores
+        """
         return True, None
 
     def update_pet(self, pet_data):
+        """"
+        Actualiza los datos de una mascota
+        """
         errors = validate_pet(pet_data)
         if errors:
             return False, errors
@@ -348,10 +389,17 @@ class Medicine(models.Model):
     dose = models.IntegerField()
 
     def __str__(self):
+        """"
+        Retorna el nombre del medicamento
+        """
         return self.name
+
 
     @classmethod
     def save_medicine(cls, medicine_data):
+        """
+        Guarda un medicamento en la base de datos
+        """
         errors = validate_medicine(medicine_data)
 
         if len(errors.keys()) > 0:
@@ -366,6 +414,10 @@ class Medicine(models.Model):
         return True, None
 
     def update_medicine(self, medicine_data):
+        """"
+
+        Actualiza los datos de un medicamento
+        """
         errors = validate_medicine(medicine_data)
 
         if len(errors.keys()) > 0:
@@ -443,10 +495,16 @@ class Product(models.Model):
     price = models.FloatField(max_length=20)
 
     def __str__(self):
+        """"
+        Retorna el nombre del producto
+        """
         return self.name
 
     @classmethod
     def save_product(cls, product_data):
+        """"
+        Guarda un producto en la base de datos
+        """
         errors = validate_product(product_data)
 
         if len(errors.keys()) > 0:
@@ -461,6 +519,9 @@ class Product(models.Model):
         return True, None
 
     def update_product(self, product_data):
+        """"
+        Actualiza los datos de un producto
+        """
         self.name = product_data.get("name", "") or self.name
         self.type = product_data.get("type", "") or self.type
         self.price = product_data.get("price", "") or self.price
