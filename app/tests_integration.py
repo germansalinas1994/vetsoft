@@ -7,12 +7,14 @@ from app.models import Breed, Client, Medicine, Pet, Product, Provider, Speciali
 
 
 class HomePageTest(TestCase):
+    """Test the home page. This is the first test that we are going to run"""
     def test_use_home_template(self):
         response = self.client.get(reverse("home"))
         self.assertTemplateUsed(response, "home.html")
 
 
 class ClientsTest(TestCase):
+    """Test the clients page. This is the first test that we are going to run"""
     def test_repo_use_repo_template(self):
         response = self.client.get(reverse("clients_repo"))
         self.assertTemplateUsed(response, "clients/repository.html")
@@ -100,6 +102,7 @@ class ClientsTest(TestCase):
 
 # Test Producto
 class ProductsTest(TestCase):
+    """Test the products page. This is the first test that we are going to run"""
     def test_repo_use_repo_template(self):
         response = self.client.get(reverse("products_repo"))
         self.assertTemplateUsed(response, "products/repository.html")
@@ -182,6 +185,7 @@ class ProductsTest(TestCase):
         self.assertEqual(editedProduct.price,  14400.50)
         self.assertNotEqual(editedProduct.price, product.price)
 class MedicinesTest(TestCase):
+    """Test the medicines page. This is the first test that we are going to run"""
     def test_repo_use_repo_template(self):
         response = self.client.get(reverse("medicines_repo"))
         self.assertTemplateUsed(response, "medicines/repository.html")
@@ -296,6 +300,7 @@ class MedicinesTest(TestCase):
 
 
 class PetsTest(TestCase):
+    """Test the pets page. This is the first test that we are going to run"""
     # defino el test de la pagina de inicio para mascota y el template que se va a usar
     # esto es para chequear que la pagina de inicio de mascotas use el template correcto
     def test_repo_use_repo_template(self):
@@ -414,6 +419,7 @@ class PetsTest(TestCase):
 
 
 class VetsTest(TestCase):
+    """Test the vets page. This is the first test that we are going to run"""
     def test_repo_use_repo_template_vet(self):
         response = self.client.get(reverse("vets_repo"))
         self.assertTemplateUsed(response, "vets/repository.html")
@@ -617,6 +623,7 @@ class VetsTest(TestCase):
 ##############################
 
 class ProvidersTest(TestCase):
+    """Test the providers page. This is the first test that we are going to run"""
     def test_repo_use_repo_template(self):
         response = self.client.get(reverse("providers_repo"))
         self.assertTemplateUsed(response, "providers/repository.html")
