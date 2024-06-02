@@ -4,15 +4,18 @@ from .models import Breed, Client, Medicine, Pet, Product, Provider, Speciality,
 
 
 def home(request):
+    """"Esta funcion mostrará el home"""
     return render(request, "home.html")
 
 
 def clients_repository(request):
+    """"Esta funcion mostrará los clientes cargados"""
     clients = Client.objects.all()
     return render(request, "clients/repository.html", {"clients": clients})
 
 
 def clients_form(request, id=None):
+    """"Esta funcion guarda un cliente nuevo"""
     if request.method == "POST":
         client_id = request.POST.get("id", "")
         errors = {}
@@ -39,6 +42,7 @@ def clients_form(request, id=None):
 
 
 def clients_delete(request):
+    """"Esta funcion elimina un cliente según un ID"""
     client_id = request.POST.get("client_id")
     client = get_object_or_404(Client, pk=int(client_id))
     client.delete()
@@ -47,12 +51,14 @@ def clients_delete(request):
 
 
 def vets_repository(request):
+    """"Esta funcion mostrará los veterinarios cargados"""
     vets = Vet.objects.all()
     return render(request, "vets/repository.html", {"vets": vets})
 
 
 
 def vets_form(request, id=None):
+    """"Esta funcion guarda un veterinario nuevo"""
     specialities = Speciality.choices
 
     if request.method == "POST":
@@ -81,6 +87,7 @@ def vets_form(request, id=None):
     return render(request, "vets/form.html", {"vet": vet, "specialities": specialities})
 
 def vets_delete(request):
+    """"Esta funcion elimina un veterinario según un ID"""
     vet_id = request.POST.get("vet_id")
     vet = get_object_or_404(Vet, pk=int(vet_id))
     vet.delete()
@@ -88,10 +95,12 @@ def vets_delete(request):
     return redirect(reverse("vets_repo"))
 
 def providers_repository(request):
+    """"Esta funcion mostrará los proveedores cargados"""
     providers = Provider.objects.all()
     return render(request, "providers/repository.html", {"providers": providers})
 
 def providers_form(request, id=None):
+    """"Esta funcion guarda un proveedor nuevo"""
     if request.method == "POST":
         provider_id = request.POST.get("id", "")
         errors = {}
@@ -117,6 +126,7 @@ def providers_form(request, id=None):
     return render(request, "providers/form.html", {"provider": provider})
 
 def providers_delete(request):
+    """"Esta funcion elimina un proveedor según un ID"""
     provider_id = request.POST.get("provider_id")
     provider = get_object_or_404(Provider, pk=int(provider_id))
     provider.delete()
@@ -128,12 +138,14 @@ def providers_delete(request):
 #Views Pets
 
 def pets_repository(request):
+    """"Esta funcion mostrará las mascotas cargadas"""
     pets = Pet.objects.all()
     return render(request, "pets/repository.html", {"pets": pets})
 
 
 
 def pets_form(request, id=None):
+    """"Esta funcion guarda una mascota nueva"""
     breeds = Breed.choices
 
 
@@ -162,6 +174,7 @@ def pets_form(request, id=None):
     return render(request, "pets/form.html", {"pet": pet, "breeds": breeds})
 
 def pets_delete(request):
+    """"Esta funcion elimina una mascota según un ID"""
     pet_id = request.POST.get("pet_id")
     pet = get_object_or_404(Pet, pk=int(pet_id))
     pet.delete()
@@ -170,11 +183,13 @@ def pets_delete(request):
 
 
 def medicines_repository(request):
+    """"Esta funcion mostrará las medicinas cargadas"""
     medicines = Medicine.objects.all()
     return render(request, "medicines/repository.html", {"medicines": medicines})
 
 
 def medicines_form(request, id=None):
+    """"Esta funcion guarda una medicina nueva"""
     if request.method == "POST":
         medicine_id = request.POST.get("id", "")
         errors = {}
@@ -201,6 +216,7 @@ def medicines_form(request, id=None):
 
 
 def medicines_delete(request):
+    """"Esta funcion elimina una medicina según un ID"""
     medicine_id = request.POST.get("medicine_id")
     medicine = get_object_or_404(Medicine, pk=int(medicine_id))
     medicine.delete()
@@ -211,10 +227,12 @@ def medicines_delete(request):
 
 
 def products_repository(request):
+    """"Esta funcion mostrará los productos cargados"""
     products = Product.objects.all()
     return render(request, "products/repository.html", {"products": products})
 
 def products_form(request, id=None):
+    """"Esta funcion guarda un producto nuevo"""
     if request.method == "POST":
         product_id = request.POST.get("id", "")
         errors = {}
@@ -241,6 +259,7 @@ def products_form(request, id=None):
 
 
 def products_delete(request):
+    """"Esta funcion elimina un producto según un ID"""
     product_id = request.POST.get("product_id")
     product = get_object_or_404(Product, pk=int(product_id))
     product.delete()

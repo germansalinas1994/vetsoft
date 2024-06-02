@@ -6,6 +6,7 @@ from django.db import models
 
 
 def validate_client(data):
+    """"Esta funcion valida los datos que se ingresan del cliente"""
     errors = {}
 
     name = data.get("name", "")
@@ -115,6 +116,7 @@ class Vet(models.Model):
         return True, None
 
 def validate_vet(data):
+    """"Esta funcion valida los datos que se ingresan del veterinario"""
     errors = {}
 
     name = data.get("name", "")
@@ -147,6 +149,7 @@ def validate_vet(data):
     return errors
 
 def validate_phone(phone):
+    """"Esta funcion valida el numero de telefono ingresado"""
     #le extraigo los guiones al teléfono y guion bajo
     phone = phone.replace("-", "").replace("_", "")
     if len(phone) == 10:
@@ -161,6 +164,7 @@ def validate_phone(phone):
     return None
 
 def validate_provider(data):
+    """"Esta funcion valida los datos que se ingresan del proveedor"""
     errors = {}
 
     name = data.get("name", "")
@@ -220,6 +224,7 @@ class Provider(models.Model):
 # Pet model
 
 def validate_pet(pet_data):
+    """"Esta funcion valida los datos que se ingresan de la mascota"""
     errors = {}
     # valido que el nombre no este vacio ni sea null
     name = pet_data.get("name")
@@ -258,6 +263,7 @@ def validate_pet(pet_data):
 
 
 def validate_weight(weight):
+    """"Esta funcion valida el peso ingresado de la mascota"""
     try:
         weight_value = float(weight)
     except (ValueError, TypeError):
@@ -272,6 +278,7 @@ def validate_weight(weight):
 
 
 def parse_date(date_str):
+    """"Esta funcion parsea la fecha"""
     try:
         if not date_str:
             return None
@@ -373,6 +380,7 @@ class Medicine(models.Model):
 
 
 def validate_medicine(data):
+    """"Esta funcion valida los datos que se ingresan de la medicina"""
     errors = {}
 
     name = data.get("name", "")
@@ -400,6 +408,7 @@ def validate_medicine(data):
 
 
 def validate_product(data):
+    """"Esta funcion valida los datos que se ingresan del producto"""
     errors = {}
 
     name = data.get("name", "")
@@ -424,6 +433,7 @@ def validate_product(data):
     return errors
 
 def validate_price_format(price_str):
+    """"Esta funcion valida el precio ingresado"""
     pattern = r"^\d+(\.\d+)?$"
     match = re.match(pattern, price_str)
     return match is not None
