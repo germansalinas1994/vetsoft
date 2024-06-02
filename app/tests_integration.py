@@ -160,7 +160,7 @@ class ProductsTest(TestCase):
             data={
                 "name": "DogChow",
                 "type": "Perro adulto",
-                "price": "10400.50"
+                "price": "10400.50",
             },
         )
         products = Product.objects.all()
@@ -201,7 +201,7 @@ class ProductsTest(TestCase):
             data={
                 "name": "DogChow",
                 "type": "Perro adulto",
-                "price": "10 mil pesos"
+                "price": "10 mil pesos",
             },
         )
 
@@ -214,7 +214,7 @@ class ProductsTest(TestCase):
         product = Product.objects.create(
             name="DogChow",
             type="Perro adulto",
-            price="10400.50"
+            price="10400.50",
         )
 
         response = self.client.post(
@@ -223,7 +223,7 @@ class ProductsTest(TestCase):
                 "id": product.id,
                 "name": "DogChow",
                 "type": "Perro adulto",
-                "price": "14400.50"
+                "price": "14400.50",
             },
         )
 
@@ -347,7 +347,7 @@ class MedicinesTest(TestCase):
         test para verificar que se pueda eliminar un medicamento
         """
         medicine = Medicine.objects.create(
-            name="Ivermectina", description="ectoparásitos y endoparásitos", dose=5
+            name="Ivermectina", description="ectoparásitos y endoparásitos", dose=5,
         )
         response = self.client.post(reverse("medicines_delete"), data={"medicine_id": medicine.id})
         self.assertEqual(response.status_code, 302)
@@ -361,7 +361,7 @@ class MedicinesTest(TestCase):
         test para editar un medicamento con datos validos
         """
         medicine = Medicine.objects.create(
-            name="Ivermectina", description="ectoparásitos y endoparásitos", dose=5
+            name="Ivermectina", description="ectoparásitos y endoparásitos", dose=5,
         )
 
         response = self.client.post(
@@ -857,7 +857,7 @@ class ProvidersTest(TestCase):
         test para verificar que se pueda eliminar un proveedor
         """
         provider = Provider.objects.create(
-            name="Valentina", email="estudiantes@gmail.com", direccion="12 y 47"
+            name="Valentina", email="estudiantes@gmail.com", direccion="12 y 47",
         )
         response = self.client.post(reverse("providers_delete"), data={"provider_id": provider.id})
         self.assertEqual(response.status_code, 302)
@@ -871,7 +871,7 @@ class ProvidersTest(TestCase):
         test para editar un proveedor con datos validos
         """
         provider = Provider.objects.create(
-            name="Valentina", email="estudiantes@gmail.com", direccion="12 y 47"
+            name="Valentina", email="estudiantes@gmail.com", direccion="12 y 47",
         )
 
         response = self.client.post(
