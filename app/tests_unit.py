@@ -13,7 +13,7 @@ class ClientModelTest(TestCase):
                 "phone": "221555232",
                 "address": "13 y 44",
                 "email": "brujita75@hotmail.com",
-            }
+            },
         )
         clients = Client.objects.all()
         self.assertEqual(len(clients), 1)
@@ -30,7 +30,7 @@ class ClientModelTest(TestCase):
                 "phone": "221555232",
                 "address": "13 y 44",
                 "email": "brujita75@hotmail.com",
-            }
+            },
         )
         client = Client.objects.get(pk=1)
 
@@ -49,7 +49,7 @@ class ClientModelTest(TestCase):
                 "phone": "221555232",
                 "address": "13 y 44",
                 "email": "brujita75@hotmail.com",
-            }
+            },
         )
         client = Client.objects.get(pk=1)
 
@@ -70,7 +70,7 @@ class ProductModelTest(TestCase):
                 "name": "Whiskas",
                 "type": "Gato adulto",
                 "price": "1454.3",
-            }
+            },
         )
         products = Product.objects.all()
         self.assertEqual(len(products), 1)
@@ -85,7 +85,7 @@ class ProductModelTest(TestCase):
                 "name": "Whiskas",
                 "type": "Gato adulto",
                 "price": "1454.3",
-            }
+            },
         )
         product = Product.objects.get(pk=1)
 
@@ -103,7 +103,7 @@ class ProductModelTest(TestCase):
                 "name": "Whiskas",
                 "type": "Gato adulto",
                 "price": "1454.3",
-            }
+            },
         )
         product = Product.objects.get(pk=1)
 
@@ -119,7 +119,7 @@ class ProductModelTest(TestCase):
         valid, errors = Product.save_product({
             "name": "DogChow",
             "type": "Perro adulto",
-            "price": "-434.00"
+            "price": "-434.00",
         })
         self.assertFalse(valid)
         self.assertIn("price", errors)
@@ -130,7 +130,7 @@ class ProductModelTest(TestCase):
         valid, errors = Product.save_product({
             "name": "DogChow",
             "type": "Perro adulto",
-            "price": "-434abc/e"
+            "price": "-434abc/e",
         })
         self.assertFalse(valid)
         self.assertIn("price", errors)
@@ -141,7 +141,7 @@ class MedicineModelTest(TestCase):
         valid, errors = Medicine.save_medicine({
             "name": "Ivermectina",
             "description": "ectoparásitos y endoparásitos",
-            "dose": ""
+            "dose": "",
         })
         self.assertFalse(valid)
         self.assertIn("dose", errors)
@@ -151,7 +151,7 @@ class MedicineModelTest(TestCase):
         valid, errors = Medicine.save_medicine({
             "name": "Ivermectina",
             "description": "ectoparásitos y endoparásitos",
-            "dose": 0
+            "dose": 0,
         })
         self.assertFalse(valid)
         self.assertIn("dose", errors)
@@ -161,7 +161,7 @@ class MedicineModelTest(TestCase):
         valid, errors = Medicine.save_medicine({
             "name": "Ivermectina",
             "description": "ectoparásitos y endoparásitos",
-            "dose": 11
+            "dose": 11,
         })
         self.assertFalse(valid)
         self.assertIn("dose", errors)
@@ -171,7 +171,7 @@ class MedicineModelTest(TestCase):
         valid, errors = Medicine.save_medicine({
             "name": "Ivermectina",
             "description": "ectoparásitos y endoparásitos",
-            "dose": "abc"
+            "dose": "abc",
         })
         self.assertFalse(valid)
         self.assertIn("dose", errors)
@@ -181,7 +181,7 @@ class MedicineModelTest(TestCase):
         valid, errors = Medicine.save_medicine({
             "name": "Ivermectina",
             "description": "ectoparásitos y endoparásitos",
-            "dose": 5
+            "dose": 5,
         })
         self.assertTrue(valid)
         self.assertIsNone(errors)
@@ -201,7 +201,7 @@ class PetModelTest(TestCase):
                 "breed": Breed.GOLDEN_RETRIEVER,
                 "birthday": "01/01/2015",
                 "weight": "10.50",
-            }
+            },
         )
         # se verifica que la mascota se haya creado correctamente
         pets = Pet.objects.all()
@@ -221,7 +221,7 @@ class PetModelTest(TestCase):
                 "breed": "Raza inexistente",
                 "birthday": "01/01/2015",
                 "weight": "10.50",
-            }
+            },
         )
         # se verifica que la mascota se haya creado correctamente
         pets = Pet.objects.all()
@@ -236,7 +236,7 @@ class PetModelTest(TestCase):
                 "breed": Breed.GOLDEN_RETRIEVER,
                 "birthday": "01/01/2015",
                 "weight": "1.50",
-            }
+            },
         )
 
         pet = Pet.objects.get(pk=1)
@@ -262,7 +262,7 @@ class PetModelTest(TestCase):
                 "breed": Breed.GOLDEN_RETRIEVER,
                 "birthday": "01/01/2015",
                 "weight": "1.50",
-            }
+            },
         )
         pet = Pet.objects.get(pk=1)
         pet.update_pet({
@@ -283,7 +283,7 @@ class PetModelTest(TestCase):
                 "breed": Breed.GOLDEN_RETRIEVER,
                 "birthday": "01/01/2015",
                 "weight": "10.50",
-            }
+            },
         )
         pet = Pet.objects.get(pk=1)
         pet.update_pet({
@@ -303,7 +303,7 @@ class PetModelTest(TestCase):
                 "breed": Breed.GOLDEN_RETRIEVER,
                 "birthday": "01/01/2015",
                 "weight": "10.50",
-            }
+            },
         )
         pet = Pet.objects.get(pk=1)
         pet.update_pet({
@@ -323,7 +323,7 @@ class PetModelTest(TestCase):
                 "breed": Breed.GOLDEN_RETRIEVER,
                 "birthday": "01/01/2015",
                 "weight": "10.50",
-            }
+            },
         )
         pet = Pet.objects.get(pk=1)
         pet.update_pet({
@@ -345,7 +345,7 @@ class PetModelTest(TestCase):
                 "breed": Breed.GOLDEN_RETRIEVER,
                 "birthday": "01/01/2015",
                 "weight": "dsadsadsad",
-            }
+            },
         )
         # se verifica que la mascota se haya creado correctamente
         pets = Pet.objects.all()
@@ -360,7 +360,7 @@ class PetModelTest(TestCase):
                 "breed": Breed.GOLDEN_RETRIEVER,
                 "birthday": "01/01/2015",
                 "weight": "",
-            }
+            },
         )
         # se verifica que la mascota se haya creado correctamente
         pets = Pet.objects.all()
@@ -375,7 +375,7 @@ class PetModelTest(TestCase):
                 "breed": "Con esta raza no va a funcionar",
                 "birthday": "01/01/2015",
                 "weight": "1000",
-            }
+            },
         )
         # se verifica que la mascota se haya creado correctamente
         pets = Pet.objects.all()
@@ -390,7 +390,7 @@ class PetModelTest(TestCase):
                 "breed": "",
                 "birthday": "01/01/2015",
                 "weight": "1000",
-            }
+            },
         )
         # se verifica que la mascota se haya creado correctamente
         pets = Pet.objects.all()
@@ -406,7 +406,7 @@ class VetModelTest(TestCase):
                 "email": "brujita75@hotmail.com",
                 "phone": "2215552324",
                 "speciality": Speciality.GENERAL,
-            }
+            },
         )
         vets = Vet.objects.all()
         self.assertEqual(len(vets), 1)
@@ -422,7 +422,7 @@ class VetModelTest(TestCase):
                 "name": "Juan Sebastian Veron",
                 "email": "brujita75@hotmail.com",
                 "phone": "2215552324",
-            }
+            },
         )
         vets = Vet.objects.all()
         self.assertEqual(len(vets), 0)
@@ -436,7 +436,7 @@ class VetModelTest(TestCase):
                 "email": "brujita75@hotmail.com",
                 "phone": "2215552324",
                 "speciality": Speciality.CARDIOLOGO,
-            }
+            },
         )
         vet = Vet.objects.get(pk=1)
 
@@ -448,7 +448,7 @@ class VetModelTest(TestCase):
                 "email": "brujita75@hotmail.com",
                 "phone": "2215552324",
                 "speciality": Speciality.DERMATOLOGO,
-            }
+            },
         )
         vet_updated = Vet.objects.get(pk=1)
 
@@ -461,7 +461,7 @@ class VetModelTest(TestCase):
                 "email": "brujita75@hotmail.com",
                 "phone": "2215552324",
                 "speciality": Speciality.DERMATOLOGO,
-            }
+            },
         )
         vet = Vet.objects.get(pk=1)
 
@@ -473,7 +473,7 @@ class VetModelTest(TestCase):
                 "email": "brujita75@hotmail.com",
                 "phone": "2215552324",
                 "speciality": "esta especialidad no existe y no deberia guardarlo",
-            }
+            },
         )
 
         vet_updated = Vet.objects.get(pk=1)
@@ -487,7 +487,7 @@ class VetModelTest(TestCase):
                 "email": "brujita75@hotmail.com",
                 "phone": "2215552324",
                 "speciality": Speciality.DERMATOLOGO,
-            }
+            },
         )
         vet = Vet.objects.get(pk=1)
 
@@ -499,7 +499,7 @@ class VetModelTest(TestCase):
                 "email": "brujita75@hotmail.com",
                 "phone": "2215552324",
                 "speciality": "",
-            }
+            },
         )
 
         vet_updated = Vet.objects.get(pk=1)
@@ -513,7 +513,7 @@ class VetModelTest(TestCase):
                 "email": "brujita75@hotmail.com",
                 "phone": "2215552324",
                 "speciality": Speciality.DERMATOLOGO,
-            }
+            },
         )
         vet = Vet.objects.get(pk=1)
 
@@ -525,7 +525,7 @@ class VetModelTest(TestCase):
                 "email": "brujita75@hotmail.com",
                 "phone": "2215552324",
                 #no mando la especialidad
-            }
+            },
         )
 
         vet_updated = Vet.objects.get(pk=1)
@@ -539,7 +539,7 @@ class ProviderModelTest(TestCase):
                 "name": "Valentina",
                 "email": "estudiantes@gmail.com",
                 "direccion": "12 y 47",
-            }
+            },
         )
         providers = Provider.objects.all()
         self.assertEqual(len(providers), 1)
@@ -554,7 +554,7 @@ class ProviderModelTest(TestCase):
                 "name": "Valentina",
                 "email": "estudiantes@gmail.com",
                 "direccion": "casa",
-            }
+            },
         )
         provider = Provider.objects.get(pk=1)
 
@@ -576,7 +576,7 @@ class ProviderModelTest(TestCase):
                 "name": "Valentina",
                 "email": "estudiantes@gmail.com",
                 "direccion": "12 y 47",
-            }
+            },
         )
         provider = Provider.objects.get(pk=1)
 

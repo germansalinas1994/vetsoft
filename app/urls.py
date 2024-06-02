@@ -18,7 +18,7 @@ urlpatterns = [
     path("providers/nuevo/", view=views.providers_form, name="providers_form"),
     path("providers/eliminar/", view=views.providers_delete, name="providers_delete"),
     path(
-        "providers/editar/<int:id>/", view=views.providers_form, name="providers_edit"
+        "providers/editar/<int:id>/", view=views.providers_form, name="providers_edit",
     ),
     # Productos
     path("products/", view=views.products_repository, name="products_repo"),
@@ -33,6 +33,6 @@ urlpatterns = [
     path("medicines/nuevo/", view=views.medicines_form, name="medicines_form"),
     path("medicines/eliminar/", view=views.medicines_delete, name="medicines_delete"),
     path(
-        "medicines/editar/<int:id>/", view=views.medicines_form, name="medicines_edit"
+        "medicines/editar/<int:id>/", view=views.medicines_form, name="medicines_edit",
     ),
 ]
