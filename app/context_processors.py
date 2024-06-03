@@ -14,6 +14,7 @@ links = [
 
 
 def navbar(request):
+    """"Esta funcion asegura de que cada enlace en la lista de enlaces tenga una propiedad "active" """
     def add_active(link):
         copy = link.copy()
 
