@@ -31,7 +31,7 @@ def clients_form(request, id=None):
             return redirect(reverse("clients_repo"))
 
         return render(
-            request, "clients/form.html", {"errors": errors, "client": request.POST}
+            request, "clients/form.html", {"errors": errors, "client": request.POST},
         )
 
     client = None
@@ -76,7 +76,7 @@ def vets_form(request, id=None):
             return redirect(reverse("vets_repo"))
 
         return render(
-            request, "vets/form.html", {"errors": errors, "vet": request.POST, "specialities": specialities}
+            request, "vets/form.html", {"errors": errors, "vet": request.POST, "specialities": specialities},
         )
 
     vet = None
@@ -116,7 +116,7 @@ def providers_form(request, id=None):
             return redirect(reverse("providers_repo"))
 
         return render(
-            request, "providers/form.html", {"errors": errors, "provider": request.POST}
+            request, "providers/form.html", {"errors": errors, "provider": request.POST},
         )
 
     provider = None
@@ -164,7 +164,7 @@ def pets_form(request, id=None):
             return redirect(reverse("pets_repo"))
 
         return render(
-            request, "pets/form.html", {"errors": errors, "pet": request.POST, "breeds": breeds}
+            request, "pets/form.html", {"errors": errors, "pet": request.POST, "breeds": breeds},
         )
 
     pet = None
@@ -205,7 +205,7 @@ def medicines_form(request, id=None):
             return redirect(reverse("medicines_repo"))
 
         return render(
-            request, "medicines/form.html", {"errors": errors, "medicine": request.POST}
+            request, "medicines/form.html", {"errors": errors, "medicine": request.POST},
         )
 
     medicine = None
@@ -248,7 +248,7 @@ def products_form(request, id=None):
             return redirect(reverse("products_repo"))
 
         return render(
-            request, "products/form.html", {"errors": errors, "product": request.POST}
+            request, "products/form.html", {"errors": errors, "product": request.POST},
         )
 
     product = None

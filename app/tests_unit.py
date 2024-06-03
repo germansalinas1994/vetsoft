@@ -6,14 +6,18 @@ from app.models import Breed, Client, Medicine, Pet, Product, Provider, Speciali
 
 
 class ClientModelTest(TestCase):
+    """Modelo de test para la clase Client en app.models.py"""
     def test_can_create_and_get_client(self):
+        """"
+        Se crea un cliente y se verifica que se haya creado correctamente
+        """
         Client.save_client(
             {
                 "name": "Juan Sebastian Veron",
                 "phone": "221555232",
                 "address": "13 y 44",
                 "email": "brujita75@hotmail.com",
-            }
+            },
         )
         clients = Client.objects.all()
         self.assertEqual(len(clients), 1)
@@ -24,13 +28,16 @@ class ClientModelTest(TestCase):
         self.assertEqual(clients[0].email, "brujita75@hotmail.com")
 
     def test_can_update_client(self):
+        """"
+        Se crea un cliente y se verifica que se haya creado correctamente
+        """
         Client.save_client(
             {
                 "name": "Juan Sebastian Veron",
                 "phone": "221555232",
                 "address": "13 y 44",
                 "email": "brujita75@hotmail.com",
-            }
+            },
         )
         client = Client.objects.get(pk=1)
 
@@ -43,13 +50,16 @@ class ClientModelTest(TestCase):
         self.assertEqual(client_updated.phone, "221555233")
 
     def test_update_client_with_error(self):
+        """"
+        Se crea un cliente y se verifica que se haya creado correctamente
+        """
         Client.save_client(
             {
                 "name": "Juan Sebastian Veron",
                 "phone": "221555232",
                 "address": "13 y 44",
                 "email": "brujita75@hotmail.com",
-            }
+            },
         )
         client = Client.objects.get(pk=1)
 
@@ -64,13 +74,17 @@ class ClientModelTest(TestCase):
 
 # PRODUCT
 class ProductModelTest(TestCase):
+    """Modulo de test para la clase Product en app.models.py"""
     def test_can_create_and_get_product(self):
+        """"
+        Se crea un producto y se verifica que se haya creado correctamente
+        """
         Product.save_product(
             {
                 "name": "Whiskas",
                 "type": "Gato adulto",
                 "price": "1454.3",
-            }
+            },
         )
         products = Product.objects.all()
         self.assertEqual(len(products), 1)
@@ -80,12 +94,15 @@ class ProductModelTest(TestCase):
         self.assertEqual(products[0].price, 1454.3)
 
     def test_can_update_product(self):
+        """"
+        Se crea un producto y se verifica que se haya creado correctamente
+        """
         Product.save_product(
             {
                 "name": "Whiskas",
                 "type": "Gato adulto",
                 "price": "1454.3",
-            }
+            },
         )
         product = Product.objects.get(pk=1)
 
@@ -98,12 +115,15 @@ class ProductModelTest(TestCase):
         self.assertEqual(product_updated.price, 1454.3)
 
     def test_update_product_with_error(self):
+        """"
+        Se crea un producto y se verifica que se haya creado correctamente
+        """
         Product.save_product(
             {
                 "name": "Whiskas",
                 "type": "Gato adulto",
                 "price": "1454.3",
-            }
+            },
         )
         product = Product.objects.get(pk=1)
 
@@ -116,10 +136,13 @@ class ProductModelTest(TestCase):
         self.assertEqual(product_updated.price, 1454.3)
 
     def test_product_price_no_negative(self):
+        """"
+        Se crea un producto y se verifica que se haya creado correctamente
+        """
         valid, errors = Product.save_product({
             "name": "DogChow",
             "type": "Perro adulto",
-            "price": "-434.00"
+            "price": "-434.00",
         })
         self.assertFalse(valid)
         self.assertIn("price", errors)
@@ -127,61 +150,80 @@ class ProductModelTest(TestCase):
 
 
     def test_product_price_no_words_or_symbols(self):
+        """"
+        Se crea un producto y se verifica que se haya creado correctamente
+        """
         valid, errors = Product.save_product({
             "name": "DogChow",
             "type": "Perro adulto",
-            "price": "-434abc/e"
+            "price": "-434abc/e",
         })
         self.assertFalse(valid)
         self.assertIn("price", errors)
         self.assertEqual(errors["price"], "Por favor ingrese un precio válido")
 
 class MedicineModelTest(TestCase):
+    """Modelo de test para la clase Medicine en app.models.py"""
     def test_medicine_dose_cannot_be_empty(self):
+        """"
+        Se crea un medicamento y se verifica que se haya creado correctamente
+        """
         valid, errors = Medicine.save_medicine({
             "name": "Ivermectina",
             "description": "ectoparásitos y endoparásitos",
-            "dose": ""
+            "dose": "",
         })
         self.assertFalse(valid)
         self.assertIn("dose", errors)
         self.assertEqual(errors["dose"], "Por favor ingrese una dosis")
 
     def test_medicine_dose_cannot_be_less_than_1(self):
+        """"
+        Se crea un medicamento y se verifica que se haya creado correctamente
+        """
         valid, errors = Medicine.save_medicine({
             "name": "Ivermectina",
             "description": "ectoparásitos y endoparásitos",
-            "dose": 0
+            "dose": 0,
         })
         self.assertFalse(valid)
         self.assertIn("dose", errors)
         self.assertEqual(errors["dose"], "Por favor ingrese una dosis entre 1 y 10")
 
     def test_medicine_dose_cannot_be_greater_than_10(self):
+        """"
+        Se crea un medicamento y se verifica que se haya creado correctamente
+        """
         valid, errors = Medicine.save_medicine({
             "name": "Ivermectina",
             "description": "ectoparásitos y endoparásitos",
-            "dose": 11
+            "dose": 11,
         })
         self.assertFalse(valid)
         self.assertIn("dose", errors)
         self.assertEqual(errors["dose"], "Por favor ingrese una dosis entre 1 y 10")
 
     def test_medicine_dose_must_be_numeric(self):
+        """"
+        Se crea un medicamento y se verifica que se haya creado correctamente
+        """
         valid, errors = Medicine.save_medicine({
             "name": "Ivermectina",
             "description": "ectoparásitos y endoparásitos",
-            "dose": "abc"
+            "dose": "abc",
         })
         self.assertFalse(valid)
         self.assertIn("dose", errors)
         self.assertEqual(errors["dose"], "Por favor ingrese una dosis válida")
 
     def test_medicine_dose_within_valid_range(self):
+        """"
+        Se crea un medicamento y se verifica que se haya creado correctamente
+        """
         valid, errors = Medicine.save_medicine({
             "name": "Ivermectina",
             "description": "ectoparásitos y endoparásitos",
-            "dose": 5
+            "dose": 5,
         })
         self.assertTrue(valid)
         self.assertIsNone(errors)
@@ -193,7 +235,11 @@ class MedicineModelTest(TestCase):
 
 
 class PetModelTest(TestCase):
+    """Modelo de test para la clase Pet en app.models.py"""
     def test_can_create_and_get_pet(self):
+        """"
+        Se crea una mascota y se verifica que se haya creado correctamente
+        """
         # se crea una mascota
         Pet.save_pet(
             {
@@ -201,7 +247,7 @@ class PetModelTest(TestCase):
                 "breed": Breed.GOLDEN_RETRIEVER,
                 "birthday": "01/01/2015",
                 "weight": "10.50",
-            }
+            },
         )
         # se verifica que la mascota se haya creado correctamente
         pets = Pet.objects.all()
@@ -214,6 +260,9 @@ class PetModelTest(TestCase):
         self.assertEqual(pets[0].weight, Decimal("10.50"))
 
     def test_cant_create_and_get_pet(self):
+        """"
+        Se crea una mascota y se verifica que se haya creado correctamente
+        """
         # se crea una mascota
         Pet.save_pet(
             {
@@ -221,7 +270,7 @@ class PetModelTest(TestCase):
                 "breed": "Raza inexistente",
                 "birthday": "01/01/2015",
                 "weight": "10.50",
-            }
+            },
         )
         # se verifica que la mascota se haya creado correctamente
         pets = Pet.objects.all()
@@ -229,6 +278,9 @@ class PetModelTest(TestCase):
         self.assertEqual(len(pets), 0)
 
     def test_can_update_pet_change_breed(self):
+        """"
+        Se crea una mascota y se verifica que se haya creado correctamente
+        """
         # se crea una mascota
         Pet.save_pet(
             {
@@ -236,7 +288,7 @@ class PetModelTest(TestCase):
                 "breed": Breed.GOLDEN_RETRIEVER,
                 "birthday": "01/01/2015",
                 "weight": "1.50",
-            }
+            },
         )
 
         pet = Pet.objects.get(pk=1)
@@ -255,6 +307,9 @@ class PetModelTest(TestCase):
         self.assertEqual(pet_updated.name, "Fido")
 
     def test_can_update_pet_change_weight(self):
+        """"
+        Se crea una mascota y se verifica que se haya creado correctamente
+        """
         # se crea una mascota
         Pet.save_pet(
             {
@@ -262,7 +317,7 @@ class PetModelTest(TestCase):
                 "breed": Breed.GOLDEN_RETRIEVER,
                 "birthday": "01/01/2015",
                 "weight": "1.50",
-            }
+            },
         )
         pet = Pet.objects.get(pk=1)
         pet.update_pet({
@@ -276,6 +331,9 @@ class PetModelTest(TestCase):
         self.assertEqual(pet_updated.breed, "Golden Retriever")
 
     def test_update_pet_with_error_empty_breed(self):
+        """"
+        Se crea una mascota y se verifica que se haya creado correctamente
+        """
         # se crea una mascota
         Pet.save_pet(
             {
@@ -283,7 +341,7 @@ class PetModelTest(TestCase):
                 "breed": Breed.GOLDEN_RETRIEVER,
                 "birthday": "01/01/2015",
                 "weight": "10.50",
-            }
+            },
         )
         pet = Pet.objects.get(pk=1)
         pet.update_pet({
@@ -296,6 +354,9 @@ class PetModelTest(TestCase):
         self.assertEqual(pet_updated.breed, Breed.GOLDEN_RETRIEVER)
 
     def test_update_pet_with_error_bad_breed(self):
+        """"
+        Se crea una mascota y se verifica que se haya creado correctamente
+        """
         # se crea una mascota
         Pet.save_pet(
             {
@@ -303,7 +364,7 @@ class PetModelTest(TestCase):
                 "breed": Breed.GOLDEN_RETRIEVER,
                 "birthday": "01/01/2015",
                 "weight": "10.50",
-            }
+            },
         )
         pet = Pet.objects.get(pk=1)
         pet.update_pet({
@@ -316,6 +377,9 @@ class PetModelTest(TestCase):
         self.assertEqual(pet_updated.breed, Breed.GOLDEN_RETRIEVER)
 
     def test_update_pet_with_error_bad_weight(self):
+        """"
+        Se crea una mascota y se verifica que se haya creado correctamente
+        """
         # se crea una mascota
         Pet.save_pet(
             {
@@ -323,7 +387,7 @@ class PetModelTest(TestCase):
                 "breed": Breed.GOLDEN_RETRIEVER,
                 "birthday": "01/01/2015",
                 "weight": "10.50",
-            }
+            },
         )
         pet = Pet.objects.get(pk=1)
         pet.update_pet({
@@ -338,6 +402,9 @@ class PetModelTest(TestCase):
 
 
     def test_create_pet_with_error_weight(self):
+        """"
+        Se crea una mascota y se verifica que se haya creado correctamente
+        """
         # se crea una mascota
         Pet.save_pet(
             {
@@ -345,7 +412,7 @@ class PetModelTest(TestCase):
                 "breed": Breed.GOLDEN_RETRIEVER,
                 "birthday": "01/01/2015",
                 "weight": "dsadsadsad",
-            }
+            },
         )
         # se verifica que la mascota se haya creado correctamente
         pets = Pet.objects.all()
@@ -353,6 +420,9 @@ class PetModelTest(TestCase):
         self.assertEqual(len(pets), 0)
 
     def test_create_pet_with_empty_weight(self):
+        """"
+        Se crea una mascota y se verifica que se haya creado correctamente
+        """
         # se crea una mascota
         Pet.save_pet(
             {
@@ -360,7 +430,7 @@ class PetModelTest(TestCase):
                 "breed": Breed.GOLDEN_RETRIEVER,
                 "birthday": "01/01/2015",
                 "weight": "",
-            }
+            },
         )
         # se verifica que la mascota se haya creado correctamente
         pets = Pet.objects.all()
@@ -368,6 +438,9 @@ class PetModelTest(TestCase):
         self.assertEqual(len(pets), 0)
 
     def test_create_pet_with_error_breed(self):
+        """"
+        Se crea una mascota y se verifica que se haya creado correctamente
+        """
         # se crea una mascota
         Pet.save_pet(
             {
@@ -375,7 +448,7 @@ class PetModelTest(TestCase):
                 "breed": "Con esta raza no va a funcionar",
                 "birthday": "01/01/2015",
                 "weight": "1000",
-            }
+            },
         )
         # se verifica que la mascota se haya creado correctamente
         pets = Pet.objects.all()
@@ -383,6 +456,9 @@ class PetModelTest(TestCase):
         self.assertEqual(len(pets), 0)
 
     def test_create_pet_with_empty_breed(self):
+        """"
+        Se crea una mascota y se verifica que se haya creado correctamente
+        """
         # se crea una mascota
         Pet.save_pet(
             {
@@ -390,7 +466,7 @@ class PetModelTest(TestCase):
                 "breed": "",
                 "birthday": "01/01/2015",
                 "weight": "1000",
-            }
+            },
         )
         # se verifica que la mascota se haya creado correctamente
         pets = Pet.objects.all()
@@ -399,14 +475,18 @@ class PetModelTest(TestCase):
 
 
 class VetModelTest(TestCase):
+    """Modelo de test para la clase Vet en app.models.py"""
     def test_can_create_and_get_vet(self):
+        """"
+        Se crea un veterinario y se verifica que se haya creado correctamente
+        """
         Vet.save_vet(
             {
                 "name": "Juan Sebastian Veron",
                 "email": "brujita75@hotmail.com",
                 "phone": "2215552324",
                 "speciality": Speciality.GENERAL,
-            }
+            },
         )
         vets = Vet.objects.all()
         self.assertEqual(len(vets), 1)
@@ -417,12 +497,15 @@ class VetModelTest(TestCase):
         self.assertEqual(vets[0].speciality, Speciality.GENERAL)
 
     def test_cant_create_and_get_vet_empty_speciality(self):
+        """"
+        Se crea un veterinario y se verifica que se haya creado correctamente
+        """
         Vet.save_vet(
             {
                 "name": "Juan Sebastian Veron",
                 "email": "brujita75@hotmail.com",
                 "phone": "2215552324",
-            }
+            },
         )
         vets = Vet.objects.all()
         self.assertEqual(len(vets), 0)
@@ -430,13 +513,16 @@ class VetModelTest(TestCase):
 
 
     def test_can_update_vet(self):
+        """"
+        Se crea un veterinario y se verifica que se haya creado correctamente
+        """
         Vet.save_vet(
             {
                 "name": "Juan Sebastian Veron",
                 "email": "brujita75@hotmail.com",
                 "phone": "2215552324",
                 "speciality": Speciality.CARDIOLOGO,
-            }
+            },
         )
         vet = Vet.objects.get(pk=1)
 
@@ -448,20 +534,23 @@ class VetModelTest(TestCase):
                 "email": "brujita75@hotmail.com",
                 "phone": "2215552324",
                 "speciality": Speciality.DERMATOLOGO,
-            }
+            },
         )
         vet_updated = Vet.objects.get(pk=1)
 
         self.assertEqual(vet_updated.speciality, Speciality.DERMATOLOGO)
 
     def test_update_vet_with_error_speciality(self):
+        """"
+        Se crea un veterinario y se verifica que se haya creado correctamente
+        """
         Vet.save_vet(
             {
                 "name": "Juan Sebastian Veron",
                 "email": "brujita75@hotmail.com",
                 "phone": "2215552324",
                 "speciality": Speciality.DERMATOLOGO,
-            }
+            },
         )
         vet = Vet.objects.get(pk=1)
 
@@ -473,7 +562,7 @@ class VetModelTest(TestCase):
                 "email": "brujita75@hotmail.com",
                 "phone": "2215552324",
                 "speciality": "esta especialidad no existe y no deberia guardarlo",
-            }
+            },
         )
 
         vet_updated = Vet.objects.get(pk=1)
@@ -481,13 +570,16 @@ class VetModelTest(TestCase):
         self.assertEqual(vet_updated.speciality, Speciality.DERMATOLOGO)
 
     def test_update_vet_with_error_speciality_empty(self):
+        """"
+        Se crea un veterinario y se verifica que se haya creado correctamente
+        """
         Vet.save_vet(
             {
                 "name": "Juan Sebastian Veron",
                 "email": "brujita75@hotmail.com",
                 "phone": "2215552324",
                 "speciality": Speciality.DERMATOLOGO,
-            }
+            },
         )
         vet = Vet.objects.get(pk=1)
 
@@ -499,7 +591,7 @@ class VetModelTest(TestCase):
                 "email": "brujita75@hotmail.com",
                 "phone": "2215552324",
                 "speciality": "",
-            }
+            },
         )
 
         vet_updated = Vet.objects.get(pk=1)
@@ -507,13 +599,16 @@ class VetModelTest(TestCase):
         self.assertEqual(vet_updated.speciality, Speciality.DERMATOLOGO)
 
     def test_update_vet_with_error_speciality_none(self):
+        """"
+        Se crea un veterinario y se verifica que se haya creado correctamente
+        """
         Vet.save_vet(
             {
                 "name": "Juan Sebastian Veron",
                 "email": "brujita75@hotmail.com",
                 "phone": "2215552324",
                 "speciality": Speciality.DERMATOLOGO,
-            }
+            },
         )
         vet = Vet.objects.get(pk=1)
 
@@ -525,7 +620,7 @@ class VetModelTest(TestCase):
                 "email": "brujita75@hotmail.com",
                 "phone": "2215552324",
                 #no mando la especialidad
-            }
+            },
         )
 
         vet_updated = Vet.objects.get(pk=1)
@@ -533,13 +628,17 @@ class VetModelTest(TestCase):
         self.assertEqual(vet_updated.speciality, Speciality.DERMATOLOGO)
 
 class ProviderModelTest(TestCase):
+    """Modelo de test para la clase Provider en app.models.py"""
     def test_can_create_and_get_provider(self):
+        """"
+        Se crea un proveedor y se verifica que se haya creado correctamente
+        """
         Provider.save_provider(
             {
                 "name": "Valentina",
                 "email": "estudiantes@gmail.com",
                 "direccion": "12 y 47",
-            }
+            },
         )
         providers = Provider.objects.all()
         self.assertEqual(len(providers), 1)
@@ -549,12 +648,15 @@ class ProviderModelTest(TestCase):
         self.assertEqual(providers[0].direccion, "12 y 47")
 
     def test_can_update_provider(self):
+        """"
+        Se crea un proveedor y se verifica que se haya creado correctamente
+        """
         Provider.save_provider(
             {
                 "name": "Valentina",
                 "email": "estudiantes@gmail.com",
                 "direccion": "casa",
-            }
+            },
         )
         provider = Provider.objects.get(pk=1)
 
@@ -571,12 +673,15 @@ class ProviderModelTest(TestCase):
         self.assertEqual(provider_updated.direccion, "facultad")
 
     def test_update_provider_with_error(self):
+        """"
+        Se crea un proveedor y se verifica que se haya creado correctamente
+        """
         Provider.save_provider(
             {
                 "name": "Valentina",
                 "email": "estudiantes@gmail.com",
                 "direccion": "12 y 47",
-            }
+            },
         )
         provider = Provider.objects.get(pk=1)
 
@@ -589,6 +694,9 @@ class ProviderModelTest(TestCase):
         self.assertEqual(provider_updated.direccion, "12 y 47")
 
     def test_provider_adress_cannot_be_empty(self):
+        """"
+        Se crea un proveedor y se verifica que se haya creado correctamente
+        """
         valid, errors = Provider.save_provider({
             "name": "Valentina",
             "email": "estudiantes@gmail.com",
