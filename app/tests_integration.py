@@ -3,7 +3,17 @@ from decimal import Decimal
 from django.shortcuts import reverse
 from django.test import TestCase
 
-from app.models import Breed, Client, Medicine, Pet, Product, Provider, Speciality, Vet
+from app.models import (
+    Breed,
+    CityEnum,
+    Client,
+    Medicine,
+    Pet,
+    Product,
+    Provider,
+    Speciality,
+    Vet,
+)
 
 
 class HomePageTest(TestCase):
@@ -48,16 +58,16 @@ class ClientsTest(TestCase):
             data={
                 "name": "Juan Sebastian Veron",
                 "phone": "54221555232",
-                "address": "13 y 44",
                 "email": "brujita75@vetsoft.com",
+                "city": CityEnum.LA_PLATA,
             },
         )
         clients = Client.objects.all()
         self.assertEqual(len(clients), 1)
         self.assertEqual(clients[0].name, "Juan Sebastian Veron")
         self.assertEqual(clients[0].phone, "54221555232")
-        self.assertEqual(clients[0].address, "13 y 44")
         self.assertEqual(clients[0].email, "brujita75@vetsoft.com")
+        self.assertEqual(clients[0].city, "La Plata")
 
         self.assertRedirects(response, reverse("clients_repo"))
 
@@ -75,6 +85,7 @@ class ClientsTest(TestCase):
         self.assertContains(response, "Por favor ingrese un nombre")
         self.assertContains(response, "Por favor ingrese un teléfono")
         self.assertContains(response, "Por favor ingrese un email")
+        self.assertContains(response, "Por favor ingrese una ciudad")
 
     def test_validation_errors_create_client_wrong_phone(self):
         """"
@@ -85,12 +96,28 @@ class ClientsTest(TestCase):
             data={
                 "name": "Juan Sebastian Veron",
                 "phone": "221555232",
-                "address": "13 y 44",
                 "email": "brujita75@vetsoft.com",
+                "city": CityEnum.LA_PLATA,
             },
         )
 
         self.assertContains(response, "Por favor ingrese un teléfono válido")
+
+    def test_validation_errors_create_client_wrong_city(self):
+        """"
+        test para verificar que se muestren los errores de validacion al crear un cliente con telefono incorrecto
+        """
+        response = self.client.post(
+            reverse("clients_form"),
+            data={
+                "name": "Juan Sebastian Veron",
+                "phone": "54221555232",
+                "city": "Esta ciudad no existe",
+                "email": "brujita75@vetsoft.com",
+            },
+        )
+
+        self.assertContains(response, "Ciudad no válida")
 
     def test_should_response_with_404_status_if_client_doesnt_exists(self):
         """"
@@ -108,7 +135,7 @@ class ClientsTest(TestCase):
             data={
                 "name": "Juan Sebastian Veron",
                 "phone": "54221555232",
-                "address": "13 y 44",
+                "city": CityEnum.LA_PLATA,
                 "email": "brujita75",
             },
         )
@@ -117,11 +144,11 @@ class ClientsTest(TestCase):
 
     def test_edit_user_with_valid_data_test(self):
         """"
-        test para editar un cliente con datos validos
+        test para editar un cliente con datos validos.
         """
         client = Client.objects.create(
             name="Guido Carrillo",
-            address="13 y 44",
+            city=CityEnum.LA_PLATA,
             phone="54221555232",
             email="guido@vetsoft.com",
         )
@@ -132,8 +159,8 @@ class ClientsTest(TestCase):
                 "id": client.id,
                 "name": "Juan Sebastian Veron",
                 "phone": "54221123123",
-                "address": "13 y 40",
                 "email": "brujita71@vetsoft.com",
+                "city": CityEnum.BERISSO,
             },
         )
 
@@ -143,6 +170,8 @@ class ClientsTest(TestCase):
         editedClient = Client.objects.get(pk=client.id)
         self.assertEqual(editedClient.name, "Juan Sebastian Veron")
         self.assertEqual(editedClient.email, "brujita71@vetsoft.com")
+        self.assertEqual(editedClient.phone, "54221123123")
+        self.assertEqual(editedClient.city, CityEnum.BERISSO)
 
 
     def test_edit_user_with_invalid_data_test_phone(self):
@@ -151,7 +180,7 @@ class ClientsTest(TestCase):
         """
         client = Client.objects.create(
             name="Guido Carrillo",
-            address="13 y 44",
+            city=CityEnum.LA_PLATA,
             phone="54221555232",
             email="brujita75@vetsoft.com",
         )
@@ -162,8 +191,8 @@ class ClientsTest(TestCase):
                 "id": client.id,
                 "name": "Juan Sebastian Veron",
                 "phone": "221123123",
-                "address": "13 y 40",
                 "email": "brujita71@vetsoft.com",
+                "city": CityEnum.LA_PLATA,
             },
         )
 
@@ -177,18 +206,18 @@ class ClientsTest(TestCase):
         """
         client = Client.objects.create(
             name="Guido Carrillo",
-            address="13 y 44",
+            city=CityEnum.LA_PLATA,
             phone="54221555232",
             email="brujita75@vetsoft.com",
         )
-
+            
         self.client.post(
             reverse("clients_form"),
               data={
                 "id": client.id,
                 "name": "Juan Sebastian Veron",
                 "phone": "54221555232",
-                "address": "13 y 40",
+                "city": CityEnum.ENSENADA,
                 "email": "brujita71@hotmail.com",
             },
         )
@@ -196,6 +225,34 @@ class ClientsTest(TestCase):
         # redirect after post
         editedClient = Client.objects.get(pk=client.id)
         self.assertEqual(editedClient.email, "brujita75@vetsoft.com")
+
+    def test_edit_user_with_invalid_data_test_city(self):
+        """"
+        test para editar un cliente con datos validos y chequeo de ciudad
+        """
+        client = Client.objects.create(
+            name="Guido Carrillo",
+            city=CityEnum.LA_PLATA,
+            phone="54221555232",
+            email="brujita75@vetsoft.com",
+        )
+     
+
+        self.client.post(
+            reverse("clients_form"),
+              data={
+                "id": client.id,
+                "name": "Juan Sebastian Veron",
+                "phone": "54221123123",
+                "city": "esta ciudad no existe",
+                "email": "brujita75@vetsoft.com",
+            },
+        )
+
+        # redirect after post
+        editedClient = Client.objects.get(pk=client.id)
+        self.assertEqual(editedClient.city, CityEnum.LA_PLATA)
+
 
 # Test Producto
 class ProductsTest(TestCase):

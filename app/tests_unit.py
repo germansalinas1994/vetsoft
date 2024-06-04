@@ -2,7 +2,17 @@ from decimal import Decimal
 
 from django.test import TestCase
 
-from app.models import Breed, Client, Medicine, Pet, Product, Provider, Speciality, Vet
+from app.models import (
+    Breed,
+    CityEnum,
+    Client,
+    Medicine,
+    Pet,
+    Product,
+    Provider,
+    Speciality,
+    Vet,
+)
 
 
 class ClientModelTest(TestCase):
@@ -15,8 +25,8 @@ class ClientModelTest(TestCase):
             {
                 "name": "Juan Sebastian Veron",
                 "phone": "54221555232",
-                "address": "13 y 44",
                 "email": "brujita75@vetsoft.com",
+                "city": CityEnum.LA_PLATA,
             },
         )
         clients = Client.objects.all()
@@ -24,8 +34,8 @@ class ClientModelTest(TestCase):
 
         self.assertEqual(clients[0].name, "Juan Sebastian Veron")
         self.assertEqual(clients[0].phone, "54221555232")
-        self.assertEqual(clients[0].address, "13 y 44")
         self.assertEqual(clients[0].email, "brujita75@vetsoft.com")
+        self.assertEqual(clients[0].city, "La Plata")
 
     def test_can_update_client(self):
         """"
@@ -35,8 +45,8 @@ class ClientModelTest(TestCase):
             {
                 "name": "Juan Sebastian Veron",
                 "phone": "54221555232",
-                "address": "13 y 44",
                 "email": "brujita75@vetsoft.com",
+                "city": CityEnum.LA_PLATA,
             },
         )
         client = Client.objects.get(pk=1)
@@ -44,25 +54,26 @@ class ClientModelTest(TestCase):
         client.update_client(  {
                 "name": "Juan Sebastian Veron",
                 "phone": "54221555233",
-                "address": "13 y 44",
                 "email": "guido@vetsoft.com",
+                "city": CityEnum.ENSENADA,
             },)
 
         client_updated = Client.objects.get(pk=1)
 
         self.assertEqual(client_updated.phone, "54221555233")
         self.assertEqual(client_updated.email, "guido@vetsoft.com")
+        self.assertEqual(client_updated.city, "Ensenada")
 
     def test_update_client_with_error_empty_phone(self):
         """"
-        Se crea un cliente y se verifica que se haya creado correctamente y se intenta actualizar con un telefono vacio
+        Se crea un cliente y se intenta actualizar con un telefono vacio
         """
         Client.save_client(
             {
                 "name": "Juan Sebastian Veron",
                 "phone": "54221555232",
-                "address": "13 y 44",
                 "email": "brujita75@vetsoft.com",
+                "city": CityEnum.ENSENADA,
             },
         )
         client = Client.objects.get(pk=1)
@@ -70,13 +81,40 @@ class ClientModelTest(TestCase):
         client.update_client({
                 "name": "Juan Sebastian Veron",
                 "phone": "",
-                "address": "13 y 44",
                 "email": "brujita75@vetsoft.com",
+                "city": CityEnum.ENSENADA,
             })
 
         client_updated = Client.objects.get(pk=1)
 
         self.assertEqual(client_updated.phone, "54221555232")
+
+    def test_update_client_with_error_empty_city(self):
+        """"
+        Se crea un cliente y se intenta actualizar con una ciudad vacia
+        """
+        Client.save_client(
+            {
+                "name": "Juan Sebastian Veron",
+                "phone": "54221555232",
+                "city": CityEnum.ENSENADA,
+                "email": "brujita75@vetsoft.com",
+            },
+        )
+        client = Client.objects.get(pk=1)
+
+        self.assertEqual(client.city, "Ensenada")
+
+        client.update_client({
+                "name": "Juan Sebastian Veron",
+                "phone": "54221555232",
+                "city": "",
+                "email": "brujita75@vetsoft.com",
+            })
+
+        client_updated = Client.objects.get(pk=1)
+
+        self.assertEqual(client_updated.city, "Ensenada")
 
     def test_update_client_with_error_wrong_phone(self):
         """"
@@ -86,8 +124,8 @@ class ClientModelTest(TestCase):
             {
                 "name": "Juan Sebastian Veron",
                 "phone": "54221555232",
-                "address": "13 y 44",
                 "email": "brujita75@vetsoft.com",
+                "city": CityEnum.ENSENADA,
             },
         )
         client = Client.objects.get(pk=1)
@@ -95,7 +133,7 @@ class ClientModelTest(TestCase):
         client.update_client({
                 "name": "Juan Sebastian Veron",
                 "phone": "221555232",
-                "address": "13 y 44",
+                "city": CityEnum.ENSENADA,
                 "email": "brujita75@vetsoft.com",
             })
 
@@ -112,7 +150,7 @@ class ClientModelTest(TestCase):
             {
                 "name": "Juan Sebastian Veron",
                 "phone": "54221555232",
-                "address": "13 y 44",
+                "city": CityEnum.ENSENADA,
                 "email": "brujita75@vetsoft.com",
             },
         )
@@ -121,7 +159,7 @@ class ClientModelTest(TestCase):
         client.update_client({
                 "name": "Juan Sebastian Veron",
                 "phone": "54221555232",
-                "address": "13 y 44",
+                "city": CityEnum.ENSENADA,
                 "email": "",
             })
 
@@ -137,7 +175,7 @@ class ClientModelTest(TestCase):
             {
                 "name": "Juan Sebastian Veron",
                 "phone": "54221555232",
-                "address": "13 y 44",
+                "city": CityEnum.ENSENADA,
                 "email": "brujita75@vetsoft.com",
             },
         )
@@ -146,7 +184,7 @@ class ClientModelTest(TestCase):
         client.update_client({
                 "name": "Juan Sebastian Veron",
                 "phone": "54221555232",
-                "address": "13 y 44",
+                "city": CityEnum.ENSENADA,
                 "email": "brujita75@hotmail.com",
             })
 
@@ -154,6 +192,33 @@ class ClientModelTest(TestCase):
 
         self.assertEqual(client_updated.email, "brujita75@vetsoft.com")
 
+
+    def test_update_client_with_error_wrong_city(self):
+        """"
+        Se crea un cliente y se verifica si se puede actualizar con una ciudad incorrecta
+        """
+        Client.save_client(
+            {
+                "name": "Juan Sebastian Veron",
+                "phone": "54221555232",
+                "city": CityEnum.ENSENADA,
+                "email": "brujita75@vetsoft.com",
+            },
+        )
+        client = Client.objects.get(pk=1)
+
+        self.assertEqual(client.city, "Ensenada")
+
+        client.update_client({
+                "name": "Juan Sebastian Veron",
+                "phone": "54221555232",
+                "city": "Con esta ciudad no funciona",
+                "email": "brujita75@vetsoft.com",
+            })
+
+        client_updated = Client.objects.get(pk=1)
+
+        self.assertEqual(client_updated.city, "Ensenada")
 
 
 # PRODUCT
