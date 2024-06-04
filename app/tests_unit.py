@@ -37,7 +37,7 @@ class ClientModelTest(TestCase):
         self.assertEqual(clients[0].city, "La Plata")
         self.assertEqual(clients[0].email, "brujita75@hotmail.com")
 
-    def test_can_update_client_phone(self):
+    def test_can_update_client(self):
         """"
         Se crea un cliente y se verifica que se haya actualizado correctamente
         """
@@ -50,8 +50,6 @@ class ClientModelTest(TestCase):
             },
         )
         client = Client.objects.get(pk=1)
-
-        self.assertEqual(client.phone, "54221555232")
 
         client.update_client(  {
                 "name": "Juan Sebastian Veron",
@@ -63,37 +61,11 @@ class ClientModelTest(TestCase):
         client_updated = Client.objects.get(pk=1)
 
         self.assertEqual(client_updated.phone, "54221555233")
-
-    def test_can_update_client_city(self):
-        """"
-        Se crea un cliente y se verifica que se haya actualizado correctamente
-        """
-        Client.save_client(
-            {
-                "name": "Juan Sebastian Veron",
-                "phone": "54221555232",
-                "city": CityEnum.LA_PLATA,
-                "email": "brujita75@hotmail.com",
-            },
-        )
-        client = Client.objects.get(pk=1)
-
-        self.assertEqual(client.phone, "54221555232")
-
-        client.update_client(  {
-                "name": "Juan Sebastian Veron",
-                "phone": "54221555233",
-                "city": CityEnum.ENSENADA,
-                "email": "brujita75@hotmail.com",
-            },)
-
-        client_updated = Client.objects.get(pk=1)
-
         self.assertEqual(client_updated.city, "Ensenada")
 
     def test_update_client_with_error_empty_phone(self):
         """"
-        Se crea un cliente y se verifica que se haya creado correctamente y se intenta actualizar con un telefono vacio
+        Se crea un cliente y se intenta actualizar con un telefono vacio
         """
         Client.save_client(
             {
@@ -104,8 +76,6 @@ class ClientModelTest(TestCase):
             },
         )
         client = Client.objects.get(pk=1)
-
-        self.assertEqual(client.phone, "54221555232")
 
         client.update_client({
                 "name": "Juan Sebastian Veron",
@@ -120,7 +90,7 @@ class ClientModelTest(TestCase):
 
     def test_update_client_with_error_empty_city(self):
         """"
-        Se crea un cliente y se verifica que se haya creado correctamente y se intenta actualizar con un telefono vacio
+        Se crea un cliente y se intenta actualizar con una ciudad vacia
         """
         Client.save_client(
             {
@@ -174,7 +144,7 @@ class ClientModelTest(TestCase):
 
     def test_update_client_with_error_wrong_city(self):
         """"
-        Se crea un cliente y se verifica si se puede actualizar con un telefono incorrecto
+        Se crea un cliente y se verifica si se puede actualizar con una ciudad incorrecta
         """
         Client.save_client(
             {
