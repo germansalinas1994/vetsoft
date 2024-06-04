@@ -211,7 +211,7 @@ class ClientsTest(TestCase):
             email="brujita75@hotmail.com",
         )
 
-        response = self.client.post(
+        self.client.post(
             reverse("clients_form"),
             data={
                 "id": client.id,
@@ -220,7 +220,7 @@ class ClientsTest(TestCase):
                 "email": "brujita71@gmail.com",
             },
         )
-
+        
         edited_client = Client.objects.get(pk=client.id)
         self.assertEqual(edited_client.phone, 54221555232)
 
