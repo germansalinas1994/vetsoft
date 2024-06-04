@@ -12,6 +12,7 @@ def validate_client(data):
     name = data.get("name", "")
     phone = data.get("phone", "")
     email = data.get("email", "")
+    city = data.get("city", "")
 
     if name == "":
         errors["name"] = "Por favor ingrese un nombre"
@@ -28,12 +29,18 @@ def validate_client(data):
     elif email.count("@") == 0:
         errors["email"] = "Por favor ingrese un email valido"
 
+    if city == "" or city is None:
+        errors["city"] = "Por favor ingrese una ciudad"
+    elif city not in dict(CityEnum.choices):
+        errors["city"] = "Ciudad no válida"
+
     return errors
 
 class CityEnum(models.TextChoices):
-    LA_PLATA = 'La Plata', 'La Plata'
-    BERISSO = 'Berisso', 'Berisso'
-    ENSENADA = 'Ensenada', 'Ensenada'
+    """Ciudades de los clientes."""
+    LA_PLATA = 'La Plata',
+    BERISSO = 'Berisso',
+    ENSENADA = 'Ensenada',
 
 def validate_phone_client(phone):
     """"
