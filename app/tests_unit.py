@@ -33,7 +33,7 @@ class ClientModelTest(TestCase):
         self.assertEqual(len(clients), 1)
 
         self.assertEqual(clients[0].name, "Juan Sebastian Veron")
-        self.assertEqual(clients[0].phone, "54221555232")
+        self.assertEqual(clients[0].phone, 54221555232)
         self.assertEqual(clients[0].email, "brujita75@vetsoft.com")
         self.assertEqual(clients[0].city, "La Plata")
 
@@ -60,7 +60,7 @@ class ClientModelTest(TestCase):
 
         client_updated = Client.objects.get(pk=1)
 
-        self.assertEqual(client_updated.phone, "54221555233")
+        self.assertEqual(client_updated.phone, 54221555233)
         self.assertEqual(client_updated.email, "guido@vetsoft.com")
         self.assertEqual(client_updated.city, "Ensenada")
 
@@ -87,7 +87,7 @@ class ClientModelTest(TestCase):
 
         client_updated = Client.objects.get(pk=1)
 
-        self.assertEqual(client_updated.phone, "54221555232")
+        self.assertEqual(client_updated.phone, 54221555232)
 
     def test_update_client_with_error_empty_city(self):
         """"
@@ -139,8 +139,34 @@ class ClientModelTest(TestCase):
 
         client_updated = Client.objects.get(pk=1)
 
-        self.assertEqual(client_updated.phone, "54221555232")
+        self.assertEqual(client_updated.phone, 54221555232)
 
+    def test_update_client_with_error_no_numeric_phone(self):
+        """"
+        Se crea un cliente y se verifica si se puede actualizar con un teléfono no numérico
+        """
+        # Creamos un cliente con un teléfono válido
+        Client.save_client(
+            {
+                "name": "Juan Sebastian Veron",
+                "phone": "54221555232",
+                "email": "brujita75@vetsoft.com",
+                "city": CityEnum.ENSENADA,
+            },
+        )
+        client = Client.objects.get(pk=1)
+
+        # Intentamos actualizar el cliente con un teléfono no numérico
+        client.update_client({
+                "name": "Juan Sebastian Veron",
+                "phone": "54 114563456",  # Teléfono no numérico, ya que tiene un espacio luego de 54
+                "city": CityEnum.ENSENADA,
+                "email": "brujita75@vetsoft.com",
+            })
+
+        # Verificamos que el teléfono del cliente no haya cambiado
+        client_updated = Client.objects.get(pk=1)
+        self.assertEqual(client_updated.phone, 54221555232)
 
     def test_update_client_with_error_empty_email(self):
         """"

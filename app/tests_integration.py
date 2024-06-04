@@ -65,7 +65,7 @@ class ClientsTest(TestCase):
         clients = Client.objects.all()
         self.assertEqual(len(clients), 1)
         self.assertEqual(clients[0].name, "Juan Sebastian Veron")
-        self.assertEqual(clients[0].phone, "54221555232")
+        self.assertEqual(clients[0].phone, 54221555232)
         self.assertEqual(clients[0].email, "brujita75@vetsoft.com")
         self.assertEqual(clients[0].city, "La Plata")
 
@@ -170,7 +170,7 @@ class ClientsTest(TestCase):
         editedClient = Client.objects.get(pk=client.id)
         self.assertEqual(editedClient.name, "Juan Sebastian Veron")
         self.assertEqual(editedClient.email, "brujita71@vetsoft.com")
-        self.assertEqual(editedClient.phone, "54221123123")
+        self.assertEqual(editedClient.phone, 54221123123)
         self.assertEqual(editedClient.city, CityEnum.BERISSO)
 
 
@@ -198,7 +198,31 @@ class ClientsTest(TestCase):
 
         # redirect after post
         editedClient = Client.objects.get(pk=client.id)
-        self.assertEqual(editedClient.phone, "54221555232")
+        self.assertEqual(editedClient.phone, 54221555232)
+
+    def test_invalid_phone_format_on_client_form(self):
+        """
+        Verifica que no se permitan valores no numericos en phone
+        """
+
+        client = Client.objects.create(
+            name="Guido Carrillo",
+            phone="54221555232",
+            email="brujita75@hotmail.com",
+        )
+
+        self.client.post(
+            reverse("clients_form"),
+            data={
+                "id": client.id,
+                "name": "Juan Sebastian Veron",
+                "phone": "54 1134563456",  #Agrego espacio para que ya no sea un int
+                "email": "brujita71@gmail.com",
+            },
+        )
+        
+        edited_client = Client.objects.get(pk=client.id)
+        self.assertEqual(edited_client.phone, 54221555232)
 
     def test_edit_user_with_invalid_data_test_email(self):
         """"

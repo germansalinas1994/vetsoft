@@ -370,6 +370,25 @@ class ClientCreateEditTestCase(PlaywrightTestCase):
         ).not_to_be_visible()
         expect(self.page.get_by_text("Por favor ingrese una ciudad")).not_to_be_visible()
 
+
+    def test_should_show_error_for_non_numeric_phone(self):
+        """
+        Verifica que se muestren errores si el teléfono no es numérico.
+        """
+        self.page.goto(f"{self.live_server_url}{reverse('clients_form')}")
+
+        expect(self.page.get_by_role("form")).to_be_visible()
+
+        self.page.get_by_label("Nombre").fill("Juan Sebastián Veron")
+        self.page.get_by_label("Teléfono").fill("54 91134563456") 
+        ##Hago un test con un espacio adelante ya que es bastante comun que la gente lo ponga así,
+        ##Otra manera de probarlo seria ponerle 54 11telefono o cualquier otra letra y también marcaría el error.  
+        self.page.get_by_label("Email").fill("brujita75@vetsoft.com")
+        self.page.get_by_label("Ciudad").select_option("La Plata")
+        self.page.get_by_role("button", name="Guardar").click()
+        expect(self.page.get_by_text("Por favor ingrese solo valores numéricos")).to_be_visible()    
+
+
     def test_should_view_errors_if_email_is_invalid(self):
         """"
         Verifica que se muestren errores si el formulario es inválido en caso de poner un email invalido"""
@@ -531,7 +550,7 @@ class ClientCreateEditTestCase(PlaywrightTestCase):
         expect(self.page.get_by_text("Por favor ingrese un teléfono")).to_be_visible()
 
 
-#validacion para pet
+# validacion para pet
 
 
 class PetsRepoTestCase(PlaywrightTestCase):

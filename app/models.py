@@ -22,7 +22,11 @@ def validate_client(data):
     else:
         error = validate_phone_client(phone)
         if error is not None:
-            errors["phone"] = validate_phone(phone)
+            errors["phone"] = error
+    
+    errorPhoneCliente= validate_int_phone_client(phone)
+    if errorPhoneCliente is not None:
+        errors["phone"] = errorPhoneCliente
 
     if email == "":
         errors["email"] = "Por favor ingrese un email"
@@ -58,10 +62,24 @@ def validate_phone_client(phone):
     except ValueError:
         return "Por favor ingrese un teléfono válido"
 
+def validate_int_phone_client(phone):
+    """
+        Valida que el teléfono ingresado sea un entero positivo.
+    """
+    if phone == "":
+        return "Por favor ingrese un teléfono"
+    try:
+        # Convertimos phone a int
+        int(phone)
+    except ValueError:
+        # Si la conversión falla, significa que no es entero
+        return "Por favor ingrese solo valores numéricos"
+    
+
 class Client(models.Model):
     """Modelo de cliente para los clientes de la clínica."""
     name = models.CharField(max_length=100)
-    phone = models.CharField(max_length=15)
+    phone = models.IntegerField()
     email = models.EmailField()
     city = models.CharField(max_length=50, choices=CityEnum.choices)
 
