@@ -16,6 +16,10 @@ def validate_client(data):
 
     if name == "":
         errors["name"] = "Por favor ingrese un nombre"
+    else:
+        error = validate_client_char(name)
+        if error is not None:
+            errors["name"] = error
 
     if phone == "":
         errors["phone"] = "Por favor ingrese un teléfono"
@@ -23,7 +27,7 @@ def validate_client(data):
         error = validate_phone_client(phone)
         if error is not None:
             errors["phone"] = error
-    
+
     errorPhoneCliente= validate_int_phone_client(phone)
     if errorPhoneCliente is not None:
         errors["phone"] = errorPhoneCliente
@@ -74,7 +78,18 @@ def validate_int_phone_client(phone):
     except ValueError:
         # Si la conversión falla, significa que no es entero
         return "Por favor ingrese solo valores numéricos"
-    
+
+def validate_client_char(name):
+    """
+        Valida que el nombre tenga solo letras y espacios
+    """
+    if re.match(r"^[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+$", name):
+        return None
+    else:
+        return "El nombre solo debe contener letras y espacios"
+
+
+
 
 class Client(models.Model):
     """Modelo de cliente para los clientes de la clínica."""
