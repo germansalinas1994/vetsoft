@@ -58,16 +58,16 @@ class ClientsTest(TestCase):
             data={
                 "name": "Juan Sebastian Veron",
                 "phone": "54221555232",
+                "email": "brujita75@vetsoft.com",
                 "city": CityEnum.LA_PLATA,
-                "email": "brujita75@hotmail.com",
             },
         )
         clients = Client.objects.all()
         self.assertEqual(len(clients), 1)
         self.assertEqual(clients[0].name, "Juan Sebastian Veron")
         self.assertEqual(clients[0].phone, "54221555232")
+        self.assertEqual(clients[0].email, "brujita75@vetsoft.com")
         self.assertEqual(clients[0].city, "La Plata")
-        self.assertEqual(clients[0].email, "brujita75@hotmail.com")
 
         self.assertRedirects(response, reverse("clients_repo"))
 
@@ -96,8 +96,8 @@ class ClientsTest(TestCase):
             data={
                 "name": "Juan Sebastian Veron",
                 "phone": "221555232",
+                "email": "brujita75@vetsoft.com",
                 "city": CityEnum.LA_PLATA,
-                "email": "brujita75",
             },
         )
 
@@ -113,7 +113,7 @@ class ClientsTest(TestCase):
                 "name": "Juan Sebastian Veron",
                 "phone": "54221555232",
                 "city": "Esta ciudad no existe",
-                "email": "brujita75",
+                "email": "brujita75@vetsoft.com",
             },
         )
 
@@ -150,7 +150,7 @@ class ClientsTest(TestCase):
             name="Guido Carrillo",
             city=CityEnum.LA_PLATA,
             phone="54221555232",
-            email="guido@hotmail.com",
+            email="guido@vetsoft.com",
         )
 
         response = self.client.post(
@@ -159,8 +159,8 @@ class ClientsTest(TestCase):
                 "id": client.id,
                 "name": "Juan Sebastian Veron",
                 "phone": "54221123123",
+                "email": "brujita71@vetsoft.com",
                 "city": CityEnum.BERISSO,
-                "email": "brujita71@gamil.com",
             },
         )
 
@@ -169,6 +169,7 @@ class ClientsTest(TestCase):
 
         editedClient = Client.objects.get(pk=client.id)
         self.assertEqual(editedClient.name, "Juan Sebastian Veron")
+        self.assertEqual(editedClient.email, "brujita71@vetsoft.com")
         self.assertEqual(editedClient.phone, "54221123123")
         self.assertEqual(editedClient.city, CityEnum.BERISSO)
 
@@ -181,7 +182,7 @@ class ClientsTest(TestCase):
             name="Guido Carrillo",
             city=CityEnum.LA_PLATA,
             phone="54221555232",
-            email="brujita75@hotmail.com",
+            email="brujita75@vetsoft.com",
         )
 
         self.client.post(
@@ -190,14 +191,40 @@ class ClientsTest(TestCase):
                 "id": client.id,
                 "name": "Juan Sebastian Veron",
                 "phone": "221123123",
+                "email": "brujita71@vetsoft.com",
                 "city": CityEnum.LA_PLATA,
-                "email": "brujita71@gamil.com",
             },
         )
 
         # redirect after post
         editedClient = Client.objects.get(pk=client.id)
         self.assertEqual(editedClient.phone, "54221555232")
+
+    def test_edit_user_with_invalid_data_test_email(self):
+        """"
+        test para editar un cliente con datos validos y chequeo de email
+        """
+        client = Client.objects.create(
+            name="Guido Carrillo",
+            city=CityEnum.LA_PLATA,
+            phone="54221555232",
+            email="brujita75@vetsoft.com",
+        )
+            
+        self.client.post(
+            reverse("clients_form"),
+              data={
+                "id": client.id,
+                "name": "Juan Sebastian Veron",
+                "phone": "54221555232",
+                "city": CityEnum.ENSENADA,
+                "email": "brujita71@hotmail.com",
+            },
+        )
+
+        # redirect after post
+        editedClient = Client.objects.get(pk=client.id)
+        self.assertEqual(editedClient.email, "brujita75@vetsoft.com")
 
     def test_edit_user_with_invalid_data_test_city(self):
         """"
@@ -207,8 +234,9 @@ class ClientsTest(TestCase):
             name="Guido Carrillo",
             city=CityEnum.LA_PLATA,
             phone="54221555232",
-            email="brujita75@hotmail.com",
+            email="brujita75@vetsoft.com",
         )
+     
 
         self.client.post(
             reverse("clients_form"),
@@ -217,7 +245,7 @@ class ClientsTest(TestCase):
                 "name": "Juan Sebastian Veron",
                 "phone": "54221123123",
                 "city": "esta ciudad no existe",
-                "email": "brujita71@gamil.com",
+                "email": "brujita75@vetsoft.com",
             },
         )
 
