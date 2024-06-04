@@ -2,7 +2,7 @@ from decimal import Decimal
 
 from django.test import TestCase
 
-from app.models import Breed, Client, Medicine, Pet, Product, Provider, Speciality, Vet
+from app.models import Breed, Client, Medicine, Pet, Product, Provider, Speciality, Vet, CityEnum
 
 
 class ClientModelTest(TestCase):
@@ -15,7 +15,7 @@ class ClientModelTest(TestCase):
             {
                 "name": "Juan Sebastian Veron",
                 "phone": "54221555232",
-                "address": "13 y 44",
+                "city": CityEnum.LA_PLATA,
                 "email": "brujita75@hotmail.com",
             },
         )
@@ -24,10 +24,10 @@ class ClientModelTest(TestCase):
 
         self.assertEqual(clients[0].name, "Juan Sebastian Veron")
         self.assertEqual(clients[0].phone, "54221555232")
-        self.assertEqual(clients[0].address, "13 y 44")
+        self.assertEqual(clients[0].city, "La Plata")
         self.assertEqual(clients[0].email, "brujita75@hotmail.com")
 
-    def test_can_update_client(self):
+    def test_can_update_client_phone(self):
         """"
         Se crea un cliente y se verifica que se haya actualizado correctamente
         """
@@ -35,7 +35,7 @@ class ClientModelTest(TestCase):
             {
                 "name": "Juan Sebastian Veron",
                 "phone": "54221555232",
-                "address": "13 y 44",
+                "city": CityEnum.LA_PLATA,
                 "email": "brujita75@hotmail.com",
             },
         )
@@ -46,7 +46,7 @@ class ClientModelTest(TestCase):
         client.update_client(  {
                 "name": "Juan Sebastian Veron",
                 "phone": "54221555233",
-                "address": "13 y 44",
+                "city": CityEnum.ENSENADA,
                 "email": "brujita75@hotmail.com",
             },)
 
@@ -62,7 +62,7 @@ class ClientModelTest(TestCase):
             {
                 "name": "Juan Sebastian Veron",
                 "phone": "54221555232",
-                "address": "13 y 44",
+                "city": CityEnum.ENSENADA,
                 "email": "brujita75@hotmail.com",
             },
         )
@@ -73,7 +73,7 @@ class ClientModelTest(TestCase):
         client.update_client({
                 "name": "Juan Sebastian Veron",
                 "phone": "",
-                "address": "13 y 44",
+                "city": CityEnum.ENSENADA,
                 "email": "brujita75@hotmail.com",
             })
 
@@ -89,7 +89,7 @@ class ClientModelTest(TestCase):
             {
                 "name": "Juan Sebastian Veron",
                 "phone": "54221555232",
-                "address": "13 y 44",
+                "city": CityEnum.ENSENADA,
                 "email": "brujita75@hotmail.com",
             },
         )
@@ -100,7 +100,7 @@ class ClientModelTest(TestCase):
         client.update_client({
                 "name": "Juan Sebastian Veron",
                 "phone": "221555232",
-                "address": "13 y 44",
+                "city": CityEnum.ENSENADA,
                 "email": "brujita75@hotmail.com",
             })
 
