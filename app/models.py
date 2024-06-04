@@ -12,6 +12,7 @@ def validate_client(data):
     name = data.get("name", "")
     phone = data.get("phone", "")
     email = data.get("email", "")
+    city = data.get("city", "")
 
     if name == "":
         errors["name"] = "Por favor ingrese un nombre"
@@ -21,15 +22,31 @@ def validate_client(data):
     else:
         error = validate_phone_client(phone)
         if error is not None:
-            errors["phone"] = validate_phone(phone)
+            errors["phone"] = error
+    
+    errorPhoneCliente= validate_int_phone_client(phone)
+    if errorPhoneCliente is not None:
+        errors["phone"] = errorPhoneCliente
 
     if email == "":
         errors["email"] = "Por favor ingrese un email"
     elif email.count("@") == 0:
         errors["email"] = "Por favor ingrese un email valido"
+    elif not email.endswith("@vetsoft.com"):
+        errors["email"] = "El email debe terminar con @vetsoft.com"
+
+    if city == "" or city is None:
+        errors["city"] = "Por favor ingrese una ciudad"
+    elif city not in dict(CityEnum.choices):
+        errors["city"] = "Ciudad no válida"
 
     return errors
 
+class CityEnum(models.TextChoices):
+    """Ciudades de los clientes."""
+    LA_PLATA = 'La Plata',
+    BERISSO = 'Berisso',
+    ENSENADA = 'Ensenada',
 
 def validate_phone_client(phone):
     """"
@@ -45,12 +62,26 @@ def validate_phone_client(phone):
     except ValueError:
         return "Por favor ingrese un teléfono válido"
 
+def validate_int_phone_client(phone):
+    """
+        Valida que el teléfono ingresado sea un entero positivo.
+    """
+    if phone == "":
+        return "Por favor ingrese un teléfono"
+    try:
+        # Convertimos phone a int
+        int(phone)
+    except ValueError:
+        # Si la conversión falla, significa que no es entero
+        return "Por favor ingrese solo valores numéricos"
+    
+
 class Client(models.Model):
     """Modelo de cliente para los clientes de la clínica."""
     name = models.CharField(max_length=100)
-    phone = models.CharField(max_length=15)
+    phone = models.IntegerField()
     email = models.EmailField()
-    address = models.CharField(max_length=100, blank=True)
+    city = models.CharField(max_length=50, choices=CityEnum.choices)
 
     def __str__(self):
         """"
@@ -72,7 +103,7 @@ class Client(models.Model):
             name=client_data.get("name"),
             phone=client_data.get("phone"),
             email=client_data.get("email"),
-            address=client_data.get("address"),
+            city=client_data.get("city"),
         )
 
         return True, None
@@ -91,7 +122,7 @@ class Client(models.Model):
         self.name = client_data.get("name", "") or self.name
         self.email = client_data.get("email", "") or self.email
         self.phone = client_data.get("phone", "") or self.phone
-        self.address = client_data.get("address", "") or self.address
+        self.city = client_data.get("city", "") or self.city
 
         self.save()
 
