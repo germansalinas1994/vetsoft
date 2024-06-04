@@ -1,8 +1,8 @@
 name: cd
 
 on:
-    push:
-        branch: [main]
+    release:
+        types: [published]
 
 jobs:
     deploy:
@@ -22,10 +22,18 @@ jobs:
             - name: Set up Docker Buildx
               uses: docker/setup-buildx-action@v3
 
+            - name: Get the date
+              id: get_date
+              run: echo "date=$(date '+%Y%m%d%H%M%S')" >> $GITHUB_ENV
+
             - name: Build and push
               uses: docker/build-push-action@v5
               with:
                   context: .
                   file: ./Dockerfile
                   push: true
-                  tags: ${{ secrets.DOCKERHUB_USERNAME }}/vetsoft:latest
+                  tags: ${{ secrets.DOCKERHUB_USERNAME }}/vetsoft:latest,${{ secrets.DOCKERHUB_USERNAME }}/vetsoft:${{ env.date }}
+
+
+            - name: Deploy
+              run: curl ${{ secrets.RENDER_SECRET_KEY }}

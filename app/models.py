@@ -18,6 +18,10 @@ def validate_client(data):
 
     if phone == "":
         errors["phone"] = "Por favor ingrese un teléfono"
+    else:
+        error = validate_phone_client(phone)
+        if error is not None:
+            errors["phone"] = validate_phone(phone)
 
     if email == "":
         errors["email"] = "Por favor ingrese un email"
@@ -30,6 +34,20 @@ class CityEnum(models.TextChoices):
     LA_PLATA = 'La Plata', 'La Plata'
     BERISSO = 'Berisso', 'Berisso'
     ENSENADA = 'Ensenada', 'Ensenada'
+
+def validate_phone_client(phone):
+    """"
+        esta funcion es para validar que el telefono comience con 54
+    """
+    # me quedo con los primeros 2 caracteres
+    prefix = phone[:2]
+    try:
+        # convierto el prefijo a entero
+        prefix = int(prefix)
+        if prefix != 54:
+            return "Por favor ingrese un teléfono válido"
+    except ValueError:
+        return "Por favor ingrese un teléfono válido"
 
 class Client(models.Model):
     """Modelo de cliente para los clientes de la clínica."""
@@ -67,12 +85,21 @@ class Client(models.Model):
         """""
         Actualiza los datos de un cliente
         """
+
+        errors = validate_client(client_data)
+
+        if len(errors.keys()) > 0:
+            return False, errors
+
+
         self.name = client_data.get("name", "") or self.name
         self.email = client_data.get("email", "") or self.email
         self.phone = client_data.get("phone", "") or self.phone
         self.city = client_data.get("city", "") or self.city
 
         self.save()
+
+        return True, None
 
 
 
