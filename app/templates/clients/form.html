@@ -68,19 +68,20 @@
                     {% endif %}
                 </div>
                 <div>
-                    <label for="address" class="form-label">Dirección</label>
-                    <input
-                        type="text"
-                        id="address"
-                        name="address"
-                        value="{{client.address}}"
-                        class="form-control"
-                    />
-
-                    <div class="invalid-feedback">
-                        La dirrección es opcional
-                    </div>
+                    <label for="city" class="form-label">Ciudad</label>
+                    <select id="city" name="city" class="form-select" required>
+                        <option value="" disabled selected>Seleccione una opción</option>
+                        {% for id_city, city in ciudades %}
+                            <option value="{{ id_city }}" {% if client.city == id_city %}selected{% endif %}>
+                                {{ city }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                    {% if errors.city %}
+                    <div class="invalid-feedback">{{ errors.city }}</div>
+                    {% endif %}
                 </div>
+
 
                 <button class="btn btn-primary">Guardar</button>
             </form>
