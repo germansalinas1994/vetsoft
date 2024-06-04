@@ -16,7 +16,7 @@ class ClientModelTest(TestCase):
                 "name": "Juan Sebastian Veron",
                 "phone": "54221555232",
                 "address": "13 y 44",
-                "email": "brujita75@hotmail.com",
+                "email": "brujita75@vetsoft.com",
             },
         )
         clients = Client.objects.all()
@@ -25,7 +25,7 @@ class ClientModelTest(TestCase):
         self.assertEqual(clients[0].name, "Juan Sebastian Veron")
         self.assertEqual(clients[0].phone, "54221555232")
         self.assertEqual(clients[0].address, "13 y 44")
-        self.assertEqual(clients[0].email, "brujita75@hotmail.com")
+        self.assertEqual(clients[0].email, "brujita75@vetsoft.com")
 
     def test_can_update_client(self):
         """"
@@ -36,23 +36,22 @@ class ClientModelTest(TestCase):
                 "name": "Juan Sebastian Veron",
                 "phone": "54221555232",
                 "address": "13 y 44",
-                "email": "brujita75@hotmail.com",
+                "email": "brujita75@vetsoft.com",
             },
         )
         client = Client.objects.get(pk=1)
-
-        self.assertEqual(client.phone, "54221555232")
 
         client.update_client(  {
                 "name": "Juan Sebastian Veron",
                 "phone": "54221555233",
                 "address": "13 y 44",
-                "email": "brujita75@hotmail.com",
+                "email": "guido@vetsoft.com",
             },)
 
         client_updated = Client.objects.get(pk=1)
 
         self.assertEqual(client_updated.phone, "54221555233")
+        self.assertEqual(client_updated.email, "guido@vetsoft.com")
 
     def test_update_client_with_error_empty_phone(self):
         """"
@@ -63,18 +62,16 @@ class ClientModelTest(TestCase):
                 "name": "Juan Sebastian Veron",
                 "phone": "54221555232",
                 "address": "13 y 44",
-                "email": "brujita75@hotmail.com",
+                "email": "brujita75@vetsoft.com",
             },
         )
         client = Client.objects.get(pk=1)
-
-        self.assertEqual(client.phone, "54221555232")
 
         client.update_client({
                 "name": "Juan Sebastian Veron",
                 "phone": "",
                 "address": "13 y 44",
-                "email": "brujita75@hotmail.com",
+                "email": "brujita75@vetsoft.com",
             })
 
         client_updated = Client.objects.get(pk=1)
@@ -90,23 +87,73 @@ class ClientModelTest(TestCase):
                 "name": "Juan Sebastian Veron",
                 "phone": "54221555232",
                 "address": "13 y 44",
-                "email": "brujita75@hotmail.com",
+                "email": "brujita75@vetsoft.com",
             },
         )
         client = Client.objects.get(pk=1)
 
-        self.assertEqual(client.phone, "54221555232")
-
         client.update_client({
                 "name": "Juan Sebastian Veron",
                 "phone": "221555232",
+                "address": "13 y 44",
+                "email": "brujita75@vetsoft.com",
+            })
+
+        client_updated = Client.objects.get(pk=1)
+
+        self.assertEqual(client_updated.phone, "54221555232")
+
+
+    def test_update_client_with_error_empty_email(self):
+        """"
+        Se crea un cliente y se intenta actualizar con un email vacio
+        """
+        Client.save_client(
+            {
+                "name": "Juan Sebastian Veron",
+                "phone": "54221555232",
+                "address": "13 y 44",
+                "email": "brujita75@vetsoft.com",
+            },
+        )
+        client = Client.objects.get(pk=1)
+
+        client.update_client({
+                "name": "Juan Sebastian Veron",
+                "phone": "54221555232",
+                "address": "13 y 44",
+                "email": "",
+            })
+
+        client_updated = Client.objects.get(pk=1)
+
+        self.assertEqual(client_updated.email, "brujita75@vetsoft.com")
+
+    def test_update_client_with_error_wrong_email(self):
+        """"
+        Se crea un cliente y se verifica si se puede actualizar con un email incorrecto
+        """
+        Client.save_client(
+            {
+                "name": "Juan Sebastian Veron",
+                "phone": "54221555232",
+                "address": "13 y 44",
+                "email": "brujita75@vetsoft.com",
+            },
+        )
+        client = Client.objects.get(pk=1)
+
+        client.update_client({
+                "name": "Juan Sebastian Veron",
+                "phone": "54221555232",
                 "address": "13 y 44",
                 "email": "brujita75@hotmail.com",
             })
 
         client_updated = Client.objects.get(pk=1)
 
-        self.assertEqual(client_updated.phone, "54221555232")
+        self.assertEqual(client_updated.email, "brujita75@vetsoft.com")
+
 
 
 # PRODUCT
