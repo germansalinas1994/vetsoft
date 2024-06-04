@@ -66,6 +66,8 @@ def validate_int_phone_client(phone):
     """
         Valida que el teléfono ingresado sea un entero positivo.
     """
+    if phone == "":
+        return "Por favor ingrese un teléfono"
     try:
         # Convertimos phone a int
         phone_num = int(phone)
