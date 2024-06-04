@@ -27,6 +27,8 @@ def validate_client(data):
         errors["email"] = "Por favor ingrese un email"
     elif email.count("@") == 0:
         errors["email"] = "Por favor ingrese un email valido"
+    elif not email.endswith("@vetsoft.com"):
+        errors["email"] = "El email debe terminar con @vetsoft.com"
 
     return errors
 
