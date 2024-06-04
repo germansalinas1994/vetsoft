@@ -2,7 +2,17 @@ from decimal import Decimal
 
 from django.test import TestCase
 
-from app.models import Breed, Client, Medicine, Pet, Product, Provider, Speciality, Vet, CityEnum
+from app.models import (
+    Breed,
+    CityEnum,
+    Client,
+    Medicine,
+    Pet,
+    Product,
+    Provider,
+    Speciality,
+    Vet,
+)
 
 
 class ClientModelTest(TestCase):

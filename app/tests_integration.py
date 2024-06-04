@@ -3,7 +3,17 @@ from decimal import Decimal
 from django.shortcuts import reverse
 from django.test import TestCase
 
-from app.models import Breed, Client, Medicine, Pet, Product, Provider, Speciality, Vet
+from app.models import (
+    Breed,
+    CityEnum,
+    Client,
+    Medicine,
+    Pet,
+    Product,
+    Provider,
+    Speciality,
+    Vet,
+)
 
 
 class HomePageTest(TestCase):
@@ -39,7 +49,7 @@ class ClientsTest(TestCase):
         response = self.client.get(reverse("clients_form"))
         self.assertTemplateUsed(response, "clients/form.html")
 
-    def test_can_create_client(self):
+    def test_can_create_client_phone(self):
         """"
         test para verificar que se pueda crear un cliente
         """
@@ -48,7 +58,7 @@ class ClientsTest(TestCase):
             data={
                 "name": "Juan Sebastian Veron",
                 "phone": "54221555232",
-                "address": "13 y 44",
+                "city": CityEnum.LA_PLATA,
                 "email": "brujita75@hotmail.com",
             },
         )
@@ -56,7 +66,7 @@ class ClientsTest(TestCase):
         self.assertEqual(len(clients), 1)
         self.assertEqual(clients[0].name, "Juan Sebastian Veron")
         self.assertEqual(clients[0].phone, "54221555232")
-        self.assertEqual(clients[0].address, "13 y 44")
+        self.assertEqual(clients[0].city, "La Plata")
         self.assertEqual(clients[0].email, "brujita75@hotmail.com")
 
         self.assertRedirects(response, reverse("clients_repo"))
@@ -75,6 +85,7 @@ class ClientsTest(TestCase):
         self.assertContains(response, "Por favor ingrese un nombre")
         self.assertContains(response, "Por favor ingrese un teléfono")
         self.assertContains(response, "Por favor ingrese un email")
+        self.assertContains(response, "Por favor ingrese una ciudad")
 
     def test_validation_errors_create_client_wrong_phone(self):
         """"
@@ -85,7 +96,7 @@ class ClientsTest(TestCase):
             data={
                 "name": "Juan Sebastian Veron",
                 "phone": "221555232",
-                "address": "13 y 44",
+                "city": CityEnum.LA_PLATA,
                 "email": "brujita75",
             },
         )
@@ -108,7 +119,7 @@ class ClientsTest(TestCase):
             data={
                 "name": "Juan Sebastian Veron",
                 "phone": "54221555232",
-                "address": "13 y 44",
+                "city": CityEnum.LA_PLATA,
                 "email": "brujita75",
             },
         )
@@ -121,7 +132,7 @@ class ClientsTest(TestCase):
         """
         client = Client.objects.create(
             name="Guido Carrillo",
-            address="13 y 44",
+            city=CityEnum.LA_PLATA,
             phone="54221555232",
             email="guido@hotmail.com",
         )
@@ -132,7 +143,7 @@ class ClientsTest(TestCase):
                 "id": client.id,
                 "name": "Juan Sebastian Veron",
                 "phone": "54221123123",
-                "address": "13 y 40",
+                "city": CityEnum.LA_PLATA,
                 "email": "brujita71@gamil.com",
             },
         )
@@ -149,7 +160,7 @@ class ClientsTest(TestCase):
         """
         client = Client.objects.create(
             name="Guido Carrillo",
-            address="13 y 44",
+            city=CityEnum.LA_PLATA,
             phone="54221555232",
             email="brujita75@hotmail.com",
         )
@@ -160,7 +171,7 @@ class ClientsTest(TestCase):
                 "id": client.id,
                 "name": "Juan Sebastian Veron",
                 "phone": "54221123123",
-                "address": "13 y 40",
+                "city": CityEnum.LA_PLATA,
                 "email": "brujita71@gamil.com",
             },
         )
@@ -178,7 +189,7 @@ class ClientsTest(TestCase):
         """
         client = Client.objects.create(
             name="Guido Carrillo",
-            address="13 y 44",
+            city=CityEnum.LA_PLATA,
             phone="54221555232",
             email="brujita75@hotmail.com",
         )
@@ -189,7 +200,7 @@ class ClientsTest(TestCase):
                 "id": client.id,
                 "name": "Juan Sebastian Veron",
                 "phone": "221123123",
-                "address": "13 y 40",
+                "city": CityEnum.LA_PLATA,
                 "email": "brujita71@gamil.com",
             },
         )
