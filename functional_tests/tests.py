@@ -1,11 +1,10 @@
 import os
-from decimal import Decimal
 
 from django.contrib.staticfiles.testing import StaticLiveServerTestCase
 from django.urls import reverse
 from playwright.sync_api import Browser, expect, sync_playwright
 
-from app.models import Breed, Client, Medicine, Pet, Product, Provider, Speciality, Vet
+from app.models import Client
 
 os.environ["DJANGO_ALLOW_ASYNC_UNSAFE"] = "true"
 playwright = sync_playwright().start()
