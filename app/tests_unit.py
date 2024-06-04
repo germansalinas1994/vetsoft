@@ -37,6 +37,22 @@ class ClientModelTest(TestCase):
         self.assertEqual(clients[0].email, "brujita75@vetsoft.com")
         self.assertEqual(clients[0].city, "La Plata")
 
+    def test_can_not_create_client_wrong_name(self):
+        """"
+        Se crea un cliente y se verifica que no se haya creado
+        """
+        Client.save_client(
+            {
+                "name": "Juan Sebastian Veron1",
+                "phone": "54221555232",
+                "email": "brujita75@vetsoft.com",
+                "city": CityEnum.LA_PLATA,
+            },
+        )
+        clients = Client.objects.all()
+        self.assertEqual(len(clients), 0)
+
+
     def test_can_update_client(self):
         """"
         Se crea un cliente y se verifica que se haya actualizado correctamente
@@ -217,6 +233,33 @@ class ClientModelTest(TestCase):
         client_updated = Client.objects.get(pk=1)
 
         self.assertEqual(client_updated.email, "brujita75@vetsoft.com")
+
+    def test_update_client_with_error_wrong_name(self):
+        """"
+        Se crea un cliente y se verifica si se puede actualizar con un nombre incorrecto
+        """
+        Client.save_client(
+            {
+                "name": "Juan Sebastian Veron",
+                "phone": "54221555232",
+                "city": CityEnum.ENSENADA,
+                "email": "brujita75@vetsoft.com",
+            },
+        )
+        client = Client.objects.get(pk=1)
+
+        client.update_client({
+                "name": "Juan 123",
+                "phone": "54221555232",
+                "city": CityEnum.ENSENADA,
+                "email": "brujita75@vetsoft.com",
+            })
+
+        client_updated = Client.objects.get(pk=1)
+
+        self.assertEqual(client_updated.name, "Juan Sebastian Veron")
+
+
 
 
     def test_update_client_with_error_wrong_city(self):
