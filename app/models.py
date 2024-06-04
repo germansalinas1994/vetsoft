@@ -79,7 +79,7 @@ def validate_int_phone_client(phone):
 class Client(models.Model):
     """Modelo de cliente para los clientes de la clínica."""
     name = models.CharField(max_length=100)
-    phone = models.IntegerField
+    phone = models.IntegerField()
     email = models.EmailField()
     city = models.CharField(max_length=50, choices=CityEnum.choices)
 
