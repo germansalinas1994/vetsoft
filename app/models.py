@@ -70,7 +70,7 @@ def validate_int_phone_client(phone):
         return "Por favor ingrese un teléfono"
     try:
         # Convertimos phone a int
-        phone_num = int(phone)
+        int(phone)
     except ValueError:
         # Si la conversión falla, significa que no es entero
         return "Por favor ingrese solo valores numéricos"
