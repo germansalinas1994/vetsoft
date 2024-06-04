@@ -54,7 +54,7 @@ class Client(models.Model):
     name = models.CharField(max_length=100)
     phone = models.CharField(max_length=15)
     email = models.EmailField()
-    city = models.CharField(max_length=50, choices=CityEnum.choices, blank=True)
+    city = models.CharField(max_length=50, choices=CityEnum.choices)
 
     def __str__(self):
         """"
