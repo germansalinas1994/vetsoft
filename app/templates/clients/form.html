@@ -28,6 +28,8 @@
                         value="{{client.name}}"
                         class="form-control"
                         required
+                        pattern="^[A-Za-zÁÉÍÓÚáéíóúÑñ\s]*$"
+                        title="El nombre solo puede contener letras y espacios."
                     />
 
                     {% if errors.name %}
@@ -58,8 +60,8 @@
                         type="email"
                         id="email"
                         name="email"
-                        class="form-control {% if errors.email %}is-invalid{% endif %}" 
-                        value="{{ client.email }}" 
+                        class="form-control {% if errors.email %}is-invalid{% endif %}"
+                        value="{{ client.email }}"
                         pattern=".+@vetsoft\.com$"
                         title="El email debe finalizar con '@vetsoft.com'."
                         required

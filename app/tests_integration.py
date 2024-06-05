@@ -119,6 +119,25 @@ class ClientsTest(TestCase):
 
         self.assertContains(response, "Ciudad no válida")
 
+    def test_validation_create_with_invalid_name(self):
+        """"
+        test para verificar que se muestre un error si el nombre es invalido
+        """
+        response = self.client.post(
+            reverse("clients_form"),
+            data={
+                "name": "Juan132",
+                "phone": "54221555232",
+                "city": CityEnum.LA_PLATA,
+                "email": "brujita75@vetsoft.com",
+            },
+        )
+
+        self.assertContains(response, "El nombre solo debe contener letras y espacios")
+
+
+
+
     def test_should_response_with_404_status_if_client_doesnt_exists(self):
         """"
         test para verificar que se muestre un error 404 si el cliente no existe
@@ -220,7 +239,7 @@ class ClientsTest(TestCase):
                 "email": "brujita71@gmail.com",
             },
         )
-        
+
         edited_client = Client.objects.get(pk=client.id)
         self.assertEqual(edited_client.phone, 54221555232)
 
@@ -234,7 +253,7 @@ class ClientsTest(TestCase):
             phone="54221555232",
             email="brujita75@vetsoft.com",
         )
-            
+
         self.client.post(
             reverse("clients_form"),
               data={
@@ -260,7 +279,7 @@ class ClientsTest(TestCase):
             phone="54221555232",
             email="brujita75@vetsoft.com",
         )
-     
+
 
         self.client.post(
             reverse("clients_form"),
