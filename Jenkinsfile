@@ -109,7 +109,25 @@ post {
         }
     }
     failure {
-        echo 'Uno o más pasos fallaron. Deteniendo el pipeline.'
+        script {
+            echo 'Uno o más pasos fallaron. Deteniendo el pipeline.'
+
+            // Verificar si es la rama principal (producción)
+            if (env.BRANCH_NAME == 'main') {
+                echo 'Hubo un error durante el deploy a producción.'
+
+                // Enviar correo informando el error
+                mail to: 'germansalinas.fce@gmail.com, valendiaz01@yahoo.com, fedebravo2016@gmail.com',
+                    subject: "Error en el deploy a producción",
+                    body: "El deploy a producción de la rama ${env.BRANCH_NAME} ha fallado. Por favor revisa los logs para más detalles.",
+                    from: 'germansalinas.fce@gmail.com',
+                    smtpHost: 'smtp.gmail.com',
+                    smtpPort: '465',
+                    username: "${SMTP_CREDENTIALS_USR}",  // Usuario de las credenciales
+                    password: "${SMTP_CREDENTIALS_PSW}",  // Contraseña de las credenciales
+                    useSsl: true
+            }
+        }
     }
 }
 
