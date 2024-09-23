@@ -6,42 +6,52 @@ pipeline {
     }
 
     stages {
+        stage('Setup virtualenv') {
+            steps {
+                // Crear un entorno virtual
+                sh 'python3 -m venv venv'
+                // Activar el entorno virtual
+                sh '. venv/bin/activate'
+            }
+        }
+
         stage('Install dependencies') {
             steps {
-                // Instala las dependencias del proyecto
-                sh 'pip3 install -r requirements-dev.txt'
+                // Instalar dependencias dentro del entorno virtual
+                sh './venv/bin/pip install -r requirements-dev.txt'
             }
         }
 
         stage('Check') {
             steps {
                 // Verificar si la aplicación Django tiene errores usando el comando check
-                sh 'python3 manage.py check'
-
+                sh './venv/bin/python manage.py check'
             }
         }
+
         stage('Build') {
             steps {
-                // Recoge y compila archivos estáticos de Django
-                sh 'python manage.py collectstatic --noinput'
+                // Recoger y compilar archivos estáticos de Django
+                sh './venv/bin/python manage.py collectstatic --noinput'
             }
         }
-            stage('Run Static Test') {
+
+        stage('Run Static Test') {
             steps {
-                // Ejecutar el análisis estático de código usando el entorno virtual
-                sh 'ruff check'
+                // Ejecutar análisis estático de código usando ruff en el entorno virtual
+                sh './venv/bin/ruff check'
             }
         }
 
         stage('Run Unit Tests') {
             steps {
                 // Ejecuta las pruebas unitarias
-                sh 'coverage run --source="./app" --omit="./app/migrations/**" manage.py test app'
+                sh './venv/bin/python -m coverage run --source="./app" --omit="./app/migrations/**" manage.py test app'
             }
             post {
                 always {
-                    // Publica el reporte de cobertura de las pruebas
-                    sh 'coverage report'
+                    // Publicar el reporte de cobertura de las pruebas
+                    sh './venv/bin/coverage report'
                     junit 'test-reports/*.xml'
                 }
             }
@@ -49,12 +59,10 @@ pipeline {
 
         stage('Check coverage') {
             steps {
-                // Verifica que la cobertura sea al menos del 90%
-                sh 'coverage report --fail-under=90'
+                // Verificar que la cobertura sea al menos del 90%
+                sh './venv/bin/coverage report --fail-under=90'
             }
         }
-
-
     }
 
     post {
