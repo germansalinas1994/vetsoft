@@ -30,7 +30,8 @@ class ClientModelTest(TestCase):
             },
         )
         clients = Client.objects.all()
-        self.assertEqual(len(clients), 1)
+        # hago que falle el test para ver si se ejecuta
+        self.assertEqual(len(clients), 0)
 
         self.assertEqual(clients[0].name, "Juan Sebastian Veron")
         self.assertEqual(clients[0].phone, 54221555232)
