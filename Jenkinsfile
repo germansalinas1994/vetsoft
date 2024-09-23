@@ -1,9 +1,5 @@
 pipeline {
     agent any
-    options {
-        // Detener la ejecución si un paso falla
-        skipStagesAfterUnstable()
-    }
 
     stages {
         stage('Set up Python Virtual Environment') {
