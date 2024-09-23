@@ -2,6 +2,15 @@ pipeline {
     agent any
 
     stages {
+
+
+        //  verifico que se tenga instalado docker en el sistema
+        stage('Verify Docker Access') {
+            steps {
+                sh 'docker --version'
+            }
+        }
+
         stage('Set up Python Virtual Environment') {
             steps {
                 // Crear un entorno virtual en el directorio .venv
