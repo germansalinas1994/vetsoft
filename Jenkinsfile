@@ -9,14 +9,14 @@ pipeline {
         stage('Install dependencies') {
             steps {
                 // Instala las dependencias del proyecto
-                sh 'pip install -r requirements-dev.txt'
+                sh 'pip3 install -r requirements-dev.txt'
             }
         }
 
         stage('Check') {
             steps {
                 // Verificar si la aplicación Django tiene errores usando el comando check
-                sh 'python manage.py check'
+                sh 'python3 manage.py check'
 
             }
         }
