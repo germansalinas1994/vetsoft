@@ -2,6 +2,8 @@ pipeline {
     agent any
     environment {
         DOCKERHUB_CREDENTIALS = credentials('dockerhub-credentials')  // Credenciales de Docker Hub
+        SMTP_CREDENTIALS = credentials('jenkins-ci-cd')  // Este es el ID en Jenkins para las credenciales de Gmail
+
     }
     stages {
 
@@ -92,7 +94,17 @@ post {
             echo 'Todos los tests corrieron exitosamente.'
             if (env.BRANCH_NAME == 'main') {
                 echo 'La imagen Docker se construyó y subió correctamente a Docker Hub.'
-                echo 'La aplicación fue desplegada en la VM de Azure.'
+                echo 'Se realizó el deploy a producción.'
+                // Enviar correo solo si es deploy a producción
+                mail to: 'germansalinas.fce@gmail.com',
+                    subject: "Deploy exitoso en producción",
+                    body: "El deploy a producción en la rama ${env.BRANCH_NAME} fue exitoso.",
+                    from: 'germansalinas.fce@gmail.com',
+                    smtpHost: 'smtp.gmail.com',
+                    smtpPort: '465',
+                    username: "${SMTP_CREDENTIALS_USR}",  // Usuario de las credenciales
+                    password: "${SMTP_CREDENTIALS_PSW}",  // Contraseña de las credenciales
+                    useSsl: true
             }
         }
     }
