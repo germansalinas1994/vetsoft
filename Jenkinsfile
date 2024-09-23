@@ -49,7 +49,6 @@ pipeline {
         stage('Build Docker Image') {
             when {
                 branch 'main'
-                triggeredBy 'PullRequest'
             }
             steps {
                 script {
@@ -72,7 +71,6 @@ pipeline {
         stage('Deploy to Azure VM') {
              when {
                 branch 'main'
-                triggeredBy 'PullRequest'
             }
             steps {
                 script {
@@ -88,15 +86,19 @@ pipeline {
 
     }
 
-    post {
-        success {
-            // Mensaje en caso de éxito total
-            echo 'Todos los tests corrieron exitosamente. Se realizó con éxito el deploy.'
-        }
-        failure {
-            // Mensaje en caso de fallo en alguna etapa
-            echo 'Uno o más pasos fallaron. Deteniendo el pipeline.'
-            error('Hubo un error en los tests.')
+post {
+    success {
+        script {
+            echo 'Todos los tests corrieron exitosamente.'
+            if (env.BRANCH_NAME == 'main') {
+                echo 'La imagen Docker se construyó y subió correctamente a Docker Hub.'
+                echo 'La aplicación fue desplegada en la VM de Azure.'
+            }
         }
     }
+    failure {
+        echo 'Uno o más pasos fallaron. Deteniendo el pipeline.'
+    }
+}
+
 }
