@@ -1,6 +1,8 @@
 pipeline {
     agent any
-
+    environment {
+        DOCKERHUB_CREDENTIALS = credentials('dockerhub-credentials')  // Credenciales de Docker Hub
+    }
     stages {
 
 
@@ -44,12 +46,52 @@ pipeline {
             }
         }
 
+        stage('Build Docker Image') {
+            when {
+                branch 'main'
+                triggeredBy 'PullRequest'
+            }
+            steps {
+                script {
+                    // Realizar el login en Docker Hub y construir la imagen
+                    withCredentials([usernamePassword(credentialsId: 'dockerhub-credentials', usernameVariable: 'DOCKERHUB_USERNAME', passwordVariable: 'DOCKERHUB_TOKEN')]) {
+                        // Construye la imagen Docker
+                        sh 'docker build -t ${DOCKERHUB_USERNAME}/vetsoft:latest .'
+
+                        // Inicia sesión en Docker Hub
+                        sh 'echo ${DOCKERHUB_TOKEN} | docker login -u ${DOCKERHUB_USERNAME} --password-stdin'
+
+                        // Subir la imagen a Docker Hub
+                        sh 'docker push ${DOCKERHUB_USERNAME}/vetsoft:latest'
+                    }
+                }
+            }
+        }
+
+         // Etapa de despliegue en VM
+        stage('Deploy to Azure VM') {
+             when {
+                branch 'main'
+                triggeredBy 'PullRequest'
+            }
+            steps {
+                script {
+                    sh """
+                    docker stop vetsoft-container || true
+                    docker rm vetsoft-container || true
+                    docker run -d -p 8000:8000 --name vetsoft-container ${DOCKERHUB_USERNAME}/vetsoft:latest
+                    """
+                }
+            }
+        }
+
+
     }
 
     post {
         success {
             // Mensaje en caso de éxito total
-            echo 'Todos los tests corrieron exitosamente. Listo para merge o deploy.'
+            echo 'Todos los tests corrieron exitosamente. Se realizó con éxito el deploy.'
         }
         failure {
             // Mensaje en caso de fallo en alguna etapa
