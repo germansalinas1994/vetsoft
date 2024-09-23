@@ -2,7 +2,6 @@ pipeline {
     agent any
     environment {
         DOCKERHUB_CREDENTIALS = credentials('dockerhub-credentials')  // Credenciales de Docker Hub
-        DOCKERHUB_USERNAME_ENV = ''
     }
     stages {
 
@@ -55,7 +54,6 @@ pipeline {
                 script {
                     // Realizar el login en Docker Hub y construir la imagen
                     withCredentials([usernamePassword(credentialsId: 'dockerhub-credentials', usernameVariable: 'DOCKERHUB_USERNAME', passwordVariable: 'DOCKERHUB_TOKEN')]) {
-                         env.DOCKERHUB_USERNAME_ENV = ${DOCKERHUB_USERNAME}
                         // Construye la imagen Docker
                         sh 'docker build -t ${DOCKERHUB_USERNAME}/vetsoft:latest .'
 
@@ -79,7 +77,7 @@ pipeline {
                     sh """
                     docker stop vetsoft-container || true
                     docker rm vetsoft-container || true
-                    docker run -d -p 8000:8000 --name vetsoft-container ${DOCKERHUB_USERNAME_ENV}/vetsoft:latest
+                    docker run -d -p 8000:8000 --name vetsoft-container germansalinas1994/vetsoft:latest
                     """
                 }
             }
