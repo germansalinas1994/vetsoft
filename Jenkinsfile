@@ -11,7 +11,7 @@ pipeline {
                 // Crear un entorno virtual en el directorio .venv
                 sh 'python3 -m venv .venv'
                 // Activar el entorno virtual e instalar las dependencias
-                sh '. .venv/bin/activate && pip install -r requirements.txt'
+                sh '. .venv/bin/activate && pip install -r requirements-dev.txt'
             }
         }
         stage('Build and Check') {
