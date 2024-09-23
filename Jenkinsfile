@@ -77,7 +77,7 @@ pipeline {
                     sh """
                     docker stop vetsoft-container || true
                     docker rm vetsoft-container || true
-                    docker run -d -p 8000:8000 --name vetsoft-container germansalinas1994/vetsoft:latest
+                    docker run -d -p 8000:8000 --name vetsoft-container --restart unless-stopped germansalinas1994/vetsoft:latest
                     """
                 }
             }
