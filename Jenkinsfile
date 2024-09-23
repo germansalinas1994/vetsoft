@@ -6,12 +6,12 @@ pipeline {
     }
 
     stages {
-        stage('Setup virtualenv') {
+        stage('Set up Python Virtual Environment') {
             steps {
-                // Crear un entorno virtual
-                sh 'python3 -m venv venv'
-                // Activar el entorno virtual
-                sh '. venv/bin/activate'
+                // Crear un entorno virtual en el directorio .venv
+                sh 'python3 -m venv .venv'
+                // Activar el entorno virtual e instalar las dependencias
+                sh '. .venv/bin/activate && pip install -r requirements.txt'
             }
         }
 
