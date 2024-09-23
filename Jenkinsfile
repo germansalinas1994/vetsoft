@@ -96,9 +96,9 @@ post {
                 echo 'La imagen Docker se construyó y subió correctamente a Docker Hub.'
                 echo 'Se realizó el deploy a producción.'
                 // Enviar correo solo si es deploy a producción
-                mail to: 'germansalinas.fce@gmail.com',
+                mail to: 'germansalinas.fce@gmail.com, valendiaz01@yahoo.com, fedebravo2016@gmail.com',
                     subject: "Deploy exitoso en producción",
-                    body: "El deploy a producción en la rama ${env.BRANCH_NAME} fue exitoso.",
+                    body: "El deploy a producción de la rama ${env.BRANCH_NAME} fue exitoso.",
                     from: 'germansalinas.fce@gmail.com',
                     smtpHost: 'smtp.gmail.com',
                     smtpPort: '465',
