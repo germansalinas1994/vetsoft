@@ -42,7 +42,7 @@ pipeline {
             }
         }
 
-        stage('Build Docker Image for dev') {
+        stage('Build Docker Image for desa') {
             when {
                 branch 'dev'
             }
@@ -60,7 +60,7 @@ pipeline {
             }
         }
 
-        stage('Build Docker Image for main') {
+        stage('Build Docker Image for production') {
             when {
                 branch 'main'
             }
@@ -94,7 +94,7 @@ pipeline {
             }
         }
 
-        stage('Deploy to Azure VM (main)') {
+        stage('Deploy to Azure VM (production)') {
             when {
                 branch 'main'
             }
