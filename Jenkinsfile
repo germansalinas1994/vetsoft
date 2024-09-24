@@ -82,12 +82,13 @@ pipeline {
             when {
                 branch 'dev'
             }
+            // 8001:8000: Esto significa que el puerto 8001 en el host se mapea al puerto 8000 dentro del contenedor.
             steps {
                 script {
                     sh """
                     docker stop vetsoft-container-desa || true
                     docker rm vetsoft-container-desa || true
-                    docker run -d -p 8000:8000 --name vetsoft-container-desa --restart unless-stopped ${DOCKERHUB_USERNAME}/vetsoft:desa
+                    docker run -d -p 8001:8000 --name vetsoft-container-desa --restart unless-stopped germansalinas1994/vetsoft:desa
                     """
                 }
             }
@@ -97,12 +98,15 @@ pipeline {
             when {
                 branch 'main'
             }
+            // 8000:8000: Esto significa que el puerto 8001 en el host se mapea al puerto 8000 dentro del contenedor.
+            //El contenedor sigue usando el puerto 8000 para la aplicación.
+            //La máquina host usa 8000 para producción y 8001 para desa, mapeando ambos al puerto 8000 dentro del contenedor.
             steps {
                 script {
                     sh """
                     docker stop vetsoft-container || true
                     docker rm vetsoft-container || true
-                    docker run -d -p 8000:8000 --name vetsoft-container --restart unless-stopped ${DOCKERHUB_USERNAME}/vetsoft:latest
+                    docker run -d -p 8000:8000 --name vetsoft-container --restart unless-stopped germansalinas1994/vetsoft:latest
                     """
                 }
             }
