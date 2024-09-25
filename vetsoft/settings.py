@@ -38,7 +38,7 @@ ALLOWED_HOSTS = ['57.154.224.30', 'localhost', '127.0.0.1']
 
 
 CSRF_TRUSTED_ORIGINS = [
-    'https://vetsoft-app-v1-1.onrender.com',
+    'http://57.154.224.30',
 ]
 
 if DEBUG:
